@@ -106,19 +106,38 @@ window.TVKN = (function () {
     });
   }
 
-  // ---------- Áp dụng giao diện cho HỌC SINH (KHÔNG bắt buộc đăng nhập) ----------
-  // Đã đăng nhập  → hiện tên/avatar thật + nạp tiến độ.
-  // Chưa đăng nhập → vẫn xem/học/chơi bình thường ở chế độ khách (không chuyển trang).
+  // ---------- TRANG HỌC: BẮT BUỘC đăng nhập ----------
+  // Chưa đăng nhập → tự chuyển về trang đăng nhập. Đã login → áp tên/avatar/tiến độ thật.
   async function guardPage() {
-    if (!sb) return null;                                   // chưa cấu hình → khách
+    const profile = await requireAuth();   // requireAuth tự chuyển về dang-nhap.html nếu chưa login
+    if (!profile) return null;
+    applyToDOM(profile);
+    let progress = null;
+    try { progress = await getProgress(); } catch (e) {}
+    bindCommon(profile, progress);
+    return { profile: profile, progress: progress };
+  }
+
+  // ---------- TRANG CÔNG KHAI (trang chủ): KHÔNG bắt buộc đăng nhập ----------
+  // Đã login → áp tên/avatar/tiến độ thật và trả về { profile, progress }.
+  // Khách     → trả về null và KHÔNG chuyển trang (để trang tự hiện giao diện khách).
+  async function applyProfile() {
+    if (!sb) return null;
     const { data: { session } } = await sb.auth.getSession();
-    if (!session) return null;                              // chưa đăng nhập → khách
+    if (!session) return null;
     const profile = await getProfile();
     applyToDOM(profile);
     let progress = null;
     try { progress = await getProgress(); } catch (e) {}
     bindCommon(profile, progress);
     return { profile: profile, progress: progress };
+  }
+
+  // ---------- Kiểm tra nhanh: đã đăng nhập chưa? (không chuyển trang) ----------
+  async function isLoggedIn() {
+    if (!sb) return false;
+    const { data: { session } } = await sb.auth.getSession();
+    return !!session;
   }
 
   // ---------- Chặn trang ADMIN: chỉ role='admin' mới vào ----------
@@ -129,7 +148,7 @@ window.TVKN = (function () {
     const profile = await getProfile();
     if (!profile || profile.role !== 'admin') {
       alert('⛔ Trang quản trị chỉ dành cho quản trị viên.');
-      window.location.replace('toan-vui-ket-noi.html');
+      window.location.replace('index.html');
       return null;
     }
     return profile;
@@ -317,7 +336,7 @@ window.TVKN = (function () {
   return {
     configured: typeof TVKN_CONFIGURED !== 'undefined' ? TVKN_CONFIGURED : false,
     signUp, signIn, signOut, getUser, getProfile,
-    requireAuth, applyToDOM, guardPage, requireAdmin, bindCommon,
+    requireAuth, applyToDOM, guardPage, applyProfile, isLoggedIn, requireAdmin, bindCommon,
     getProgress, addXp, bumpStreak, setLesson,
     getActivity, getLessons, getBadges, getLeaderboard, getMyRank, getCohortStats,
     adminOverview, adminUsers,

@@ -1409,7 +1409,7 @@
           <div class="rank-num">🥈</div>
           <div class="rank-avatar">👧</div>
           <div class="rank-info">
-            <div class="rank-name">Nguyễn Minh Anh</div>
+            <div class="rank-name">Lê Thuỳ Linh</div>
             <div class="rank-class">Lớp 4B · 12 huy hiệu</div>
           </div>
           <div class="rank-xp">4.250 XP</div>
@@ -1589,9 +1589,35 @@
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
 <script>
-  /* Chặn trang + hiển thị đúng người đăng nhập (Supabase) */
-  window.tvknLogout = function(){ TVKN.signOut(); };
-  TVKN.guardPage();
+  /* Trang chủ CÔNG KHAI: khách vẫn xem được, nhưng KHÔNG hiện hồ sơ giả.
+     Đã đăng nhập → hiện tên/avatar/tiến độ thật. Khách → nút Đăng nhập/Đăng ký. */
+  (async function initHome() {
+    window.tvknLogout = function () { if (window.TVKN) TVKN.signOut(); };
+    var data = null;
+    if (window.TVKN && TVKN.configured) {
+      try { data = await TVKN.applyProfile(); } catch (e) {}
+    }
+    if (data && data.profile) {
+      // ----- ĐÃ ĐĂNG NHẬP -----
+      var av = document.querySelector('.header-right .avatar');
+      if (av) av.title = 'Hồ sơ của ' + data.profile.name;
+    } else {
+      // ----- KHÁCH (chưa đăng nhập) -----
+      var hr = document.querySelector('.header-right');
+      if (hr) {
+        hr.innerHTML =
+          '<a href="dang-nhap.html" class="btn btn-secondary" style="padding:9px 18px;font-size:14px">Đăng nhập</a>' +
+          '<a href="dang-ky.html" class="btn btn-primary" style="padding:9px 18px;font-size:14px">Đăng ký</a>';
+      }
+      // Ẩn khối hồ sơ cá nhân (lời chào, XP, huy hiệu... của tài khoản)
+      var ps = document.querySelector('.profile-section');
+      if (ps) ps.style.display = 'none';
+      // Nút học → mời đăng nhập trước (trang học vốn cũng bắt buộc đăng nhập)
+      document.querySelectorAll('.hero-buttons a').forEach(function (a) {
+        a.setAttribute('href', 'dang-nhap.html');
+      });
+    }
+  })();
 </script>
 <script>
   /* Hiển thị số liệu thật của nền tảng cho phần hero (nếu có Supabase) */
