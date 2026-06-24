@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trang Phụ huynh - TOÁN VUI KẾT NỐI</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4F8CFF;
+    --yellow: #FFD93D;
+    --green: #6BCB77;
+    --orange: #FF9F43;
+    --pink: #FF6B9D;
+    --purple: #9B72FF;
+    --white: #FFFFFF;
+    --bg-soft: #F4F8FF;
+    --text-dark: #2D3748;
+    --text-soft: #6B7280;
+    --shadow: 0 8px 24px rgba(79, 140, 255, 0.15);
+    --shadow-lg: 0 16px 40px rgba(79, 140, 255, 0.22);
+    /* Trang phụ huynh dùng tông xanh dương - tin cậy, điềm tĩnh */
+    --theme: var(--blue);
+    --theme-soft: #E5EFFF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Fredoka', 'Baloo 2', system-ui, sans-serif;
+    background: var(--bg-soft);
+    color: var(--text-dark);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+  a { text-decoration: none; color: inherit; }
+
+  /* ============== HEADER NHỎ ============== */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 68px;
+    background: var(--white);
+    box-shadow: 0 4px 20px rgba(79, 140, 255, 0.08);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 18px;
+  }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 12px;
+    background: var(--bg-soft);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-dark);
+    transition: all .2s;
+  }
+  .back-btn:hover { background: var(--theme); color: var(--white); transform: translateX(-2px); }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 6px 16px rgba(79, 140, 255, 0.35);
+  }
+  .logo-name {
+    font-weight: 800; font-size: 16px;
+    background: linear-gradient(90deg, var(--blue), var(--purple));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .header-title {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800; font-size: 18px;
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+  .header-right { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+  .parent-name { font-weight: 700; font-size: 14px; color: var(--text-dark); }
+  .icon-btn {
+    position: relative;
+    width: 42px; height: 42px;
+    border-radius: 12px; background: var(--bg-soft);
+    border: none; cursor: pointer; font-size: 19px; transition: all .2s;
+  }
+  .icon-btn:hover { background: var(--blue); transform: translateY(-2px); }
+  .badge-dot {
+    position: absolute; top: 7px; right: 7px;
+    width: 9px; height: 9px; background: var(--orange);
+    border-radius: 50%; border: 2px solid var(--white);
+  }
+  .avatar {
+    width: 42px; height: 42px; border-radius: 13px;
+    background: linear-gradient(135deg, var(--green), var(--blue));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 21px; border: 3px solid var(--white);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12); cursor: pointer;
+  }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* ============== SECTION ============== */
+  section.block { margin-top: 44px; }
+  .section-title {
+    font-family: 'Baloo 2', sans-serif; font-size: 24px; font-weight: 800;
+    margin-bottom: 6px; display: flex; align-items: center; gap: 10px;
+  }
+  .section-sub { color: var(--text-soft); font-size: 15px; margin-bottom: 22px; }
+  .card {
+    background: var(--white); border-radius: 22px;
+    padding: 26px 28px; box-shadow: var(--shadow);
+  }
+
+  /* ============== THÔNG TIN HỌC SINH ============== */
+  .student-card {
+    margin-top: 28px;
+    background: linear-gradient(135deg, var(--theme-soft), #EAFBEF);
+    border-radius: 28px;
+    padding: 32px 36px;
+    display: flex; align-items: center; gap: 28px;
+    position: relative; overflow: hidden;
+    box-shadow: var(--shadow);
+    flex-wrap: wrap;
+  }
+  .student-card::before {
+    content: ''; position: absolute;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.5), transparent 70%);
+    top: -120px; right: -60px;
+  }
+  .student-avatar {
+    width: 110px; height: 110px; flex-shrink: 0; z-index: 1;
+    background: var(--white); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 64px; box-shadow: 0 12px 30px rgba(79, 140, 255, 0.25);
+  }
+  .student-info { flex: 1; min-width: 240px; z-index: 1; }
+  .student-info h2 {
+    font-family: 'Baloo 2', sans-serif; font-size: 30px; font-weight: 800;
+    line-height: 1.1; margin-bottom: 10px;
+  }
+  .student-meta { display: flex; gap: 22px; flex-wrap: wrap; margin-bottom: 14px; }
+  .student-meta .m-label { font-size: 12px; color: var(--text-soft); font-weight: 600; }
+  .student-meta .m-value { font-size: 15px; font-weight: 700; }
+  .student-tags { display: flex; gap: 12px; flex-wrap: wrap; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 16px; border-radius: 999px;
+    font-weight: 700; font-size: 14px; background: var(--white);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  .chip.title-chip { color: var(--orange); }
+  .chip.streak-chip { color: var(--pink); }
+
+  /* ============== TỔNG QUAN - STAT GRID ============== */
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .stat-card {
+    background: var(--white); border-radius: 20px;
+    padding: 22px; text-align: center; box-shadow: var(--shadow);
+    transition: transform .25s; border-top: 4px solid transparent;
+  }
+  .stat-card:hover { transform: translateY(-4px); }
+  .stat-card:nth-child(1) { border-top-color: var(--blue); }
+  .stat-card:nth-child(2) { border-top-color: var(--yellow); }
+  .stat-card:nth-child(3) { border-top-color: var(--orange); }
+  .stat-card:nth-child(4) { border-top-color: var(--green); }
+  .stat-card:nth-child(5) { border-top-color: var(--purple); }
+  .stat-card:nth-child(6) { border-top-color: var(--pink); }
+  .stat-icon { font-size: 32px; margin-bottom: 6px; }
+  .stat-num { font-family: 'Baloo 2', sans-serif; font-size: 26px; font-weight: 800; }
+  .stat-label { font-size: 13px; color: var(--text-soft); }
+
+  /* ============== BIỂU ĐỒ TIẾN BỘ (SVG) ============== */
+  .chart-card { margin-top: 8px; }
+  .chart-wrap { width: 100%; overflow: hidden; }
+  .chart-svg { width: 100%; height: auto; display: block; }
+  .chart-legend {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 14px; font-size: 14px; color: var(--text-soft); font-weight: 600;
+  }
+  .legend-line { width: 26px; height: 4px; border-radius: 2px; background: var(--blue); }
+
+  /* ============== KẾT QUẢ GẦN ĐÂY ============== */
+  .recent-list { display: flex; flex-direction: column; gap: 0; }
+  .recent-row {
+    display: flex; align-items: center; gap: 16px;
+    padding: 14px 0; border-bottom: 1px solid #EEF2F9;
+  }
+  .recent-row:last-child { border-bottom: none; }
+  .recent-date {
+    font-size: 12px; font-weight: 700; color: var(--text-soft);
+    width: 88px; flex-shrink: 0;
+  }
+  .recent-ico {
+    width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 22px;
+    background: var(--theme-soft);
+  }
+  .recent-main { flex: 1; min-width: 0; }
+  .recent-name { font-weight: 700; font-size: 15px; }
+  .recent-type { font-size: 12px; color: var(--text-soft); }
+  .recent-score {
+    font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 17px;
+    width: 56px; text-align: right; flex-shrink: 0;
+  }
+  .recent-score.good { color: var(--green); }
+  .recent-score.ok { color: var(--orange); }
+  .recent-xp {
+    color: var(--orange); font-weight: 700; font-size: 14px;
+    width: 60px; text-align: right; flex-shrink: 0;
+  }
+
+  /* ============== ĐIỂM MẠNH / CẦN CẢI THIỆN ============== */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .strength-card { border-left: 5px solid var(--green); }
+  .improve-card { border-left: 5px solid var(--orange); }
+  .mini-title {
+    font-family: 'Baloo 2', sans-serif; font-size: 19px; font-weight: 800;
+    margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+  }
+  .strength-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  .strength-item {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 600; font-size: 15px;
+  }
+  .strength-item .ok { color: var(--green); font-size: 18px; }
+  .acc-big {
+    display: inline-flex; align-items: baseline; gap: 6px;
+    padding: 10px 18px; border-radius: 14px; background: #EEFBF1;
+  }
+  .acc-big .num { font-family: 'Baloo 2', sans-serif; font-size: 28px; font-weight: 800; color: var(--green); }
+  .acc-big .lbl { font-size: 13px; color: var(--text-soft); font-weight: 600; }
+
+  .improve-item { margin-bottom: 16px; }
+  .improve-item:last-child { margin-bottom: 0; }
+  .improve-head {
+    display: flex; justify-content: space-between; align-items: center;
+    font-weight: 700; font-size: 15px; margin-bottom: 7px;
+  }
+  .improve-head .warn { color: var(--orange); }
+  .improve-head .pct { font-family: 'Baloo 2', sans-serif; font-weight: 800; color: var(--orange); }
+  .bar { height: 12px; background: var(--bg-soft); border-radius: 999px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+  .bar > div { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--yellow), var(--orange)); }
+
+  /* ============== BÁO CÁO TUẦN ============== */
+  .week-card {
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    color: var(--white); border-radius: 24px;
+    padding: 30px 34px; box-shadow: var(--shadow-lg);
+    position: relative; overflow: hidden;
+  }
+  .week-card::before {
+    content: '📄'; position: absolute; font-size: 180px;
+    right: -10px; bottom: -40px; opacity: .12;
+  }
+  .week-card .mini-title { color: var(--white); }
+  .week-stats {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px;
+    margin-bottom: 22px; z-index: 1; position: relative;
+  }
+  .week-stat {
+    background: rgba(255,255,255,0.16); border-radius: 16px;
+    padding: 16px 10px; text-align: center;
+  }
+  .week-stat .wn { font-family: 'Baloo 2', sans-serif; font-size: 24px; font-weight: 800; }
+  .week-stat .wl { font-size: 12px; opacity: .9; }
+  .week-btns { display: flex; gap: 14px; flex-wrap: wrap; z-index: 1; position: relative; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 13px 26px; border-radius: 14px;
+    font-family: inherit; font-weight: 700; font-size: 15px;
+    border: none; cursor: pointer; transition: all .25s cubic-bezier(.34,1.56,.64,1);
+  }
+  .btn-white { background: var(--white); color: var(--blue); box-shadow: 0 8px 20px rgba(0,0,0,0.18); }
+  .btn-white:hover { transform: translateY(-4px) scale(1.03); }
+  .btn-glass { background: rgba(255,255,255,0.2); color: var(--white); border: 2px solid rgba(255,255,255,0.5); }
+  .btn-glass:hover { transform: translateY(-4px); background: rgba(255,255,255,0.3); }
+
+  /* ============== TIẾN ĐỘ THEO CHƯƠNG ============== */
+  .chapter-item { margin-bottom: 20px; }
+  .chapter-item:last-child { margin-bottom: 0; }
+  .chapter-head {
+    display: flex; justify-content: space-between; align-items: center;
+    font-weight: 700; font-size: 16px; margin-bottom: 8px;
+  }
+  .chapter-head .cpct { font-family: 'Baloo 2', sans-serif; font-weight: 800; }
+  .chapter-bar { height: 18px; background: var(--bg-soft); border-radius: 999px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+  .chapter-bar > div { height: 100%; border-radius: 999px; }
+  .fill-blue { background: linear-gradient(90deg, var(--green), #4DBE5C); }
+  .fill-mid { background: linear-gradient(90deg, var(--blue), #4DBE5C); }
+  .fill-low { background: linear-gradient(90deg, var(--yellow), var(--orange)); }
+
+  /* ============== GỢI Ý CHO PHỤ HUYNH ============== */
+  .tip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .tip-card {
+    background: var(--white); border-radius: 20px; padding: 24px;
+    box-shadow: var(--shadow); display: flex; gap: 16px; align-items: flex-start;
+    border-left: 5px solid var(--yellow);
+  }
+  .tip-ico {
+    width: 50px; height: 50px; flex-shrink: 0; border-radius: 14px;
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    display: flex; align-items: center; justify-content: center; font-size: 26px;
+  }
+  .tip-card h4 { font-family: 'Baloo 2', sans-serif; font-size: 16px; font-weight: 800; margin-bottom: 5px; }
+  .tip-card p { font-size: 14px; color: var(--text-soft); }
+
+  /* ============== CÀI ĐẶT THÔNG BÁO ============== */
+  .notify-list { display: flex; flex-direction: column; gap: 4px; }
+  .notify-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 6px; border-bottom: 1px solid #EEF2F9;
+  }
+  .notify-row:last-child { border-bottom: none; }
+  .notify-row .n-ico { font-size: 22px; width: 30px; text-align: center; }
+  .notify-row .n-text { flex: 1; font-weight: 600; font-size: 15px; }
+  /* Switch */
+  .switch { position: relative; width: 50px; height: 28px; flex-shrink: 0; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute; inset: 0; cursor: pointer;
+    background: #D7DEEA; border-radius: 999px; transition: .25s;
+  }
+  .slider::before {
+    content: ''; position: absolute; height: 22px; width: 22px;
+    left: 3px; top: 3px; background: var(--white);
+    border-radius: 50%; transition: .25s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  .switch input:checked + .slider { background: var(--green); }
+  .switch input:checked + .slider::before { transform: translateX(22px); }
+
+  /* ============== HỒ SƠ LINK BAR ============== */
+  .profile-bar {
+    margin-top: 44px;
+    background: linear-gradient(135deg, var(--green), var(--blue));
+    border-radius: 24px; padding: 28px 34px; color: var(--white);
+    display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+  }
+  .profile-bar .pb-text { flex: 1; min-width: 240px; }
+  .profile-bar h3 { font-family: 'Baloo 2', sans-serif; font-size: 21px; font-weight: 800; margin-bottom: 4px; }
+  .profile-bar p { opacity: .92; font-size: 15px; }
+
+  /* ============== FOOTER ĐIỀU HƯỚNG ============== */
+  .footer-nav {
+    margin-top: 50px; background: var(--white);
+    box-shadow: 0 -4px 20px rgba(79,140,255,0.08);
+    padding: 16px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
+  }
+  .footer-nav a {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 8px 20px; border-radius: 14px;
+    font-size: 12px; font-weight: 600; color: var(--text-soft); transition: all .2s;
+  }
+  .footer-nav a:hover, .footer-nav a.active { background: var(--bg-soft); color: var(--theme); }
+  .footer-nav a span { font-size: 22px; }
+  .footer-copy { text-align: center; padding: 18px; color: var(--text-soft); font-size: 13px; }
+
+  /* ============== CONFETTI ============== */
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 9999; border-radius: 2px; }
+
+  /* ============== RESPONSIVE ============== */
+  @media (max-width: 900px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .tip-grid { grid-template-columns: 1fr; }
+    .week-stats { grid-template-columns: repeat(3, 1fr); }
+    .header-title { display: none; }
+  }
+  @media (max-width: 560px) {
+    .header { padding: 0 14px; gap: 10px; }
+    .logo-name { display: none; }
+    .parent-name { display: none; }
+    .wrap { padding: 0 14px; }
+    .student-card { padding: 26px; }
+    .student-avatar { width: 90px; height: 90px; font-size: 50px; }
+    .week-stats { grid-template-columns: repeat(2, 1fr); }
+    .recent-date { width: 72px; }
+    .recent-xp { width: 48px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER PHỤ HUYNH ============ -->
+<header class="header">
+  <a href="index.html" class="back-btn">← Trang chủ</a>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">🐰</div>
+    <span class="logo-name">TOÁN VUI KẾT NỐI</span>
+  </a>
+  <span class="header-title">👨‍👩‍👧 TRANG PHỤ HUYNH</span>
+  <div class="header-right">
+    <span class="parent-name">Chào, Phụ huynh 👋</span>
+    <button class="icon-btn" title="Thông báo">🔔<span class="badge-dot"></span></button>
+    <div class="avatar" title="Phụ huynh">👩</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ============ THÔNG TIN HỌC SINH ============ -->
+  <div class="student-card">
+    <div class="student-avatar">👧</div>
+    <div class="student-info">
+      <h2>Nguyễn Minh Anh</h2>
+      <div class="student-meta">
+        <div><div class="m-label">Lớp</div><div class="m-value">Lớp 1</div></div>
+        <div><div class="m-label">Ngày tham gia</div><div class="m-value">01/06/2026</div></div>
+      </div>
+      <div class="student-tags">
+        <span class="chip title-chip">🏅 Bé Đếm Số</span>
+        <span class="chip streak-chip">🔥 12 ngày liên tiếp</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TỔNG QUAN HỌC TẬP ============ -->
+  <section class="block">
+    <h2 class="section-title">📊 Tổng quan học tập</h2>
+    <p class="section-sub">Nhìn nhanh để biết con đang học tới đâu và tích lũy được những gì.</p>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num">8/10</div><div class="stat-label">Bài học hoàn thành</div></div>
+      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num">4250</div><div class="stat-label">Tổng điểm XP</div></div>
+      <div class="stat-card"><div class="stat-icon">🏅</div><div class="stat-num">15</div><div class="stat-label">Huy hiệu</div></div>
+      <div class="stat-card"><div class="stat-icon">⏱️</div><div class="stat-num">12 giờ</div><div class="stat-label">Thời gian học</div></div>
+      <div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-num">22</div><div class="stat-label">Lần thử thách</div></div>
+      <div class="stat-card"><div class="stat-icon">🎮</div><div class="stat-num">57</div><div class="stat-label">Lượt trò chơi</div></div>
+    </div>
+  </section>
+
+  <!-- ============ BIỂU ĐỒ TIẾN BỘ ============ -->
+  <section class="block">
+    <h2 class="section-title">📈 Tiến bộ học tập</h2>
+    <p class="section-sub">Điểm trung bình của con qua 12 tuần. Con đang tiến bộ đều đặn!</p>
+    <div class="card chart-card">
+      <div class="chart-wrap">
+        <svg class="chart-svg" viewBox="0 0 720 320" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Biểu đồ tiến bộ điểm trung bình qua 12 tuần">
+          <defs>
+            <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#4F8CFF" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#4F8CFF" stop-opacity="0.02"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Đường lưới ngang + nhãn trục dọc (%) -->
+          <!-- y=40 ->100% , y=260 ->0%. Mỗi 25% = 55px -->
+          <g font-size="13" fill="#9AA5B5" font-family="Fredoka, sans-serif">
+            <line x1="70" y1="40"  x2="690" y2="40"  stroke="#EDF1F8" stroke-width="1"/>
+            <text x="58" y="45" text-anchor="end">100%</text>
+            <line x1="70" y1="95"  x2="690" y2="95"  stroke="#EDF1F8" stroke-width="1"/>
+            <text x="58" y="100" text-anchor="end">75%</text>
+            <line x1="70" y1="150" x2="690" y2="150" stroke="#EDF1F8" stroke-width="1"/>
+            <text x="58" y="155" text-anchor="end">50%</text>
+            <line x1="70" y1="205" x2="690" y2="205" stroke="#EDF1F8" stroke-width="1"/>
+            <text x="58" y="210" text-anchor="end">25%</text>
+            <line x1="70" y1="260" x2="690" y2="260" stroke="#D7DEEA" stroke-width="1.5"/>
+            <text x="58" y="265" text-anchor="end">0%</text>
+          </g>
+
+          <!-- Vùng tô (area) - các điểm:
+               Tuần1 (110,150=50%) Tuần4 (290,117=65%) Tuần8 (490,95=75%) Tuần12 (650,62=90%) -->
+          <path d="M110,150 L290,117 L490,95 L650,62 L650,260 L110,260 Z" fill="url(#areaGrad)"/>
+
+          <!-- Đường nối -->
+          <polyline points="110,150 290,117 490,95 650,62"
+                    fill="none" stroke="#4F8CFF" stroke-width="4"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+
+          <!-- Các điểm dữ liệu + nhãn % -->
+          <g font-family="Baloo 2, sans-serif" font-weight="700">
+            <circle cx="110" cy="150" r="7" fill="#fff" stroke="#4F8CFF" stroke-width="4"/>
+            <text x="110" y="138" text-anchor="middle" font-size="14" fill="#2D3748">50%</text>
+
+            <circle cx="290" cy="117" r="7" fill="#fff" stroke="#4F8CFF" stroke-width="4"/>
+            <text x="290" y="105" text-anchor="middle" font-size="14" fill="#2D3748">65%</text>
+
+            <circle cx="490" cy="95" r="7" fill="#fff" stroke="#4F8CFF" stroke-width="4"/>
+            <text x="490" y="83" text-anchor="middle" font-size="14" fill="#2D3748">75%</text>
+
+            <circle cx="650" cy="62" r="8" fill="#6BCB77" stroke="#fff" stroke-width="3"/>
+            <text x="650" y="48" text-anchor="middle" font-size="15" fill="#2F8F3E">90%</text>
+          </g>
+
+          <!-- Nhãn trục ngang (tuần) -->
+          <g font-size="13" fill="#6B7280" font-family="Fredoka, sans-serif" font-weight="600" text-anchor="middle">
+            <text x="110" y="286">Tuần 1</text>
+            <text x="290" y="286">Tuần 4</text>
+            <text x="490" y="286">Tuần 8</text>
+            <text x="650" y="286">Tuần 12</text>
+          </g>
+        </svg>
+      </div>
+      <div class="chart-legend"><span class="legend-line"></span> Điểm trung bình theo tuần</div>
+    </div>
+  </section>
+
+  <!-- ============ KẾT QUẢ GẦN ĐÂY ============ -->
+  <section class="block">
+    <h2 class="section-title">📝 Kết quả gần đây</h2>
+    <p class="section-sub">Những hoạt động học tập gần nhất của con.</p>
+    <div class="card">
+      <div class="recent-list">
+        <div class="recent-row">
+          <div class="recent-date">23/06/2026</div>
+          <div class="recent-ico">📘</div>
+          <div class="recent-main"><div class="recent-name">Bài 8 - Phép trừ trong phạm vi 20</div><div class="recent-type">Hoàn thành bài học</div></div>
+          <div class="recent-score good">90%</div>
+          <div class="recent-xp">+80</div>
+        </div>
+        <div class="recent-row">
+          <div class="recent-date">23/06/2026</div>
+          <div class="recent-ico">🎯</div>
+          <div class="recent-main"><div class="recent-name">Thử thách hằng ngày</div><div class="recent-type">Hoàn thành thử thách</div></div>
+          <div class="recent-score good">100%</div>
+          <div class="recent-xp">+70</div>
+        </div>
+        <div class="recent-row">
+          <div class="recent-date">22/06/2026</div>
+          <div class="recent-ico">📗</div>
+          <div class="recent-main"><div class="recent-name">Bài 7 - So sánh các số đến 100</div><div class="recent-type">Hoàn thành bài học</div></div>
+          <div class="recent-score good">95%</div>
+          <div class="recent-xp">+80</div>
+        </div>
+        <div class="recent-row">
+          <div class="recent-date">22/06/2026</div>
+          <div class="recent-ico">🎮</div>
+          <div class="recent-main"><div class="recent-name">Trò chơi Đua xe Toán học</div><div class="recent-type">Chơi trò chơi học tập</div></div>
+          <div class="recent-score good">88%</div>
+          <div class="recent-xp">+50</div>
+        </div>
+        <div class="recent-row">
+          <div class="recent-date">21/06/2026</div>
+          <div class="recent-ico">➕</div>
+          <div class="recent-main"><div class="recent-name">Luyện tập - Phép cộng có nhớ</div><div class="recent-type">Luyện tập nhanh</div></div>
+          <div class="recent-score ok">65%</div>
+          <div class="recent-xp">+30</div>
+        </div>
+        <div class="recent-row">
+          <div class="recent-date">20/06/2026</div>
+          <div class="recent-ico">📐</div>
+          <div class="recent-main"><div class="recent-name">Bài 6 - Nhận biết hình học</div><div class="recent-type">Hoàn thành bài học</div></div>
+          <div class="recent-score good">96%</div>
+          <div class="recent-xp">+80</div>
+        </div>
+        <div class="recent-row">
+          <div class="recent-date">19/06/2026</div>
+          <div class="recent-ico">🎯</div>
+          <div class="recent-main"><div class="recent-name">Thử thách hằng ngày</div><div class="recent-type">Hoàn thành thử thách</div></div>
+          <div class="recent-score good">90%</div>
+          <div class="recent-xp">+70</div>
+        </div>
+        <div class="recent-row">
+          <div class="recent-date">18/06/2026</div>
+          <div class="recent-ico">📕</div>
+          <div class="recent-main"><div class="recent-name">Bài 5 - Phép cộng trong phạm vi 10</div><div class="recent-type">Hoàn thành bài học</div></div>
+          <div class="recent-score good">92%</div>
+          <div class="recent-xp">+80</div>
+        </div>
+        <div class="recent-row">
+          <div class="recent-date">17/06/2026</div>
+          <div class="recent-ico">🎮</div>
+          <div class="recent-main"><div class="recent-name">Trò chơi Bắn bóng số học</div><div class="recent-type">Chơi trò chơi học tập</div></div>
+          <div class="recent-score ok">72%</div>
+          <div class="recent-xp">+40</div>
+        </div>
+        <div class="recent-row">
+          <div class="recent-date">16/06/2026</div>
+          <div class="recent-ico">📗</div>
+          <div class="recent-main"><div class="recent-name">Bài 4 - So sánh các số (&gt;, &lt;)</div><div class="recent-type">Hoàn thành bài học</div></div>
+          <div class="recent-score good">88%</div>
+          <div class="recent-xp">+80</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ĐIỂM MẠNH / CẦN CẢI THIỆN ============ -->
+  <section class="block">
+    <h2 class="section-title">🔍 Con giỏi phần nào, cần luyện thêm phần nào</h2>
+    <p class="section-sub">Hệ thống tự phân tích từ kết quả học tập của con.</p>
+    <div class="two-col">
+
+      <div class="card strength-card">
+        <div class="mini-title">🌟 Điểm mạnh của con</div>
+        <div class="strength-list">
+          <div class="strength-item"><span class="ok">✅</span> Đếm số</div>
+          <div class="strength-item"><span class="ok">✅</span> So sánh số</div>
+          <div class="strength-item"><span class="ok">✅</span> Nhận biết hình học</div>
+        </div>
+        <div class="acc-big"><span class="num">92%</span><span class="lbl">tỷ lệ chính xác</span></div>
+      </div>
+
+      <div class="card improve-card">
+        <div class="mini-title">📚 Nội dung cần luyện thêm</div>
+        <div class="improve-item">
+          <div class="improve-head"><span class="warn">⚠ Phép cộng</span><span class="pct">65%</span></div>
+          <div class="bar"><div style="width:65%"></div></div>
+        </div>
+        <div class="improve-item">
+          <div class="improve-head"><span class="warn">⚠ Toán có lời văn</span><span class="pct">60%</span></div>
+          <div class="bar"><div style="width:60%"></div></div>
+        </div>
+        <div class="improve-item">
+          <div class="improve-head"><span class="warn">⚠ Phân số</span><span class="pct">58%</span></div>
+          <div class="bar"><div style="width:58%"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ BÁO CÁO TUẦN ============ -->
+  <section class="block">
+    <h2 class="section-title">📄 Báo cáo tuần này</h2>
+    <p class="section-sub">Tóm tắt việc học của con trong 7 ngày qua.</p>
+    <div class="week-card">
+      <div class="mini-title">📄 Tổng kết tuần</div>
+      <div class="week-stats">
+        <div class="week-stat"><div class="wn">5</div><div class="wl">Bài đã học</div></div>
+        <div class="week-stat"><div class="wn">350</div><div class="wl">Điểm XP</div></div>
+        <div class="week-stat"><div class="wn">1h45</div><div class="wl">Thời gian học</div></div>
+        <div class="week-stat"><div class="wn">2</div><div class="wl">Huy hiệu mới</div></div>
+        <div class="week-stat"><div class="wn">7</div><div class="wl">Ngày chuỗi</div></div>
+      </div>
+      <div class="week-btns">
+        <button class="btn btn-white" onclick="celebrate(event)">📥 Tải báo cáo PDF</button>
+        <button class="btn btn-glass" onclick="celebrate(event)">📧 Gửi email</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TIẾN ĐỘ THEO CHƯƠNG ============ -->
+  <section class="block">
+    <h2 class="section-title">📊 Tiến độ theo chương</h2>
+    <p class="section-sub">Con đã hoàn thành tới đâu trong từng chương của chương trình.</p>
+    <div class="card">
+      <div class="chapter-item">
+        <div class="chapter-head"><span>Chương 1 - Các số đến 10</span><span class="cpct" style="color:var(--green)">100%</span></div>
+        <div class="chapter-bar"><div class="fill-blue" style="width:100%"></div></div>
+      </div>
+      <div class="chapter-item">
+        <div class="chapter-head"><span>Chương 2 - Phép cộng, phép trừ</span><span class="cpct" style="color:var(--blue)">70%</span></div>
+        <div class="chapter-bar"><div class="fill-mid" style="width:70%"></div></div>
+      </div>
+      <div class="chapter-item">
+        <div class="chapter-head"><span>Chương 3 - Các số đến 100</span><span class="cpct" style="color:var(--orange)">20%</span></div>
+        <div class="chapter-bar"><div class="fill-low" style="width:20%"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GỢI Ý CHO PHỤ HUYNH ============ -->
+  <section class="block">
+    <h2 class="section-title">💡 Gợi ý đồng hành cùng con</h2>
+    <p class="section-sub">Vài lời khuyên nhỏ để giúp con học tốt hơn mỗi ngày.</p>
+    <div class="tip-grid">
+      <div class="tip-card">
+        <div class="tip-ico">✍️</div>
+        <div>
+          <h4>Luyện thêm phép cộng</h4>
+          <p>Con đang gặp khó khăn ở phần phép cộng. Hãy dành 10 phút mỗi ngày để cùng con luyện thêm phần này.</p>
+        </div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-ico">🚗</div>
+        <div>
+          <h4>Học qua trò chơi con yêu thích</h4>
+          <p>Con rất thích trò chơi Đua xe Toán học. Có thể khuyến khích con luyện tập thông qua trò chơi này.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CÀI ĐẶT THÔNG BÁO ============ -->
+  <section class="block">
+    <h2 class="section-title">🔔 Cài đặt thông báo</h2>
+    <p class="section-sub">Chọn những thông báo bạn muốn nhận về việc học của con.</p>
+    <div class="card">
+      <div class="notify-list">
+        <label class="notify-row">
+          <span class="n-ico">📄</span>
+          <span class="n-text">Báo cáo tuần</span>
+          <span class="switch"><input type="checkbox" checked><span class="slider"></span></span>
+        </label>
+        <label class="notify-row">
+          <span class="n-ico">🏅</span>
+          <span class="n-text">Khi con đạt huy hiệu mới</span>
+          <span class="switch"><input type="checkbox" checked><span class="slider"></span></span>
+        </label>
+        <label class="notify-row">
+          <span class="n-ico">✅</span>
+          <span class="n-text">Khi con hoàn thành bài học</span>
+          <span class="switch"><input type="checkbox" checked><span class="slider"></span></span>
+        </label>
+        <label class="notify-row">
+          <span class="n-ico">⏰</span>
+          <span class="n-text">Khi con bỏ học 3 ngày liên tiếp</span>
+          <span class="switch"><input type="checkbox" checked><span class="slider"></span></span>
+        </label>
+        <label class="notify-row">
+          <span class="n-ico">🌟</span>
+          <span class="n-text">Khi con đạt thành tích nổi bật</span>
+          <span class="switch"><input type="checkbox"><span class="slider"></span></span>
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LIÊN KẾT HỒ SƠ ============ -->
+  <div class="profile-bar">
+    <div class="pb-text">
+      <h3>Xem hồ sơ chi tiết của con 👧</h3>
+      <p>Khám phá đầy đủ huy hiệu, thành tích và hành trình học Toán của Minh Anh.</p>
+    </div>
+    <a href="ho-so.html" class="btn btn-white">👤 Mở hồ sơ học sinh →</a>
+  </div>
+
+</div>
+
+<!-- ============ FOOTER ĐIỀU HƯỚNG ============ -->
+<nav class="footer-nav">
+  <a href="index.html"><span>🏠</span>Trang chủ</a>
+  <a href="trang-lop.html"><span>📚</span>Bài học</a>
+  <a href="ho-so.html"><span>👤</span>Hồ sơ con</a>
+  <a href="phu-huynh.html" class="active"><span>👨‍👩‍👧</span>Phụ huynh</a>
+  <a href="#" onclick="celebrate(event)"><span>📧</span>Liên hệ</a>
+</nav>
+<div class="footer-copy">© 2026 TOÁN VUI KẾT NỐI · Đồng hành cùng con học Toán mỗi ngày 💙</div>
+
+<script>
+  // Hiệu ứng confetti
+  function celebrate(e) {
+    if (e) e.preventDefault();
+    const colors = ['#4F8CFF', '#FFD93D', '#6BCB77', '#FF9F43', '#FF6B9D', '#9B72FF'];
+    const x = e ? e.clientX : window.innerWidth / 2;
+    const y = e ? e.clientY : window.innerHeight / 2;
+    for (let i = 0; i < 28; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.left = x + 'px'; c.style.top = y + 'px';
+      document.body.appendChild(c);
+      const angle = Math.random() * Math.PI * 2;
+      const v = 100 + Math.random() * 200;
+      const vx = Math.cos(angle) * v, vy = Math.sin(angle) * v - 150;
+      c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${vx}px, ${vy + 300}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+      ], { duration: 1400, easing: 'cubic-bezier(.25,.46,.45,.94)' }).onfinish = () => c.remove();
+    }
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+  /* Chặn trang + hiển thị đúng người đăng nhập (Supabase) */
+  window.tvknLogout = function(){ TVKN.signOut(); };
+  TVKN.guardPage();
+</script>
+</body>
+</html>

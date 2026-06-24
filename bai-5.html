@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 5: Mấy và mấy (Tách - Gộp số) - TOÁN VUI KẾT NỐI</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4F8CFF; --yellow: #FFD93D; --green: #6BCB77; --orange: #FF9F43;
+    --pink: #FF6B9D; --purple: #9B72FF; --white: #FFFFFF; --bg-soft: #F4F8FF;
+    --text-dark: #2D3748; --text-soft: #6B7280;
+    --shadow: 0 8px 24px rgba(79, 140, 255, 0.15);
+    --shadow-lg: 0 16px 40px rgba(79, 140, 255, 0.22);
+    --theme: #6BCB77; --theme-soft: #D4F4DD;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Fredoka','Baloo 2',system-ui,sans-serif; background: var(--bg-soft); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+  a { text-decoration: none; color: inherit; }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; height: 64px; background: var(--white); box-shadow: 0 4px 20px rgba(79,140,255,.08); display: flex; align-items: center; padding: 0 22px; gap: 16px; }
+  .back-btn { display: inline-flex; align-items: center; gap: 7px; padding: 8px 15px; border-radius: 12px; background: var(--bg-soft); font-weight: 700; font-size: 14px; transition: all .2s; }
+  .back-btn:hover { background: var(--theme); color: var(--white); }
+  .header-title { font-family: 'Baloo 2',sans-serif; font-weight: 700; font-size: 16px; text-align: center; flex: 1; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .xp-pill { display: flex; align-items: center; gap: 6px; padding: 7px 13px; background: linear-gradient(135deg,var(--yellow),var(--orange)); color: var(--white); border-radius: 12px; font-weight: 700; font-size: 14px; }
+  .avatar { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg,var(--green),var(--blue)); display: flex; align-items: center; justify-content: center; font-size: 20px; border: 3px solid var(--white); box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 22px 60px; }
+
+  /* BANNER BÀI HỌC */
+  .lesson-banner { margin-top: 26px; background: linear-gradient(135deg,var(--theme-soft),#EAFBEF); border-radius: 26px; padding: 32px 36px; display: flex; align-items: center; gap: 26px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+  .lesson-banner-text { flex: 1; z-index: 1; }
+  .lesson-banner h1 { font-family: 'Baloo 2',sans-serif; font-size: clamp(24px,4vw,34px); font-weight: 800; line-height: 1.15; margin-bottom: 8px; }
+  .lesson-banner p { color: var(--text-soft); font-size: 16px; }
+  .lesson-banner .mascot { width: 120px; height: 120px; flex-shrink: 0; background: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 70px; box-shadow: 0 14px 34px rgba(107,203,119,.3); animation: bounce 3s ease-in-out infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+  /* THANH TIẾN ĐỘ BÀI HỌC */
+  .steps { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 28px 0; flex-wrap: wrap; }
+  .step { display: flex; align-items: center; gap: 8px; }
+  .step-dot { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; background: var(--white); color: var(--text-soft); box-shadow: var(--shadow); border: 3px solid transparent; }
+  .step.done .step-dot { background: var(--green); color: var(--white); }
+  .step.current .step-dot { background: var(--blue); color: var(--white); border-color: rgba(79,140,255,.3); transform: scale(1.08); }
+  .step-label { font-size: 13px; font-weight: 600; color: var(--text-soft); }
+  .step.current .step-label, .step.done .step-label { color: var(--text-dark); }
+  .step-line { width: 28px; height: 3px; background: #E2E5EA; border-radius: 2px; }
+
+  /* KHỐI */
+  .block { background: var(--white); border-radius: 24px; padding: 30px; box-shadow: var(--shadow); margin-bottom: 22px; }
+  .block-title { font-family: 'Baloo 2',sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+  .block-sub { color: var(--text-soft); font-size: 15px; margin-bottom: 18px; }
+
+  .block.warmup { background: linear-gradient(135deg,#FFF8E1,#FFFDF5); }
+
+  /* HÌNH MINH HỌA */
+  .objects { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; font-size: 48px; padding: 18px; background: var(--bg-soft); border-radius: 18px; margin-bottom: 18px; }
+
+  /* ĐÁP ÁN */
+  .options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .opt { padding: 18px; border-radius: 16px; background: var(--white); border: 2px solid #E8ECF4; font-family: 'Baloo 2',sans-serif; font-size: 24px; font-weight: 800; cursor: pointer; transition: all .2s; text-align: center; }
+  .opt:hover { border-color: var(--blue); transform: translateY(-3px); }
+  .opt.correct { background: var(--green); color: var(--white); border-color: var(--green); }
+  .opt.wrong { background: #FFE5E5; border-color: var(--pink); }
+  .feedback { margin-top: 16px; padding: 14px 18px; border-radius: 14px; font-weight: 600; display: none; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--theme-soft); color: #2F8F3E; }
+  .feedback.no { background: #FFF0E6; color: #C76A1E; }
+
+  /* GỘP CÁ */
+  .bowls { display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap; margin-bottom: 16px; }
+  .bowl { background: var(--bg-soft); border: 3px dashed #BFD6FF; border-radius: 22px; padding: 16px; min-width: 150px; min-height: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; transition: all .4s ease; }
+  .bowl-fish { font-size: 30px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; max-width: 200px; }
+  .bowl-cap { font-weight: 700; color: var(--text-soft); font-size: 14px; }
+  .bowl.big { border-color: var(--green); background: var(--theme-soft); min-width: 230px; }
+  .plus-sign { font-size: 34px; font-weight: 800; color: var(--blue); }
+  .merge-result { text-align: center; font-size: 22px; font-weight: 800; color: var(--theme); margin-top: 10px; min-height: 30px; }
+  .merge-result b { color: var(--blue); }
+
+  /* QUE TÍNH TÁCH */
+  .stick-area { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .tray { background: var(--bg-soft); border: 3px solid #E8ECF4; border-radius: 20px; padding: 16px; min-height: 120px; text-align: center; transition: all .2s; }
+  .tray.left { border-color: var(--orange); }
+  .tray.right { border-color: var(--purple); }
+  .tray-label { font-weight: 700; font-size: 14px; color: var(--text-soft); margin-bottom: 10px; }
+  .tray-sticks { font-size: 34px; line-height: 1.3; min-height: 44px; cursor: pointer; user-select: none; }
+  .tray-sticks span { display: inline-block; transition: transform .15s; }
+  .tray-sticks span:hover { transform: translateY(-4px) scale(1.15); }
+  .stick-ctrl { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; }
+  .stick-btn { width: 40px; height: 40px; border-radius: 12px; border: none; background: var(--white); box-shadow: var(--shadow); font-size: 22px; font-weight: 800; cursor: pointer; color: var(--blue); transition: transform .15s; }
+  .stick-btn:hover { transform: scale(1.1); }
+  .split-live { text-align: center; font-size: 22px; font-weight: 800; color: var(--text-dark); margin: 6px 0 14px; }
+  .split-live b { color: var(--green); font-size: 26px; }
+  .found-list { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .found-chip { background: var(--theme-soft); color: #2F8F3E; padding: 8px 14px; border-radius: 999px; font-weight: 700; font-size: 14px; }
+
+  /* NHÀ SỐ (number bond) */
+  .bonds { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; }
+  .bond { background: var(--bg-soft); border-radius: 20px; padding: 20px 16px; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 200px; }
+  .bond-top { width: 64px; height: 64px; border-radius: 50%; background: var(--blue); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: 'Baloo 2',sans-serif; font-size: 30px; font-weight: 800; box-shadow: var(--shadow); }
+  .bond-branches { position: relative; height: 30px; width: 120px; }
+  .bond-branches::before, .bond-branches::after { content: ''; position: absolute; top: 0; left: 60px; width: 2px; height: 34px; background: #B7C2D6; transform-origin: top; }
+  .bond-branches::before { transform: rotate(38deg); }
+  .bond-branches::after { transform: rotate(-38deg); }
+  .bond-children { display: flex; gap: 28px; }
+  .bond-cell { width: 56px; height: 56px; border-radius: 16px; background: var(--white); border: 2px solid #E8ECF4; display: flex; align-items: center; justify-content: center; font-family: 'Baloo 2',sans-serif; font-size: 26px; font-weight: 800; color: var(--theme); }
+  .bond-cell.given { background: var(--theme-soft); }
+  .bond-input { width: 56px; height: 56px; border-radius: 16px; border: 2px solid var(--orange); text-align: center; font-family: 'Baloo 2',sans-serif; font-size: 26px; font-weight: 800; color: var(--orange); outline: none; }
+  .bond-input.right { border-color: var(--green); color: var(--green); background: var(--theme-soft); }
+  .bond-input.bad { border-color: var(--pink); background: #FFE5E5; }
+
+  /* LUYỆN TẬP fill-in */
+  .fill-q { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 16px; background: var(--bg-soft); border-radius: 16px; margin-bottom: 14px; font-size: 18px; font-weight: 600; }
+  .fill-q .emo { font-size: 30px; }
+  .fill-input { width: 60px; height: 50px; border-radius: 12px; border: 2px solid var(--orange); text-align: center; font-family: 'Baloo 2',sans-serif; font-size: 24px; font-weight: 800; color: var(--orange); outline: none; }
+  .fill-input.right { border-color: var(--green); color: var(--green); background: var(--theme-soft); }
+  .fill-input.bad { border-color: var(--pink); background: #FFE5E5; }
+
+  /* AI HỖ TRỢ */
+  .block.ai { background: linear-gradient(135deg,var(--blue),var(--purple)); color: var(--white); }
+  .block.ai .block-sub { color: rgba(255,255,255,.9); }
+  .ai-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .ai-bunny { width: 56px; height: 56px; background: rgba(255,255,255,.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; }
+  .ai-input { display: flex; gap: 8px; background: rgba(255,255,255,.95); padding: 7px; border-radius: 16px; }
+  .ai-input input { flex: 1; border: none; background: transparent; padding: 12px 14px; font-family: inherit; font-size: 15px; outline: none; color: var(--text-dark); }
+  .ai-send { background: linear-gradient(135deg,var(--orange),var(--pink)); color: var(--white); border: none; padding: 12px 22px; border-radius: 12px; font-family: inherit; font-weight: 700; cursor: pointer; transition: transform .2s; }
+  .ai-send:hover { transform: scale(1.05); }
+  .ai-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .ai-chip { background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.3); color: var(--white); padding: 7px 14px; border-radius: 999px; font-size: 13px; cursor: pointer; transition: all .2s; }
+  .ai-chip:hover { background: rgba(255,255,255,.35); }
+
+  /* NÚT */
+  .btn { display: inline-flex; align-items: center; gap: 9px; padding: 14px 28px; border-radius: 16px; font-family: inherit; font-weight: 700; font-size: 16px; border: none; cursor: pointer; transition: all .25s cubic-bezier(.34,1.56,.64,1); }
+  .btn-primary { background: linear-gradient(135deg,var(--green),#4DBE5C); color: var(--white); box-shadow: 0 8px 20px rgba(107,203,119,.45); }
+  .btn-primary:hover { transform: translateY(-3px) scale(1.02); }
+  .btn-block { width: 100%; justify-content: center; }
+  .btn-check { background: linear-gradient(135deg,var(--blue),#3B7AF0); color: var(--white); box-shadow: 0 6px 16px rgba(79,140,255,.4); margin-top: 16px; }
+  .btn-check:hover { transform: translateY(-2px); }
+
+  /* ĐIỀU HƯỚNG */
+  .nav-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; }
+  .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 22px; border-radius: 14px; background: var(--white); font-weight: 700; font-size: 15px; box-shadow: var(--shadow); transition: all .2s; cursor: pointer; border: none; font-family: inherit; }
+  .nav-btn:hover { transform: translateY(-2px); }
+  .nav-btn.disabled { opacity: .4; pointer-events: none; }
+  .nav-btn.next { background: var(--blue); color: var(--white); }
+
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 9999; border-radius: 2px; }
+
+  @media (max-width: 560px) {
+    .header-title { display: none; }
+    .wrap { padding: 0 14px 50px; }
+    .lesson-banner { flex-direction: column; text-align: center; padding: 26px; }
+    .options { grid-template-columns: repeat(2, 1fr); }
+    .step-label { display: none; }
+    .step-line { width: 14px; }
+    .bowls { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <a href="trang-lop.html" class="back-btn">← Quay lại Lớp 1</a>
+  <div class="header-title">Bài 5: Mấy và mấy (Tách - Gộp số)</div>
+  <div class="header-right">
+    <div class="xp-pill">🪙 <span>490</span></div>
+    <div class="avatar">👧</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- BANNER -->
+  <div class="lesson-banner">
+    <div class="lesson-banner-text">
+      <h1>Bài 5: Mấy và mấy</h1>
+      <p>Hôm nay em sẽ học cách <b>gộp</b> hai nhóm lại và <b>tách</b> một số thành hai phần nhỏ hơn.</p>
+    </div>
+    <div class="mascot">🐠</div>
+  </div>
+
+  <!-- THANH TIẾN ĐỘ BÀI -->
+  <div class="steps">
+    <div class="step current"><div class="step-dot">1</div><span class="step-label">Khám phá</span></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-dot">2</div><span class="step-label">Gộp</span></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-dot">3</div><span class="step-label">Tách</span></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-dot">4</div><span class="step-label">Luyện tập</span></div>
+  </div>
+
+  <!-- KHỐI 1: KHÁM PHÁ - GỘP CÁ -->
+  <div class="block">
+    <h2 class="block-title">🔎 Khám phá: Gộp lại</h2>
+    <p class="block-sub">Bình cá của Mai có 3 con, bình của Nam có 2 con. Bấm <b>Gộp lại</b> để đổ chung vào một bình lớn nhé!</p>
+    <div class="bowls" id="bowls">
+      <div class="bowl" id="bowlA">
+        <div class="bowl-fish">🐠🐠🐠</div>
+        <div class="bowl-cap">Bình Mai: 3 con</div>
+      </div>
+      <div class="plus-sign" id="plusSign">➕</div>
+      <div class="bowl" id="bowlB">
+        <div class="bowl-fish">🐠🐠</div>
+        <div class="bowl-cap">Bình Nam: 2 con</div>
+      </div>
+    </div>
+    <div style="text-align:center">
+      <button class="btn btn-primary" id="mergeBtn" onclick="doMerge(event)">💧 Gộp lại</button>
+      <button class="btn nav-btn" id="resetMergeBtn" style="display:none" onclick="resetMerge()">↺ Làm lại</button>
+    </div>
+    <div class="merge-result" id="mergeResult"></div>
+  </div>
+
+  <!-- KHỐI 2: GỘP - XÚC XẮC ROBOT -->
+  <div class="block">
+    <h2 class="block-title">🎲 Gộp: Hai tay Robot</h2>
+    <p class="block-sub">Robot cầm hai thẻ chấm tròn. Em đếm số chấm ở hai tay rồi chọn tổng số chấm nhé!</p>
+    <div class="objects" style="gap:30px">
+      <span>🤖🫲 ⚫⚫⚫</span>
+      <span>⚫⚫⚫⚫ 🫱🤖</span>
+    </div>
+    <p style="text-align:center;font-weight:600;margin-bottom:14px">3 chấm và 4 chấm gộp lại được mấy chấm?</p>
+    <div class="options" id="diceOpts">
+      <button class="opt" data-val="5">5</button>
+      <button class="opt" data-val="6">6</button>
+      <button class="opt" data-val="7">7</button>
+      <button class="opt" data-val="8">8</button>
+    </div>
+    <div class="feedback" id="diceFb"></div>
+  </div>
+
+  <!-- KHỐI 3: TÁCH BẰNG QUE TÍNH -->
+  <div class="block">
+    <h2 class="block-title">🟫 Tách số bằng que tính</h2>
+    <p class="block-sub">Em có <b>6 que tính</b>. Bấm nút ➕ và ➖ để chuyển que tính sang hai khay, xem số <b>6</b> được tách thành mấy và mấy nhé!</p>
+    <div class="stick-area">
+      <div class="tray left">
+        <div class="tray-label">Khay trái</div>
+        <div class="tray-sticks" id="leftSticks"></div>
+        <div class="stick-ctrl">
+          <button class="stick-btn" onclick="moveStick(1)">➕</button>
+          <button class="stick-btn" onclick="moveStick(-1)">➖</button>
+        </div>
+      </div>
+      <div class="tray right">
+        <div class="tray-label">Khay phải</div>
+        <div class="tray-sticks" id="rightSticks"></div>
+        <div class="stick-ctrl">
+          <span style="font-size:13px;color:var(--text-soft);font-weight:600">Tự động cập nhật</span>
+        </div>
+      </div>
+    </div>
+    <div class="split-live" id="splitLive">6 gồm <b>0</b> và <b>6</b></div>
+    <p style="text-align:center;font-weight:700;margin-bottom:8px;color:var(--text-soft)">🌟 Các cách tách đã tìm được:</p>
+    <div class="found-list" id="foundList"></div>
+  </div>
+
+  <!-- KHỐI 4: SƠ ĐỒ NHÀ SỐ -->
+  <div class="block">
+    <h2 class="block-title">🏠 Sơ đồ Nhà số</h2>
+    <p class="block-sub">Số ở trên được tạo bởi hai số ở dưới. Em điền số còn thiếu vào ô màu cam rồi bấm <b>Kiểm tra</b> nhé!</p>
+    <div class="bonds" id="bonds">
+      <!-- 5 = 2 + ? -->
+      <div class="bond">
+        <div class="bond-top">5</div>
+        <div class="bond-branches"></div>
+        <div class="bond-children">
+          <div class="bond-cell given">2</div>
+          <input class="bond-input" type="number" inputmode="numeric" data-ans="3" aria-label="ô còn thiếu của số 5">
+        </div>
+      </div>
+      <!-- 4 = ? + 3 -->
+      <div class="bond">
+        <div class="bond-top">4</div>
+        <div class="bond-branches"></div>
+        <div class="bond-children">
+          <input class="bond-input" type="number" inputmode="numeric" data-ans="1" aria-label="ô còn thiếu của số 4">
+          <div class="bond-cell given">3</div>
+        </div>
+      </div>
+      <!-- 6 = 4 + ? -->
+      <div class="bond">
+        <div class="bond-top">6</div>
+        <div class="bond-branches"></div>
+        <div class="bond-children">
+          <div class="bond-cell given">4</div>
+          <input class="bond-input" type="number" inputmode="numeric" data-ans="2" aria-label="ô còn thiếu của số 6">
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center">
+      <button class="btn btn-check" onclick="checkBonds(event)">✅ Kiểm tra</button>
+    </div>
+    <div class="feedback" id="bondFb"></div>
+  </div>
+
+  <!-- KHỐI 5: LUYỆN TẬP -->
+  <div class="block warmup">
+    <h2 class="block-title">✏️ Luyện tập điền số</h2>
+    <p class="block-sub">Em hãy điền số còn thiếu vào mỗi câu rồi bấm <b>Kiểm tra</b> nhé!</p>
+
+    <div class="fill-q">
+      <span class="emo">🍪🍪🍪🍪🍪</span>
+      <span>Đĩa bánh có 5 cái gồm đĩa 2 cái và đĩa</span>
+      <input class="fill-input" type="number" inputmode="numeric" data-ans="3" aria-label="số bánh đĩa còn lại">
+      <span>cái.</span>
+    </div>
+
+    <div class="fill-q">
+      <span class="emo">🐶</span>
+      <span>4 gồm 1 và</span>
+      <input class="fill-input" type="number" inputmode="numeric" data-ans="3" aria-label="phần còn lại của 4">
+      <span>.</span>
+    </div>
+
+    <div class="fill-q">
+      <span class="emo">⭐</span>
+      <span>3 và 2 được</span>
+      <input class="fill-input" type="number" inputmode="numeric" data-ans="5" aria-label="tổng của 3 và 2">
+      <span>.</span>
+    </div>
+
+    <div style="text-align:center">
+      <button class="btn btn-check" onclick="checkFills(event)">✅ Kiểm tra</button>
+    </div>
+    <div class="feedback" id="fillFb"></div>
+  </div>
+
+  <!-- KHỐI 6: AI HỖ TRỢ -->
+  <div class="block ai">
+    <div class="ai-head">
+      <div class="ai-bunny">🐰</div>
+      <div>
+        <h2 class="block-title" style="color:#fff;margin:0">Hỏi Thỏ Toán</h2>
+        <p class="block-sub" style="margin:0">Em chưa hiểu chỗ nào về tách - gộp? Hỏi Thỏ nhé!</p>
+      </div>
+    </div>
+    <div class="ai-input">
+      <input type="text" id="aiInput" placeholder="Nhập câu hỏi của em...">
+      <button class="ai-send" onclick="celebrate(event)">💬 Hỏi</button>
+    </div>
+    <div class="ai-chips">
+      <span class="ai-chip" onclick="setAi(this)">Gộp là gì ạ?</span>
+      <span class="ai-chip" onclick="setAi(this)">5 gồm những số nào?</span>
+      <span class="ai-chip" onclick="setAi(this)">Tách số 6 như thế nào?</span>
+    </div>
+  </div>
+
+  <!-- BẮT ĐẦU LUYỆN TẬP -->
+  <div class="block" style="text-align:center;background:linear-gradient(135deg,#FFF8E1,#FFFDF5)">
+    <h2 class="block-title" style="justify-content:center">🎯 Sẵn sàng luyện tập chưa?</h2>
+    <p class="block-sub">Làm 10 câu luyện tập để nhận <b>+30 XP</b> và huy hiệu <b>Bé Tách Gộp</b> nhé!</p>
+    <a href="lam-bai-tap.html?lesson=bai-5" class="btn btn-primary btn-block">Bắt đầu luyện tập →</a>
+  </div>
+
+  <!-- ĐIỀU HƯỚNG -->
+  <div class="nav-row">
+    <a href="bai-4.html" class="nav-btn">← Bài trước</a>
+    <a href="trang-lop.html" class="nav-btn">📚 Danh sách bài</a>
+    <a href="bai-6.html" class="nav-btn next">Bài tiếp theo →</a>
+  </div>
+
+</div>
+
+<script>
+  // ===== KHÁM PHÁ: GỘP CÁ =====
+  function doMerge(e) {
+    const bowls = document.getElementById('bowls');
+    bowls.innerHTML = '<div class="bowl big"><div class="bowl-fish">🐠🐠🐠🐠🐠</div><div class="bowl-cap">Bình lớn: 5 con</div></div>';
+    document.getElementById('mergeResult').innerHTML = '🎉 3 và 2 được <b>5</b>!';
+    document.getElementById('mergeBtn').style.display = 'none';
+    document.getElementById('resetMergeBtn').style.display = 'inline-flex';
+    celebrate(e);
+  }
+  function resetMerge() {
+    const bowls = document.getElementById('bowls');
+    bowls.innerHTML =
+      '<div class="bowl" id="bowlA"><div class="bowl-fish">🐠🐠🐠</div><div class="bowl-cap">Bình Mai: 3 con</div></div>' +
+      '<div class="plus-sign" id="plusSign">➕</div>' +
+      '<div class="bowl" id="bowlB"><div class="bowl-fish">🐠🐠</div><div class="bowl-cap">Bình Nam: 2 con</div></div>';
+    document.getElementById('mergeResult').innerHTML = '';
+    document.getElementById('mergeBtn').style.display = 'inline-flex';
+    document.getElementById('resetMergeBtn').style.display = 'none';
+  }
+
+  // ===== GỘP: XÚC XẮC ROBOT (chọn đáp án) =====
+  const diceCorrect = 7;
+  document.querySelectorAll('#diceOpts .opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const fb = document.getElementById('diceFb');
+      document.querySelectorAll('#diceOpts .opt').forEach(o => o.classList.remove('wrong'));
+      if (+opt.dataset.val === diceCorrect) {
+        opt.classList.add('correct');
+        fb.className = 'feedback ok show';
+        fb.innerHTML = '🎉 Đúng rồi! 3 và 4 gộp lại được 7 chấm. <b>+5 XP</b>';
+        celebrate();
+      } else {
+        opt.classList.add('wrong');
+        fb.className = 'feedback no show';
+        fb.textContent = '💡 Chưa đúng, em hãy đếm lại số chấm ở cả hai tay Robot nhé!';
+      }
+    });
+  });
+
+  // ===== TÁCH: QUE TÍNH =====
+  const TOTAL = 6;
+  let leftN = 0;
+  const found = new Set();
+  function renderSticks() {
+    const rightN = TOTAL - leftN;
+    document.getElementById('leftSticks').innerHTML =
+      Array.from({length: leftN}, () => '<span>🟫</span>').join('') || '<span style="opacity:.3">∅</span>';
+    document.getElementById('rightSticks').innerHTML =
+      Array.from({length: rightN}, () => '<span>🟫</span>').join('') || '<span style="opacity:.3">∅</span>';
+    document.getElementById('splitLive').innerHTML = TOTAL + ' gồm <b>' + leftN + '</b> và <b>' + rightN + '</b>';
+    found.add(leftN + '-' + rightN);
+    const list = document.getElementById('foundList');
+    list.innerHTML = '';
+    for (let i = 0; i <= TOTAL; i++) {
+      if (found.has(i + '-' + (TOTAL - i))) {
+        const chip = document.createElement('span');
+        chip.className = 'found-chip';
+        chip.textContent = TOTAL + ' gồm ' + i + ' và ' + (TOTAL - i);
+        list.appendChild(chip);
+      }
+    }
+  }
+  function moveStick(d) {
+    const next = leftN + d;
+    if (next < 0 || next > TOTAL) return;
+    leftN = next;
+    renderSticks();
+    if (found.size > 1) celebrate();
+  }
+  renderSticks();
+
+  // ===== NHÀ SỐ (number bonds) =====
+  function checkBonds(e) {
+    const inputs = document.querySelectorAll('#bonds .bond-input');
+    let allOk = true, anyFilled = false;
+    inputs.forEach(inp => {
+      inp.classList.remove('right', 'bad');
+      const val = inp.value.trim();
+      if (val !== '') anyFilled = true;
+      if (val !== '' && +val === +inp.dataset.ans) {
+        inp.classList.add('right');
+      } else {
+        inp.classList.add('bad');
+        allOk = false;
+      }
+    });
+    const fb = document.getElementById('bondFb');
+    if (allOk) {
+      fb.className = 'feedback ok show';
+      fb.innerHTML = '🎉 Tuyệt vời! Em đã điền đúng tất cả các Nhà số! <b>+10 XP</b>';
+      celebrate(e);
+    } else {
+      fb.className = 'feedback no show';
+      fb.textContent = anyFilled
+        ? '💡 Một vài ô chưa đúng. Hãy nghĩ: số trên bằng hai số dưới gộp lại nhé!'
+        : '💡 Em hãy điền số vào các ô màu cam trước nhé!';
+    }
+  }
+
+  // ===== LUYỆN TẬP fill-in =====
+  function checkFills(e) {
+    const inputs = document.querySelectorAll('.fill-input');
+    let allOk = true, anyFilled = false;
+    inputs.forEach(inp => {
+      inp.classList.remove('right', 'bad');
+      const val = inp.value.trim();
+      if (val !== '') anyFilled = true;
+      if (val !== '' && +val === +inp.dataset.ans) {
+        inp.classList.add('right');
+      } else {
+        inp.classList.add('bad');
+        allOk = false;
+      }
+    });
+    const fb = document.getElementById('fillFb');
+    if (allOk) {
+      fb.className = 'feedback ok show';
+      fb.innerHTML = '🎉 Giỏi quá! Em đã làm đúng hết rồi! <b>+15 XP</b>';
+      celebrate(e);
+    } else {
+      fb.className = 'feedback no show';
+      fb.textContent = anyFilled
+        ? '💡 Có ô chưa đúng rồi. Em hãy đếm lại hoặc tách - gộp lại nhé!'
+        : '💡 Em hãy điền số vào các ô màu cam trước nhé!';
+    }
+  }
+
+  // ===== AI chip =====
+  function setAi(el) { const i = document.getElementById('aiInput'); i.value = el.textContent; i.focus(); }
+
+  // ===== Confetti =====
+  function celebrate(e) {
+    if (e) e.preventDefault();
+    const colors = ['#4F8CFF','#FFD93D','#6BCB77','#FF9F43','#FF6B9D','#9B72FF'];
+    const x = e ? e.clientX : window.innerWidth/2, y = e ? e.clientY : 200;
+    for (let i = 0; i < 26; i++) {
+      const c = document.createElement('div'); c.className = 'confetti';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.left = x+'px'; c.style.top = y+'px';
+      document.body.appendChild(c);
+      const a = Math.random()*Math.PI*2, v = 100+Math.random()*200;
+      c.animate([{transform:'translate(0,0)',opacity:1},{transform:`translate(${Math.cos(a)*v}px,${Math.sin(a)*v+300}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:1400,easing:'cubic-bezier(.25,.46,.45,.94)'}).onfinish=()=>c.remove();
+    }
+  }
+</script>
+<!-- Chặn đăng nhập + đồng bộ tên/avatar người học (Supabase) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+  if (window.TVKN) { window.tvknLogout = function(){ TVKN.signOut(); }; TVKN.guardPage(); }
+</script>
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 3: Nhiều hơn, ít hơn, bằng nhau - TOÁN VUI KẾT NỐI</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4F8CFF; --yellow: #FFD93D; --green: #6BCB77; --orange: #FF9F43;
+    --pink: #FF6B9D; --purple: #9B72FF; --white: #FFFFFF; --bg-soft: #F4F8FF;
+    --text-dark: #2D3748; --text-soft: #6B7280;
+    --shadow: 0 8px 24px rgba(79, 140, 255, 0.15);
+    --shadow-lg: 0 16px 40px rgba(79, 140, 255, 0.22);
+    --theme: #6BCB77; --theme-soft: #D4F4DD;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Fredoka','Baloo 2',system-ui,sans-serif; background: var(--bg-soft); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+  a { text-decoration: none; color: inherit; }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; height: 64px; background: var(--white); box-shadow: 0 4px 20px rgba(79,140,255,.08); display: flex; align-items: center; padding: 0 22px; gap: 16px; }
+  .back-btn { display: inline-flex; align-items: center; gap: 7px; padding: 8px 15px; border-radius: 12px; background: var(--bg-soft); font-weight: 700; font-size: 14px; transition: all .2s; }
+  .back-btn:hover { background: var(--theme); color: var(--white); }
+  .header-title { font-family: 'Baloo 2',sans-serif; font-weight: 700; font-size: 16px; text-align: center; flex: 1; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .xp-pill { display: flex; align-items: center; gap: 6px; padding: 7px 13px; background: linear-gradient(135deg,var(--yellow),var(--orange)); color: var(--white); border-radius: 12px; font-weight: 700; font-size: 14px; }
+  .avatar { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg,var(--green),var(--blue)); display: flex; align-items: center; justify-content: center; font-size: 20px; border: 3px solid var(--white); box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 22px 60px; }
+
+  /* BANNER BÀI HỌC */
+  .lesson-banner { margin-top: 26px; background: linear-gradient(135deg,var(--theme-soft),#EAFBEF); border-radius: 26px; padding: 32px 36px; display: flex; align-items: center; gap: 26px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+  .lesson-banner-text { flex: 1; z-index: 1; }
+  .lesson-banner h1 { font-family: 'Baloo 2',sans-serif; font-size: clamp(24px,4vw,34px); font-weight: 800; line-height: 1.15; margin-bottom: 8px; }
+  .lesson-banner p { color: var(--text-soft); font-size: 16px; }
+  .lesson-banner .mascot { width: 120px; height: 120px; flex-shrink: 0; background: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 70px; box-shadow: 0 14px 34px rgba(107,203,119,.3); animation: bounce 3s ease-in-out infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+  /* THANH TIẾN ĐỘ BÀI HỌC */
+  .steps { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 28px 0; flex-wrap: wrap; }
+  .step { display: flex; align-items: center; gap: 8px; }
+  .step-dot { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; background: var(--white); color: var(--text-soft); box-shadow: var(--shadow); border: 3px solid transparent; }
+  .step.done .step-dot { background: var(--green); color: var(--white); }
+  .step.current .step-dot { background: var(--blue); color: var(--white); border-color: rgba(79,140,255,.3); transform: scale(1.08); }
+  .step-label { font-size: 13px; font-weight: 600; color: var(--text-soft); }
+  .step.current .step-label, .step.done .step-label { color: var(--text-dark); }
+  .step-line { width: 28px; height: 3px; background: #E2E5EA; border-radius: 2px; }
+
+  /* KHỐI */
+  .block { background: var(--white); border-radius: 24px; padding: 30px; box-shadow: var(--shadow); margin-bottom: 22px; }
+  .block-title { font-family: 'Baloo 2',sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+  .block-sub { color: var(--text-soft); font-size: 15px; margin-bottom: 18px; }
+
+  .block.warmup { background: linear-gradient(135deg,#FFF8E1,#FFFDF5); }
+
+  /* HÌNH MINH HỌA */
+  .objects { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; font-size: 48px; padding: 18px; background: var(--bg-soft); border-radius: 18px; margin-bottom: 18px; }
+
+  /* ĐÁP ÁN */
+  .options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .opt { padding: 18px; border-radius: 16px; background: var(--white); border: 2px solid #E8ECF4; font-family: 'Baloo 2',sans-serif; font-size: 20px; font-weight: 800; cursor: pointer; transition: all .2s; text-align: center; }
+  .opt:hover { border-color: var(--blue); transform: translateY(-3px); }
+  .opt.correct { background: var(--green); color: var(--white); border-color: var(--green); }
+  .opt.wrong { background: #FFE5E5; border-color: var(--pink); }
+  .feedback { margin-top: 16px; padding: 14px 18px; border-radius: 14px; font-weight: 600; display: none; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--theme-soft); color: #2F8F3E; }
+  .feedback.no { background: #FFF0E6; color: #C76A1E; }
+
+  /* GHÉP ĐÔI 1-1 */
+  .pair-stage { background: var(--bg-soft); border-radius: 18px; padding: 22px 16px; margin-bottom: 16px; position: relative; }
+  .pair-row { display: flex; gap: 14px; justify-content: center; font-size: 46px; margin: 8px 0; flex-wrap: wrap; }
+  .pair-item { transition: transform .5s cubic-bezier(.34,1.56,.64,1); position: relative; }
+  .pair-item.matched::after { content: '✓'; position: absolute; top: -6px; right: -6px; font-size: 16px; background: var(--green); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .pair-item.leftover { animation: wob .6s ease-in-out infinite; }
+  @keyframes wob { 0%,100%{transform:translateY(0) rotate(0)} 25%{transform:translateY(-10px) rotate(-8deg)} 75%{transform:translateY(-10px) rotate(8deg)} }
+  .pair-conclude { text-align: center; font-weight: 700; font-size: 18px; margin-top: 10px; min-height: 26px; color: var(--theme); }
+
+  /* THUẬT NGỮ */
+  .terms { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-bottom: 8px; }
+  .term { padding: 16px 24px; border-radius: 16px; font-family: 'Baloo 2',sans-serif; font-weight: 800; font-size: 20px; cursor: pointer; transition: all .25s cubic-bezier(.34,1.56,.64,1); color: var(--white); box-shadow: var(--shadow); user-select: none; }
+  .term.more { background: linear-gradient(135deg,var(--green),#4DBE5C); }
+  .term.less { background: linear-gradient(135deg,var(--orange),var(--pink)); }
+  .term.equal { background: linear-gradient(135deg,var(--blue),var(--purple)); }
+  .term:hover { transform: translateY(-5px) scale(1.06); }
+  .term-detail { text-align: center; padding: 16px; background: var(--bg-soft); border-radius: 16px; min-height: 60px; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 600; margin-top: 4px; }
+
+  /* CÂU HỎI QUAN SÁT */
+  .q-card { padding: 18px; border-radius: 18px; background: var(--bg-soft); margin-bottom: 18px; }
+  .q-card .q-text { font-weight: 700; font-size: 16px; margin-bottom: 12px; text-align: center; }
+  .q-card .objects { background: var(--white); margin-bottom: 14px; }
+
+  /* AI HỖ TRỢ */
+  .block.ai { background: linear-gradient(135deg,var(--blue),var(--purple)); color: var(--white); }
+  .block.ai .block-sub { color: rgba(255,255,255,.9); }
+  .ai-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .ai-bunny { width: 56px; height: 56px; background: rgba(255,255,255,.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; }
+  .ai-input { display: flex; gap: 8px; background: rgba(255,255,255,.95); padding: 7px; border-radius: 16px; }
+  .ai-input input { flex: 1; border: none; background: transparent; padding: 12px 14px; font-family: inherit; font-size: 15px; outline: none; color: var(--text-dark); }
+  .ai-send { background: linear-gradient(135deg,var(--orange),var(--pink)); color: var(--white); border: none; padding: 12px 22px; border-radius: 12px; font-family: inherit; font-weight: 700; cursor: pointer; transition: transform .2s; }
+  .ai-send:hover { transform: scale(1.05); }
+  .ai-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .ai-chip { background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.3); color: var(--white); padding: 7px 14px; border-radius: 999px; font-size: 13px; cursor: pointer; transition: all .2s; }
+  .ai-chip:hover { background: rgba(255,255,255,.35); }
+
+  /* NÚT */
+  .btn { display: inline-flex; align-items: center; gap: 9px; padding: 14px 28px; border-radius: 16px; font-family: inherit; font-weight: 700; font-size: 16px; border: none; cursor: pointer; transition: all .25s cubic-bezier(.34,1.56,.64,1); }
+  .btn-primary { background: linear-gradient(135deg,var(--green),#4DBE5C); color: var(--white); box-shadow: 0 8px 20px rgba(107,203,119,.45); }
+  .btn-primary:hover { transform: translateY(-3px) scale(1.02); }
+  .btn-block { width: 100%; justify-content: center; }
+  .btn-act { background: var(--blue); color: var(--white); box-shadow: 0 8px 20px rgba(79,140,255,.35); }
+  .btn-act:hover { transform: translateY(-3px) scale(1.02); }
+
+  /* ĐIỀU HƯỚNG */
+  .nav-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; }
+  .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 22px; border-radius: 14px; background: var(--white); font-weight: 700; font-size: 15px; box-shadow: var(--shadow); transition: all .2s; cursor: pointer; border: none; font-family: inherit; }
+  .nav-btn:hover { transform: translateY(-2px); }
+  .nav-btn.disabled { opacity: .4; pointer-events: none; }
+  .nav-btn.next { background: var(--blue); color: var(--white); }
+
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 9999; border-radius: 2px; }
+
+  @media (max-width: 560px) {
+    .header-title { display: none; }
+    .wrap { padding: 0 14px 50px; }
+    .lesson-banner { flex-direction: column; text-align: center; padding: 26px; }
+    .options { grid-template-columns: repeat(3, 1fr); }
+    .step-label { display: none; }
+    .step-line { width: 14px; }
+    .term { font-size: 17px; padding: 14px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <a href="trang-lop.html" class="back-btn">← Quay lại Lớp 1</a>
+  <div class="header-title">Bài 3: Nhiều hơn, ít hơn, bằng nhau</div>
+  <div class="header-right">
+    <div class="xp-pill">🪙 <span>510</span></div>
+    <div class="avatar">👧</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- BANNER -->
+  <div class="lesson-banner">
+    <div class="lesson-banner-text">
+      <h1>Bài 3: Nhiều hơn, ít hơn, bằng nhau</h1>
+      <p>Hôm nay chúng ta sẽ học cách so sánh số lượng hai nhóm đồ vật bằng cách ghép đôi nhé!</p>
+    </div>
+    <div class="mascot">🐸</div>
+  </div>
+
+  <!-- THANH TIẾN ĐỘ BÀI -->
+  <div class="steps">
+    <div class="step current"><div class="step-dot">1</div><span class="step-label">Khám phá</span></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-dot">2</div><span class="step-label">Thuật ngữ</span></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-dot">3</div><span class="step-label">Quan sát</span></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-dot">4</div><span class="step-label">Luyện tập</span></div>
+  </div>
+
+  <!-- KHỐI 1: KHÁM PHÁ GHÉP ĐÔI 1-1 -->
+  <div class="block">
+    <h2 class="block-title">🔍 Khám phá: Ghép đôi 1 - 1</h2>
+    <p class="block-sub">Mỗi con ếch 🐸 sẽ nhảy lên một lá sen 🪷. Bấm nút để ghép đôi và xem nhóm nào nhiều hơn nhé!</p>
+
+    <div class="pair-stage">
+      <div class="pair-row" id="frogRow"></div>
+      <div class="pair-row" id="lotusRow"></div>
+      <div class="pair-conclude" id="frogConclude"></div>
+    </div>
+    <button class="btn btn-act btn-block" id="frogBtn" onclick="pairFrogs(event)">🤝 Ghép đôi ếch và lá sen</button>
+
+    <p class="block-sub" style="margin-top:24px">Bây giờ cùng xem một ví dụ <b>bằng nhau</b>: mỗi chú thỏ 🐰 có vừa đủ một củ cà rốt 🥕.</p>
+    <div class="pair-stage">
+      <div class="pair-row" id="rabbitRow"></div>
+      <div class="pair-row" id="carrotRow"></div>
+      <div class="pair-conclude" id="rabbitConclude"></div>
+    </div>
+    <button class="btn btn-act btn-block" id="rabbitBtn" onclick="pairRabbits(event)">🤝 Ghép đôi thỏ và cà rốt</button>
+  </div>
+
+  <!-- KHỐI 2: NHẬN DIỆN THUẬT NGỮ -->
+  <div class="block">
+    <h2 class="block-title">📖 Nhận diện thuật ngữ</h2>
+    <p class="block-sub">Đây là 3 từ khóa quan trọng của bài học. Bấm vào từng từ để nghe và ghi nhớ nhé!</p>
+    <div class="terms">
+      <span class="term more" onclick="readTerm(this,'more',event)">Nhiều hơn</span>
+      <span class="term less" onclick="readTerm(this,'less',event)">Ít hơn</span>
+      <span class="term equal" onclick="readTerm(this,'equal',event)">Bằng nhau</span>
+    </div>
+    <div class="term-detail" id="termDetail">👆 Bấm vào một thuật ngữ phía trên để tìm hiểu.</div>
+  </div>
+
+  <!-- KHỐI 3: HOẠT ĐỘNG QUAN SÁT -->
+  <div class="block">
+    <h2 class="block-title">👀 Hoạt động quan sát</h2>
+    <p class="block-sub">Quan sát hai nhóm rồi chọn đáp án đúng. Em hãy đếm hoặc ghép đôi trong đầu nhé!</p>
+
+    <div class="q-card" data-answer="more" id="q1">
+      <div class="q-text">Số bướm 🦋 và số hoa 🌹 — nhóm bướm như thế nào so với nhóm hoa?</div>
+      <div class="objects">🦋🦋🦋🦋🦋</div>
+      <div class="objects">🌹🌹🌹</div>
+      <div class="options">
+        <button class="opt" data-val="more">Nhiều hơn</button>
+        <button class="opt" data-val="less">Ít hơn</button>
+        <button class="opt" data-val="equal">Bằng nhau</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q-card" data-answer="equal" id="q2">
+      <div class="q-text">Số vịt 🦆 và số cá 🐟 — hai nhóm này như thế nào?</div>
+      <div class="objects">🦆🦆🦆🦆</div>
+      <div class="objects">🐟🐟🐟🐟</div>
+      <div class="options">
+        <button class="opt" data-val="more">Nhiều hơn</button>
+        <button class="opt" data-val="less">Ít hơn</button>
+        <button class="opt" data-val="equal">Bằng nhau</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q-card" data-answer="less" id="q3">
+      <div class="q-text">Số ong 🐝 so với số bông hoa 🌻 — nhóm ong như thế nào?</div>
+      <div class="objects">🐝🐝</div>
+      <div class="objects">🌻🌻🌻🌻🌻</div>
+      <div class="options">
+        <button class="opt" data-val="more">Nhiều hơn</button>
+        <button class="opt" data-val="less">Ít hơn</button>
+        <button class="opt" data-val="equal">Bằng nhau</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+  </div>
+
+  <!-- KHỐI 4: LUYỆN TẬP SO SÁNH ĐA ĐỐI TƯỢNG -->
+  <div class="block">
+    <h2 class="block-title">🎯 Luyện tập: So sánh nhiều nhóm</h2>
+    <p class="block-sub">Nhìn ba nhóm con vật dưới đây rồi trả lời câu hỏi. Đếm thật kỹ nhé!</p>
+
+    <div class="objects" style="flex-direction:column;align-items:center;gap:14px">
+      <div><span style="font-size:22px;font-weight:700;color:var(--text-soft);margin-right:10px">Mèo:</span> 🐱🐱🐱🐱🐱🐱</div>
+      <div><span style="font-size:22px;font-weight:700;color:var(--text-soft);margin-right:10px">Vịt:</span> 🦆🦆🦆🦆</div>
+      <div><span style="font-size:22px;font-weight:700;color:var(--text-soft);margin-right:10px">Cá:</span> 🐟🐟</div>
+    </div>
+
+    <div class="q-card" data-answer="cat" id="q4">
+      <div class="q-text">Nhóm nào có số lượng <b>nhiều nhất</b>?</div>
+      <div class="options">
+        <button class="opt" data-val="cat">🐱 Mèo</button>
+        <button class="opt" data-val="duck">🦆 Vịt</button>
+        <button class="opt" data-val="fish">🐟 Cá</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q-card" data-answer="fish" id="q5">
+      <div class="q-text">Nhóm nào có số lượng <b>ít nhất</b>?</div>
+      <div class="options">
+        <button class="opt" data-val="cat">🐱 Mèo</button>
+        <button class="opt" data-val="duck">🦆 Vịt</button>
+        <button class="opt" data-val="fish">🐟 Cá</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+  </div>
+
+  <!-- KHỐI 5: AI HỖ TRỢ -->
+  <div class="block ai">
+    <div class="ai-head">
+      <div class="ai-bunny">🐰</div>
+      <div>
+        <h2 class="block-title" style="color:#fff;margin:0">Hỏi Thỏ Toán</h2>
+        <p class="block-sub" style="margin:0">Em chưa hiểu chỗ nào? Hỏi Thỏ nhé!</p>
+      </div>
+    </div>
+    <div class="ai-input">
+      <input type="text" id="aiInput" placeholder="Nhập câu hỏi của em...">
+      <button class="ai-send" onclick="celebrate(event)">💬 Hỏi</button>
+    </div>
+    <div class="ai-chips">
+      <span class="ai-chip" onclick="setAi(this)">Nhiều hơn nghĩa là gì?</span>
+      <span class="ai-chip" onclick="setAi(this)">Làm sao biết hai nhóm bằng nhau?</span>
+      <span class="ai-chip" onclick="setAi(this)">Ghép đôi 1 - 1 là sao ạ?</span>
+    </div>
+  </div>
+
+  <!-- BẮT ĐẦU LUYỆN TẬP -->
+  <div class="block" style="text-align:center;background:linear-gradient(135deg,#FFF8E1,#FFFDF5)">
+    <h2 class="block-title" style="justify-content:center">🎯 Sẵn sàng luyện tập chưa?</h2>
+    <p class="block-sub">Làm các câu luyện tập để nhận <b>+30 XP</b> và huy hiệu <b>Bé So Sánh</b> nhé!</p>
+    <a href="lam-bai-tap.html?lesson=bai-3" class="btn btn-primary btn-block">Bắt đầu luyện tập →</a>
+  </div>
+
+  <!-- ĐIỀU HƯỚNG -->
+  <div class="nav-row">
+    <a href="bai-2.html" class="nav-btn">← Bài trước</a>
+    <a href="trang-lop.html" class="nav-btn">📚 Danh sách bài</a>
+    <a href="bai-4.html" class="nav-btn next">Bài tiếp theo →</a>
+  </div>
+
+</div>
+
+<script>
+  // ===== KHỐI 1: GHÉP ĐÔI 1-1 =====
+  function buildRow(id, emoji, count) {
+    const row = document.getElementById(id);
+    row.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+      const s = document.createElement('span');
+      s.className = 'pair-item';
+      s.textContent = emoji;
+      row.appendChild(s);
+    }
+  }
+  buildRow('frogRow', '🐸', 4);
+  buildRow('lotusRow', '🪷', 3);
+  buildRow('rabbitRow', '🐰', 4);
+  buildRow('carrotRow', '🥕', 4);
+
+  function pairFrogs(e) {
+    const frogs = document.querySelectorAll('#frogRow .pair-item');
+    const lotus = document.querySelectorAll('#lotusRow .pair-item');
+    const pairs = Math.min(frogs.length, lotus.length);
+    for (let i = 0; i < pairs; i++) {
+      frogs[i].classList.add('matched');
+      lotus[i].classList.add('matched');
+    }
+    for (let i = pairs; i < frogs.length; i++) frogs[i].classList.add('leftover');
+    document.getElementById('frogConclude').innerHTML =
+      'Còn dư 1 con ếch chưa có lá sen 👉 <b>Số ếch NHIỀU HƠN số lá sen</b><br>(Số lá sen ít hơn số ếch).';
+    document.getElementById('frogBtn').textContent = '👍 Đã ghép xong!';
+    celebrate(e);
+  }
+
+  function pairRabbits(e) {
+    const rabbits = document.querySelectorAll('#rabbitRow .pair-item');
+    const carrots = document.querySelectorAll('#carrotRow .pair-item');
+    const pairs = Math.min(rabbits.length, carrots.length);
+    for (let i = 0; i < pairs; i++) {
+      rabbits[i].classList.add('matched');
+      carrots[i].classList.add('matched');
+    }
+    document.getElementById('rabbitConclude').innerHTML =
+      'Mỗi chú thỏ có vừa đủ một củ cà rốt, không thừa không thiếu 👉 <b>Số thỏ BẰNG số cà rốt</b>.';
+    document.getElementById('rabbitBtn').textContent = '👍 Đã ghép xong!';
+    celebrate(e);
+  }
+
+  // ===== KHỐI 2: THUẬT NGỮ =====
+  const termInfo = {
+    more:  { word: 'Nhiều hơn', text: 'Khi ghép đôi xong mà một nhóm còn dư đồ vật, nhóm đó NHIỀU HƠN. Ví dụ: 🐸🐸🐸🐸 nhiều hơn 🪷🪷🪷.' },
+    less:  { word: 'Ít hơn',    text: 'Khi ghép đôi xong mà một nhóm bị thiếu, không đủ để ghép hết, nhóm đó ÍT HƠN. Ví dụ: 🪷🪷🪷 ít hơn 🐸🐸🐸🐸.' },
+    equal: { word: 'Bằng nhau', text: 'Khi mỗi đồ vật của nhóm này ghép vừa đủ với nhóm kia, không thừa không thiếu, hai nhóm BẰNG NHAU. Ví dụ: 🐰🐰🐰 và 🥕🥕🥕.' }
+  };
+  function readTerm(el, key, e) {
+    document.querySelectorAll('.term').forEach(t => t.style.outline = 'none');
+    el.style.outline = '4px solid rgba(255,255,255,.7)';
+    const info = termInfo[key];
+    document.getElementById('termDetail').innerHTML =
+      '🔊 <b style="margin:0 6px">“' + info.word + '”</b> — ' + info.text;
+    // Đọc to thuật ngữ nếu trình duyệt hỗ trợ
+    try {
+      if ('speechSynthesis' in window) {
+        const u = new SpeechSynthesisUtterance(info.word);
+        u.lang = 'vi-VN';
+        speechSynthesis.cancel();
+        speechSynthesis.speak(u);
+      }
+    } catch (err) {}
+    celebrate(e);
+  }
+
+  // ===== KHỐI 3 & 4: CÂU HỎI TRẮC NGHIỆM =====
+  const okMsgs = [
+    '🎉 Chính xác! Em giỏi quá! <b>+5 XP</b>',
+    '⭐ Tuyệt vời, em trả lời đúng rồi! <b>+5 XP</b>',
+    '🌟 Quá xuất sắc! <b>+5 XP</b>'
+  ];
+  document.querySelectorAll('.q-card').forEach(card => {
+    const answer = card.dataset.answer;
+    const fb = card.querySelector('.feedback');
+    card.querySelectorAll('.opt').forEach(opt => {
+      opt.addEventListener('click', e => {
+        card.querySelectorAll('.opt').forEach(o => o.classList.remove('wrong', 'correct'));
+        if (opt.dataset.val === answer) {
+          opt.classList.add('correct');
+          fb.className = 'feedback ok show';
+          fb.innerHTML = okMsgs[Math.floor(Math.random() * okMsgs.length)];
+          celebrate(e);
+        } else {
+          opt.classList.add('wrong');
+          fb.className = 'feedback no show';
+          fb.textContent = '💡 Chưa đúng rồi. Em hãy đếm lại số lượng từng nhóm rồi thử lại nhé!';
+        }
+      });
+    });
+  });
+
+  // ===== AI CHIP =====
+  function setAi(el) { const i = document.getElementById('aiInput'); i.value = el.textContent; i.focus(); }
+
+  // ===== CONFETTI =====
+  function celebrate(e) {
+    if (e) e.preventDefault();
+    const colors = ['#4F8CFF','#FFD93D','#6BCB77','#FF9F43','#FF6B9D','#9B72FF'];
+    const x = e ? e.clientX : window.innerWidth/2, y = e ? e.clientY : 200;
+    for (let i = 0; i < 26; i++) {
+      const c = document.createElement('div'); c.className = 'confetti';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.left = x+'px'; c.style.top = y+'px';
+      document.body.appendChild(c);
+      const a = Math.random()*Math.PI*2, v = 100+Math.random()*200;
+      c.animate([{transform:'translate(0,0)',opacity:1},{transform:`translate(${Math.cos(a)*v}px,${Math.sin(a)*v+300}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:1400,easing:'cubic-bezier(.25,.46,.45,.94)'}).onfinish=()=>c.remove();
+    }
+  }
+</script>
+<!-- Chặn đăng nhập + đồng bộ tên/avatar người học (Supabase) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+  if (window.TVKN) { window.tvknLogout = function(){ TVKN.signOut(); }; TVKN.guardPage(); }
+</script>
+</body>
+</html>

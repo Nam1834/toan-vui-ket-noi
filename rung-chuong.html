@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔔 Rung chuông vàng - TOÁN VUI KẾT NỐI</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4F8CFF;
+    --yellow: #FFD93D;
+    --green: #6BCB77;
+    --orange: #FF9F43;
+    --pink: #FF6B9D;
+    --purple: #9B72FF;
+    --white: #FFFFFF;
+    --bg-soft: #F4F8FF;
+    --text-dark: #2D3748;
+    --text-soft: #6B7280;
+    --shadow: 0 8px 24px rgba(79, 140, 255, 0.15);
+    --shadow-lg: 0 16px 40px rgba(79, 140, 255, 0.22);
+    --theme: #FFB300;
+    --theme-soft: #FFF3D1;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Fredoka', 'Baloo 2', system-ui, sans-serif;
+    background: var(--bg-soft);
+    color: var(--text-dark);
+    overflow-x: hidden;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  a { text-decoration: none; color: inherit; }
+
+  /* ============== HEADER ============== */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 68px;
+    background: var(--white);
+    box-shadow: 0 4px 20px rgba(79, 140, 255, 0.08);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 18px;
+  }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 12px;
+    background: var(--bg-soft);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-dark);
+    transition: all .2s;
+  }
+  .back-btn:hover { background: var(--theme); color: var(--white); transform: translateX(-2px); }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 6px 16px rgba(255, 159, 67, 0.35);
+  }
+  .logo-name {
+    font-weight: 800; font-size: 16px;
+    background: linear-gradient(90deg, var(--orange), var(--purple));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .header-right { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+  .xp-pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 13px;
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    color: var(--white); border-radius: 13px;
+    font-weight: 700; font-size: 14px;
+    box-shadow: 0 4px 12px rgba(255, 159, 67, 0.35);
+  }
+  .avatar {
+    width: 42px; height: 42px; border-radius: 13px;
+    background: linear-gradient(135deg, var(--green), var(--blue));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 21px; border: 3px solid var(--white);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12); cursor: pointer;
+  }
+
+  /* ============== STAGE ============== */
+  .stage {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeIn .4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card {
+    background: var(--white);
+    border-radius: 28px;
+    box-shadow: var(--shadow-lg);
+    padding: 38px 34px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ============== INTRO ============== */
+  .intro-banner {
+    background: linear-gradient(135deg, var(--theme-soft), #FFE9F0);
+    border-radius: 24px;
+    padding: 30px 20px 26px;
+    margin-bottom: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .intro-banner::before {
+    content: ''; position: absolute;
+    width: 260px; height: 260px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.55), transparent 70%);
+    top: -110px; right: -60px;
+  }
+  .bell-icon {
+    font-size: 92px;
+    display: inline-block;
+    animation: swing 2.2s ease-in-out infinite;
+    transform-origin: top center;
+    filter: drop-shadow(0 8px 16px rgba(255,159,67,0.4));
+  }
+  @keyframes swing { 0%,100%{transform:rotate(-12deg)} 50%{transform:rotate(12deg)} }
+  .game-name {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: clamp(26px, 6vw, 38px);
+    font-weight: 800;
+    margin-top: 6px;
+    color: #C77700;
+  }
+  .game-desc { font-size: 17px; color: var(--text-soft); margin: 12px 0 4px; }
+  .xp-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    color: var(--white); font-weight: 800; font-size: 16px;
+    padding: 8px 18px; border-radius: 999px; margin-top: 10px;
+    box-shadow: 0 6px 16px rgba(255,159,67,0.4);
+  }
+  .rules {
+    text-align: left;
+    background: var(--bg-soft);
+    border-radius: 18px;
+    padding: 20px 22px;
+    margin: 8px 0 24px;
+  }
+  .rules h3 { font-family: 'Baloo 2', sans-serif; font-size: 18px; margin-bottom: 10px; }
+  .rules ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  .rules li { display: flex; gap: 10px; font-size: 15px; align-items: flex-start; }
+  .rules li b { color: #C77700; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+    padding: 15px 34px; border-radius: 16px;
+    font-family: inherit; font-weight: 700; font-size: 17px;
+    border: none; cursor: pointer; transition: all .25s cubic-bezier(.34,1.56,.64,1);
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--orange), var(--yellow));
+    color: var(--white); box-shadow: 0 10px 22px rgba(255, 159, 67, 0.45);
+  }
+  .btn-primary:hover { transform: translateY(-4px) scale(1.03); }
+  .btn-ghost { background: var(--bg-soft); color: var(--text-dark); }
+  .btn-ghost:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .btn-block { width: 100%; margin-top: 4px; }
+
+  /* ============== PLAY ============== */
+  .play-top {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 18px; gap: 12px;
+  }
+  .q-counter {
+    font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 18px;
+    background: var(--theme-soft); color: #C77700;
+    padding: 8px 16px; border-radius: 14px;
+  }
+  .streak {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: linear-gradient(135deg, var(--pink), var(--orange));
+    color: var(--white); font-weight: 800; font-size: 16px;
+    padding: 8px 16px; border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(255,107,157,0.35);
+  }
+  .progress-track {
+    height: 12px; background: var(--bg-soft); border-radius: 999px;
+    overflow: hidden; margin-bottom: 26px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+  }
+  .progress-go {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--green), var(--yellow), var(--orange));
+    border-radius: 999px; transition: width .4s ease;
+  }
+  .question-box {
+    background: linear-gradient(135deg, #FFF7E0, #FFEFC2);
+    border-radius: 22px;
+    padding: 34px 20px;
+    margin-bottom: 24px;
+    box-shadow: inset 0 0 0 2px rgba(255,179,0,0.18);
+  }
+  .question-label { font-size: 14px; color: #C77700; font-weight: 700; letter-spacing: .5px; }
+  .question-text {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: clamp(34px, 9vw, 52px);
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-top: 4px;
+  }
+  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .option {
+    background: var(--white);
+    border: 3px solid var(--bg-soft);
+    border-radius: 18px;
+    padding: 20px;
+    font-family: 'Baloo 2', sans-serif;
+    font-size: 28px; font-weight: 800;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: all .18s;
+    box-shadow: var(--shadow);
+  }
+  .option:hover:not(:disabled) { transform: translateY(-3px); border-color: var(--orange); }
+  .option:disabled { cursor: default; }
+  .option.correct { background: var(--green); color: var(--white); border-color: var(--green); animation: pop .35s; }
+  .option.wrong { background: var(--pink); color: var(--white); border-color: var(--pink); animation: shake .4s; }
+  @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.08)} 100%{transform:scale(1)} }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-7px)} 75%{transform:translateX(7px)} }
+
+  /* ============== RESULT ============== */
+  .result-emoji { font-size: 88px; line-height: 1; }
+  .result-emoji.win { animation: swing 1.6s ease-in-out infinite; transform-origin: top center; display:inline-block; }
+  .result-title {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: clamp(26px, 6vw, 34px); font-weight: 800;
+    margin: 14px 0 6px;
+  }
+  .result-title.win { color: #C77700; }
+  .result-title.lose { color: var(--blue); }
+  .score-big {
+    font-family: 'Baloo 2', sans-serif; font-size: 40px; font-weight: 800;
+    color: var(--orange); margin: 6px 0;
+  }
+  .result-sub { color: var(--text-soft); font-size: 16px; margin-bottom: 18px; }
+  .badge-line {
+    display: inline-flex; gap: 8px; align-items: center;
+    background: var(--theme-soft); color: #C77700;
+    font-weight: 800; padding: 10px 20px; border-radius: 999px;
+    margin: 6px 0 8px; font-size: 16px;
+  }
+
+  /* ============== REWARD ============== */
+  .reward-box {
+    background: linear-gradient(135deg, var(--theme-soft), #FFE9F0);
+    border-radius: 22px; padding: 28px 22px; margin-bottom: 22px;
+  }
+  .reward-row {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--white); border-radius: 16px;
+    padding: 16px 18px; margin-top: 14px; text-align: left;
+    box-shadow: var(--shadow);
+  }
+  .reward-row:first-child { margin-top: 0; }
+  .reward-row .ri { font-size: 34px; }
+  .reward-row .rt { font-weight: 700; }
+  .reward-row .rs { font-size: 13px; color: var(--text-soft); }
+  .btn-stack { display: flex; flex-direction: column; gap: 12px; }
+
+  /* ============== CONFETTI ============== */
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 9999; border-radius: 2px; }
+
+  @media (max-width: 560px) {
+    .header { padding: 0 14px; gap: 10px; }
+    .logo-name { display: none; }
+    .stage { padding: 22px 14px 50px; }
+    .card { padding: 28px 20px; }
+    .options { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .option { padding: 16px; font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="header">
+  <a href="tro-choi.html" class="back-btn">← Trung tâm trò chơi</a>
+  <a href="tro-choi.html" class="logo">
+    <div class="logo-icon">🔔</div>
+    <span class="logo-name">TOÁN VUI KẾT NỐI</span>
+  </a>
+  <div class="header-right">
+    <div class="xp-pill">🪙 <span>450 XP</span></div>
+    <div class="avatar" title="Người chơi">🧒</div>
+  </div>
+</header>
+
+<div class="stage">
+
+  <!-- ====== MÀN 1: GIỚI THIỆU ====== -->
+  <section class="screen active" id="screen-intro">
+    <div class="card">
+      <div class="intro-banner">
+        <div class="bell-icon">🔔</div>
+        <div class="game-name">Rung chuông vàng</div>
+        <div class="game-desc">Trả lời liên tục để trở thành quán quân!</div>
+        <div class="xp-tag">⭐ +100 XP</div>
+      </div>
+      <div class="rules">
+        <h3>📋 Luật chơi</h3>
+        <ul>
+          <li>🔢 <span>Trả lời <b>15 câu</b> Toán liên tiếp, độ khó tăng dần.</span></li>
+          <li>✅ <span>Trả lời <b>đúng</b> để đi tiếp câu sau.</span></li>
+          <li>❌ <span>Trả lời <b>sai</b> là <b>dừng cuộc chơi</b> ngay!</span></li>
+          <li>🏆 <span>Vượt qua cả 15 câu để <b>rung chuông vàng</b> và nhận huy hiệu Nhà vô địch.</span></li>
+        </ul>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="startGame()">▶️ Bắt đầu</button>
+    </div>
+  </section>
+
+  <!-- ====== MÀN 2: CHƠI ====== -->
+  <section class="screen" id="screen-play">
+    <div class="card">
+      <div class="play-top">
+        <span class="q-counter" id="qCounter">Câu 1/15</span>
+        <span class="streak" id="streakBox">🔥 Chuỗi đúng: 0</span>
+      </div>
+      <div class="progress-track"><div class="progress-go" id="progressGo"></div></div>
+      <div class="question-box">
+        <div class="question-label" id="qDifficulty">CÂU HỎI</div>
+        <div class="question-text" id="qText">3 + 2 = ?</div>
+      </div>
+      <div class="options" id="options"></div>
+    </div>
+  </section>
+
+  <!-- ====== MÀN 3: KẾT QUẢ ====== -->
+  <section class="screen" id="screen-result">
+    <div class="card">
+      <div class="result-emoji" id="resultEmoji">🏆</div>
+      <div class="result-title" id="resultTitle">Tuyệt vời!</div>
+      <div class="score-big" id="resultScore">Em trả lời đúng 12/15</div>
+      <div class="badge-line" id="resultBadge">⭐ +120 XP</div>
+      <div class="result-sub" id="resultSub">Cố gắng hơn ở lần sau nhé!</div>
+      <button class="btn btn-primary btn-block" onclick="showReward()">🎁 Nhận thưởng</button>
+    </div>
+  </section>
+
+  <!-- ====== MÀN 4: NHẬN THƯỞNG ====== -->
+  <section class="screen" id="screen-reward">
+    <div class="card">
+      <div class="result-emoji" id="rewardEmoji">🎁</div>
+      <div class="result-title win">Phần thưởng của em</div>
+      <div class="reward-box" id="rewardBox">
+        <!-- nội dung động -->
+      </div>
+      <div class="btn-stack">
+        <button class="btn btn-primary btn-block" onclick="restartGame()">🔄 Chơi lại</button>
+        <a href="tro-choi.html" class="btn btn-ghost btn-block">← Về Trung tâm trò chơi</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // ===== Trạng thái =====
+  const TOTAL = 15;
+  let questions = [];
+  let current = 0;     // chỉ số câu hiện tại (0-based)
+  let correctCount = 0;
+  let locked = false;  // khóa khi đang hiển thị phản hồi
+
+  // ===== Sinh câu hỏi: số học, khó dần, trong phạm vi ~20 =====
+  function rand(min, max) {
+    if (max < min) max = min;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function buildQuestions() {
+    const list = [];
+    for (let i = 0; i < TOTAL; i++) {
+      // độ khó tăng dần theo i — luôn cho ra đáp án không âm, trong phạm vi ~20
+      let a, b, op, ans;
+      const max = Math.min(20, 5 + Math.round((i / TOTAL) * 15)); // 5 -> 20
+
+      if (i < 4) {
+        // cộng đơn giản
+        a = rand(1, Math.max(2, Math.floor(max / 2)));
+        b = rand(1, Math.max(1, max - a));
+        op = '+'; ans = a + b;
+      } else if (i < 8) {
+        // trừ
+        a = rand(Math.max(3, Math.floor(max / 2)), max);
+        b = rand(1, a);
+        op = '−'; ans = a - b;
+      } else if (i < 11) {
+        // cộng khó hơn (tổng ≤ 20)
+        a = rand(5, Math.max(6, max - 2));
+        b = rand(2, Math.max(2, 20 - a));
+        op = '+'; ans = a + b;
+      } else if (i < 13) {
+        // nhân nhỏ
+        a = rand(2, 5);
+        b = rand(2, 4);
+        op = '×'; ans = a * b;
+      } else {
+        // hỗn hợp khó: cộng/trừ trong 20
+        if (Math.random() < 0.5) {
+          a = rand(8, 16);
+          b = rand(2, Math.max(2, 20 - a));
+          op = '+'; ans = a + b;
+        } else {
+          a = rand(12, 20);
+          b = rand(3, a - 1);
+          op = '−'; ans = a - b;
+        }
+      }
+      list.push({ text: a + ' ' + op + ' ' + b + ' = ?', answer: ans });
+    }
+    return list;
+  }
+
+  // ===== Tạo 4 đáp án (1 đúng + 3 nhiễu) =====
+  function makeOptions(answer) {
+    const opts = new Set([answer]);
+    let guard = 0;
+    while (opts.size < 4 && guard < 50) {
+      guard++;
+      let delta = rand(1, 4) * (Math.random() < 0.5 ? -1 : 1);
+      let cand = answer + delta;
+      if (cand >= 0) opts.add(cand);
+    }
+    // phòng trường hợp không đủ
+    let n = 1;
+    while (opts.size < 4) { opts.add(answer + n); n++; }
+    const arr = Array.from(opts);
+    // xáo trộn
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  // ===== Điều khiển màn hình =====
+  function show(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function startGame() {
+    questions = buildQuestions();
+    current = 0;
+    correctCount = 0;
+    locked = false;
+    show('screen-play');
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    const q = questions[current];
+    document.getElementById('qCounter').textContent = 'Câu ' + (current + 1) + '/' + TOTAL;
+    document.getElementById('streakBox').textContent = '🔥 Chuỗi đúng: ' + correctCount;
+    document.getElementById('progressGo').style.width = (current / TOTAL * 100) + '%';
+    document.getElementById('qDifficulty').textContent = 'CÂU HỎI ' + (current + 1);
+    document.getElementById('qText').textContent = q.text;
+
+    const box = document.getElementById('options');
+    box.innerHTML = '';
+    const opts = makeOptions(q.answer);
+    opts.forEach(val => {
+      const btn = document.createElement('button');
+      btn.className = 'option';
+      btn.textContent = val;
+      btn.onclick = function () { answer(btn, val); };
+      box.appendChild(btn);
+    });
+    locked = false;
+  }
+
+  function answer(btn, val) {
+    if (locked) return;
+    locked = true;
+    const q = questions[current];
+    const allBtns = document.querySelectorAll('#options .option');
+    allBtns.forEach(b => b.disabled = true);
+
+    if (val === q.answer) {
+      // ĐÚNG -> ding, đi tiếp
+      btn.classList.add('correct');
+      ding(true);
+      correctCount++;
+      document.getElementById('streakBox').textContent = '🔥 Chuỗi đúng: ' + correctCount;
+      setTimeout(function () {
+        current++;
+        if (current >= TOTAL) {
+          // vượt qua cả 15 -> thắng
+          finish(true);
+        } else {
+          renderQuestion();
+        }
+      }, 700);
+    } else {
+      // SAI -> dừng ngay
+      btn.classList.add('wrong');
+      // hiện đáp án đúng
+      allBtns.forEach(b => { if (Number(b.textContent) === q.answer) b.classList.add('correct'); });
+      ding(false);
+      setTimeout(function () { finish(false); }, 1100);
+    }
+  }
+
+  function finish(win) {
+    const emoji = document.getElementById('resultEmoji');
+    const title = document.getElementById('resultTitle');
+    const score = document.getElementById('resultScore');
+    const badge = document.getElementById('resultBadge');
+    const sub = document.getElementById('resultSub');
+    document.getElementById('progressGo').style.width = (correctCount / TOTAL * 100) + '%';
+
+    const xp = win ? 100 : correctCount * 5; // thắng: +100 ; dừng giữa chừng: khích lệ
+
+    if (win) {
+      emoji.textContent = '🔔';
+      emoji.className = 'result-emoji win';
+      title.textContent = '🏆 RUNG CHUÔNG VÀNG!';
+      title.className = 'result-title win';
+      score.textContent = 'Em trả lời đúng 15/15';
+      badge.textContent = '⭐ +100 XP  •  🏆 Nhà vô địch';
+      sub.textContent = 'Xuất sắc! Em là quán quân của lớp! 🎉';
+      if (window.TVKN && TVKN.configured) { TVKN.recordGameWin('Rung chuông vàng', 100, 20).catch(function(){}); }
+    } else {
+      emoji.textContent = '🛎️';
+      emoji.className = 'result-emoji';
+      title.textContent = 'Chưa rung được chuông!';
+      title.className = 'result-title lose';
+      score.textContent = 'Em trả lời đúng ' + correctCount + '/15';
+      badge.textContent = '⭐ +' + xp + ' XP';
+      sub.textContent = 'Em dừng ở câu ' + (current + 1) + '. Thử lại để rung chuông vàng nhé!';
+    }
+    window._lastWin = win;
+    window._lastXp = xp;
+
+    show('screen-result');
+    if (win) bigConfetti();
+  }
+
+  function showReward() {
+    const win = window._lastWin;
+    const xp = window._lastXp;
+    const emoji = document.getElementById('rewardEmoji');
+    const box = document.getElementById('rewardBox');
+    emoji.textContent = win ? '🏆' : '🎁';
+
+    if (win) {
+      box.innerHTML =
+        '<div class="reward-row"><span class="ri">⭐</span><div><div class="rt">+100 XP</div><div class="rs">Phần thưởng hoàn thành trọn vẹn</div></div></div>' +
+        '<div class="reward-row"><span class="ri">🏆</span><div><div class="rt">Huy hiệu Nhà vô địch</div><div class="rs">Vượt qua cả 15 câu hỏi</div></div></div>' +
+        '<div class="reward-row"><span class="ri">🔔</span><div><div class="rt">Rung chuông vàng</div><div class="rs">Em là quán quân tuần này!</div></div></div>';
+    } else {
+      box.innerHTML =
+        '<div class="reward-row"><span class="ri">⭐</span><div><div class="rt">+' + xp + ' XP khích lệ</div><div class="rs">Đúng ' + correctCount + '/15 câu — làm tốt lắm!</div></div></div>' +
+        '<div class="reward-row"><span class="ri">💪</span><div><div class="rt">Tiếp tục cố gắng</div><div class="rs">Chơi lại để giành huy hiệu Nhà vô địch 🏆</div></div></div>';
+    }
+    show('screen-reward');
+    if (win) bigConfetti();
+  }
+
+  function restartGame() {
+    startGame();
+  }
+
+  // ===== Âm thanh ding (WebAudio, không cần file) =====
+  let audioCtx = null;
+  function ding(good) {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      if (good) {
+        o.type = 'sine'; o.frequency.value = 880;
+        o.frequency.setValueAtTime(880, audioCtx.currentTime);
+        o.frequency.setValueAtTime(1320, audioCtx.currentTime + 0.09);
+      } else {
+        o.type = 'sawtooth'; o.frequency.value = 220;
+        o.frequency.setValueAtTime(220, audioCtx.currentTime);
+        o.frequency.setValueAtTime(120, audioCtx.currentTime + 0.12);
+      }
+      g.gain.setValueAtTime(0.18, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+      o.start(); o.stop(audioCtx.currentTime + 0.3);
+    } catch (e) { /* bỏ qua nếu trình duyệt chặn */ }
+  }
+
+  // ===== Confetti (giống trang-lop) =====
+  function celebrate(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const colors = ['#4F8CFF', '#FFD93D', '#6BCB77', '#FF9F43', '#FF6B9D', '#9B72FF'];
+    const x = (e && e.clientX) ? e.clientX : window.innerWidth / 2;
+    const y = (e && e.clientY) ? e.clientY : window.innerHeight / 2;
+    for (let i = 0; i < 28; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.left = x + 'px'; c.style.top = y + 'px';
+      document.body.appendChild(c);
+      const angle = Math.random() * Math.PI * 2;
+      const v = 100 + Math.random() * 200;
+      const vx = Math.cos(angle) * v, vy = Math.sin(angle) * v - 150;
+      c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: 'translate(' + vx + 'px, ' + (vy + 300) + 'px) rotate(' + (Math.random() * 720) + 'deg)', opacity: 0 }
+      ], { duration: 1400, easing: 'cubic-bezier(.25,.46,.45,.94)' }).onfinish = function () { c.remove(); };
+    }
+  }
+
+  // confetti lớn cho màn thắng
+  function bigConfetti() {
+    const cx = window.innerWidth / 2;
+    let n = 0;
+    const iv = setInterval(function () {
+      celebrate({ clientX: cx + (Math.random() * 240 - 120), clientY: window.innerHeight * 0.28 });
+      n++;
+      if (n >= 6) clearInterval(iv);
+    }, 220);
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+</body>
+</html>

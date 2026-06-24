@@ -1,0 +1,8 @@
+# Hệ thống / biên tập
+.DS_Store
+Thumbs.db
+.vscode/
+node_modules/
+
+# Vercel
+.vercel

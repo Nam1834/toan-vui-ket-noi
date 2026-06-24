@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bảng xếp hạng - TOÁN VUI KẾT NỐI</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4F8CFF;
+    --yellow: #FFD93D;
+    --green: #6BCB77;
+    --orange: #FF9F43;
+    --pink: #FF6B9D;
+    --purple: #9B72FF;
+    --white: #FFFFFF;
+    --bg-soft: #F4F8FF;
+    --text-dark: #2D3748;
+    --text-soft: #6B7280;
+    --shadow: 0 8px 24px rgba(79, 140, 255, 0.15);
+    --shadow-lg: 0 16px 40px rgba(79, 140, 255, 0.22);
+    --theme: var(--orange);
+    --theme-soft: #FFEFD8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Fredoka', 'Baloo 2', system-ui, sans-serif;
+    background: var(--bg-soft);
+    color: var(--text-dark);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+  a { text-decoration: none; color: inherit; }
+
+  /* ============== HEADER NHỎ ============== */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 68px;
+    background: var(--white);
+    box-shadow: 0 4px 20px rgba(79, 140, 255, 0.08);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 18px;
+  }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 12px;
+    background: var(--bg-soft);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-dark);
+    transition: all .2s;
+  }
+  .back-btn:hover { background: var(--theme); color: var(--white); transform: translateX(-2px); }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 6px 16px rgba(79, 140, 255, 0.35);
+  }
+  .logo-name {
+    font-weight: 800; font-size: 16px;
+    background: linear-gradient(90deg, var(--blue), var(--purple));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .header-title {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800; font-size: 18px;
+    margin: 0 auto;
+    display: flex; align-items: center; gap: 8px;
+    color: var(--text-dark);
+  }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .xp-pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 13px;
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    color: var(--white); border-radius: 13px;
+    font-weight: 700; font-size: 14px;
+    box-shadow: 0 4px 12px rgba(255, 159, 67, 0.35);
+  }
+  .streak-pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 13px;
+    background: linear-gradient(135deg, var(--pink), var(--orange));
+    color: var(--white); border-radius: 13px;
+    font-weight: 700; font-size: 14px;
+    box-shadow: 0 4px 12px rgba(255, 107, 157, 0.3);
+  }
+  .avatar {
+    width: 42px; height: 42px; border-radius: 13px;
+    background: linear-gradient(135deg, var(--green), var(--blue));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 21px; border: 3px solid var(--white);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12); cursor: pointer;
+  }
+  .avatar-name { font-weight: 700; font-size: 14px; margin-left: 2px; }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* ============== BANNER VINH DANH ============== */
+  .banner {
+    margin-top: 28px;
+    background: linear-gradient(135deg, var(--theme-soft), #FFF6E8);
+    border-radius: 30px;
+    padding: 40px 44px;
+    display: flex; align-items: center; gap: 32px;
+    position: relative; overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .banner::before {
+    content: ''; position: absolute;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.55), transparent 70%);
+    top: -120px; right: -60px;
+  }
+  .banner-text { flex: 1; z-index: 1; }
+  .banner-tag {
+    display: inline-block; padding: 6px 14px;
+    background: var(--white); color: var(--theme);
+    border-radius: 999px; font-weight: 700; font-size: 13px; margin-bottom: 14px;
+  }
+  .banner h1 {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: clamp(26px, 4vw, 42px); font-weight: 800;
+    line-height: 1.15; margin-bottom: 10px;
+  }
+  .banner p { font-size: 17px; color: var(--text-soft); max-width: 480px; }
+  .banner-mascot {
+    width: 180px; height: 180px; flex-shrink: 0; z-index: 1;
+    background: var(--white); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 100px; box-shadow: 0 16px 40px rgba(255, 159, 67, 0.3);
+    animation: bounce 3s ease-in-out infinite;
+    position: relative;
+  }
+  .banner-mascot .spark {
+    position: absolute; font-size: 34px;
+    animation: twinkle 2s ease-in-out infinite;
+  }
+  .banner-mascot .spark.s1 { top: -6px; left: -2px; }
+  .banner-mascot .spark.s2 { bottom: 4px; right: -6px; animation-delay: .6s; }
+  .banner-mascot .spark.s3 { top: 30px; right: -14px; animation-delay: 1.1s; font-size: 26px; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+  @keyframes twinkle { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:.6} }
+
+  /* ============== SECTION ============== */
+  section.block { margin-top: 48px; }
+  .section-title {
+    font-family: 'Baloo 2', sans-serif; font-size: 26px; font-weight: 800;
+    margin-bottom: 6px; display: flex; align-items: center; gap: 10px;
+  }
+  .section-sub { color: var(--text-soft); font-size: 15px; margin-bottom: 22px; }
+
+  /* ============== TOP 3 PODIUM ============== */
+  .podium {
+    display: flex; justify-content: center; align-items: flex-end;
+    gap: 18px; flex-wrap: nowrap;
+  }
+  .podium-item {
+    flex: 1; max-width: 260px;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+  }
+  .podium-card {
+    width: 100%;
+    background: var(--white); border-radius: 24px 24px 0 0;
+    padding: 22px 18px 26px; box-shadow: var(--shadow);
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    position: relative;
+  }
+  .podium-cup {
+    font-size: 52px; line-height: 1;
+    animation: floatCup 2.6s ease-in-out infinite;
+    filter: drop-shadow(0 0 14px rgba(255,217,61,.85));
+  }
+  @keyframes floatCup { 0%,100%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-8px) rotate(3deg)} }
+  .podium-avatar {
+    width: 78px; height: 78px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 42px; border: 4px solid var(--white);
+    box-shadow: 0 6px 16px rgba(0,0,0,.12);
+    margin-top: 4px;
+  }
+  .podium-name { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 18px; }
+  .podium-xp {
+    font-weight: 700; font-size: 15px; color: var(--orange);
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .podium-rankno {
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 15px; color: var(--white);
+    border: 3px solid var(--white); box-shadow: 0 4px 10px rgba(0,0,0,.18);
+  }
+  .podium-base {
+    width: 100%; border-radius: 0 0 16px 16px;
+    color: var(--white); font-family: 'Baloo 2', sans-serif;
+    font-weight: 800; font-size: 30px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  /* rank-specific */
+  .p1 .podium-avatar { background: linear-gradient(135deg, var(--yellow), var(--orange)); }
+  .p1 .podium-rankno { background: linear-gradient(135deg, #FFB800, #FF8A00); }
+  .p1 .podium-base { background: linear-gradient(135deg, var(--yellow), var(--orange)); height: 130px; }
+  .p1 .podium-card { box-shadow: 0 16px 40px rgba(255, 159, 67, 0.35); transform: translateY(0); }
+  .p1 .podium-cup { font-size: 62px; }
+
+  .p2 .podium-avatar { background: linear-gradient(135deg, #C9D6FF, var(--blue)); }
+  .p2 .podium-rankno { background: linear-gradient(135deg, #AEB8C7, #8A94A6); }
+  .p2 .podium-base { background: linear-gradient(135deg, #C7Cfdb, #9AA6B8); height: 92px; }
+
+  .p3 .podium-avatar { background: linear-gradient(135deg, #FFC9A3, #E59866); }
+  .p3 .podium-rankno { background: linear-gradient(135deg, #E59866, #C87F4D); }
+  .p3 .podium-base { background: linear-gradient(135deg, #E8A87C, #CB8552); height: 70px; }
+
+  /* ============== BỘ LỌC ============== */
+  .filter-group { margin-bottom: 16px; }
+  .filter-group-label {
+    font-size: 13px; font-weight: 700; color: var(--text-soft);
+    margin-bottom: 8px; display: block;
+  }
+  .filters { display: flex; gap: 10px; flex-wrap: wrap; }
+  .filter-btn {
+    padding: 9px 18px; border-radius: 999px;
+    background: var(--white); border: 2px solid transparent;
+    font-family: inherit; font-weight: 600; font-size: 14px;
+    color: var(--text-soft); cursor: pointer; transition: all .2s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+  .filter-btn:hover { color: var(--theme); }
+  .filter-btn.active { background: var(--theme); color: var(--white); box-shadow: 0 6px 14px rgba(255, 159, 67, 0.4); }
+
+  /* ============== DANH SÁCH XẾP HẠNG ============== */
+  .rank-list { display: flex; flex-direction: column; gap: 12px; }
+  .rank-row {
+    background: var(--white); border-radius: 18px;
+    padding: 14px 20px; box-shadow: var(--shadow);
+    display: grid;
+    grid-template-columns: 54px 56px 1fr auto auto auto;
+    align-items: center; gap: 16px;
+    border: 2px solid transparent;
+    transition: transform .2s;
+  }
+  .rank-row:hover { transform: translateX(4px); }
+  .rank-no {
+    font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 20px;
+    color: var(--text-soft); text-align: center;
+  }
+  .rank-avatar {
+    width: 48px; height: 48px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; background: var(--bg-soft);
+  }
+  .rank-info { min-width: 0; }
+  .rank-name { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 16px; }
+  .rank-grade { font-size: 12px; color: var(--text-soft); font-weight: 600; }
+  .rank-stat { font-weight: 700; font-size: 14px; white-space: nowrap; }
+  .rank-stat.xp { color: var(--orange); }
+  .rank-stat.streak { color: var(--pink); }
+  .rank-stat.badge { color: var(--purple); }
+  .rank-stat-lbl { font-size: 11px; color: var(--text-soft); font-weight: 600; display: block; }
+
+  .rank-row.is-me {
+    border-color: var(--blue);
+    background: linear-gradient(135deg, #F2F7FF, #EAF1FF);
+    box-shadow: 0 10px 26px rgba(79, 140, 255, 0.28);
+  }
+  .me-tag {
+    grid-column: 1 / -1;
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--blue); color: var(--white);
+    font-weight: 700; font-size: 12px;
+    padding: 5px 12px; border-radius: 999px;
+    width: fit-content; margin-bottom: 2px;
+  }
+
+  /* ============== THÀNH TÍCH CỦA EM ============== */
+  .my-achieve {
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    border-radius: 26px; padding: 34px 40px; color: var(--white);
+    position: relative; overflow: hidden;
+  }
+  .my-achieve::before {
+    content: '⭐'; position: absolute; font-size: 200px;
+    right: -20px; bottom: -60px; opacity: .12;
+  }
+  .my-achieve h3 {
+    font-family: 'Baloo 2', sans-serif; font-size: 22px; font-weight: 800;
+    margin-bottom: 18px; z-index: 1; position: relative;
+  }
+  .my-stat-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    margin-bottom: 20px; z-index: 1; position: relative;
+  }
+  .my-stat {
+    background: rgba(255,255,255,0.18); border-radius: 18px;
+    padding: 16px; text-align: center;
+  }
+  .my-stat-icon { font-size: 28px; }
+  .my-stat-num { font-family: 'Baloo 2', sans-serif; font-size: 26px; font-weight: 800; }
+  .my-stat-lbl { font-size: 13px; opacity: .92; }
+  .my-msg {
+    background: rgba(255,255,255,0.2); border-radius: 16px;
+    padding: 14px 18px; font-size: 15px; font-weight: 600;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    z-index: 1; position: relative; margin-bottom: 18px;
+  }
+  .my-msg .gap-num { font-weight: 800; color: var(--yellow); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 14px 28px; border-radius: 16px;
+    font-family: inherit; font-weight: 700; font-size: 16px;
+    border: none; cursor: pointer; transition: all .25s cubic-bezier(.34,1.56,.64,1);
+    z-index: 1; position: relative;
+  }
+  .my-achieve .btn {
+    background: var(--white); color: var(--blue);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  }
+  .my-achieve .btn:hover { transform: translateY(-4px) scale(1.03); }
+
+  /* ============== NGÔI SAO TUẦN ============== */
+  .star-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .star-card {
+    border-radius: 22px; padding: 24px; color: var(--white);
+    box-shadow: var(--shadow); transition: transform .25s;
+    display: flex; flex-direction: column; gap: 6px;
+    position: relative; overflow: hidden;
+  }
+  .star-card:hover { transform: translateY(-6px); }
+  .star-card.sc1 { background: linear-gradient(135deg, var(--pink), var(--orange)); }
+  .star-card.sc2 { background: linear-gradient(135deg, var(--yellow), var(--orange)); }
+  .star-card.sc3 { background: linear-gradient(135deg, var(--purple), var(--blue)); }
+  .star-card.sc4 { background: linear-gradient(135deg, var(--green), #4DD0E1); }
+  .star-icon { font-size: 38px; }
+  .star-title { font-size: 14px; font-weight: 700; opacity: .95; }
+  .star-name { font-family: 'Baloo 2', sans-serif; font-size: 20px; font-weight: 800; }
+  .star-value { font-size: 14px; font-weight: 600; opacity: .95; }
+
+  /* ============== HUY HIỆU XẾP HẠNG ============== */
+  .rankbadge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .rankbadge {
+    background: var(--white); border-radius: 22px; padding: 26px 24px;
+    box-shadow: var(--shadow); text-align: center;
+    transition: transform .25s; cursor: default;
+    border: 2px solid transparent;
+  }
+  .rankbadge:hover { transform: translateY(-6px); border-color: var(--theme-soft); }
+  .rankbadge-icon { font-size: 54px; animation: floatCup 3s ease-in-out infinite; }
+  .rankbadge-name { font-family: 'Baloo 2', sans-serif; font-size: 18px; font-weight: 800; margin-top: 6px; }
+  .rankbadge-desc { font-size: 13px; color: var(--text-soft); margin-top: 4px; }
+
+  /* ============== FOOTER ĐIỀU HƯỚNG ============== */
+  .footer-nav {
+    margin-top: 56px; background: var(--white);
+    box-shadow: 0 -4px 20px rgba(79,140,255,0.08);
+    padding: 16px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
+  }
+  .footer-nav a {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 8px 20px; border-radius: 14px;
+    font-size: 12px; font-weight: 600; color: var(--text-soft); transition: all .2s;
+  }
+  .footer-nav a:hover, .footer-nav a.active { background: var(--bg-soft); color: var(--theme); }
+  .footer-nav a span { font-size: 22px; }
+
+  /* ============== CONFETTI ============== */
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 9999; border-radius: 2px; }
+
+  /* ============== RESPONSIVE ============== */
+  @media (max-width: 900px) {
+    .my-stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .star-grid { grid-template-columns: repeat(2, 1fr); }
+    .rankbadge-grid { grid-template-columns: 1fr; }
+    .banner { flex-direction: column; text-align: center; }
+    .banner p { margin-left: auto; margin-right: auto; }
+  }
+  @media (max-width: 700px) {
+    /* Top 3 stacks to vertical cards */
+    .podium { flex-direction: column; align-items: stretch; gap: 14px; }
+    .podium-item { max-width: 100%; }
+    .podium-card { border-radius: 20px; }
+    .podium-base { display: none; }
+    .p1, .p2, .p3 { order: 0; }
+
+    /* list rows become cards */
+    .rank-row {
+      grid-template-columns: 48px 48px 1fr;
+      grid-template-areas:
+        "no avatar info"
+        "stats stats stats";
+      row-gap: 12px;
+    }
+    .rank-no { grid-area: no; }
+    .rank-avatar { grid-area: avatar; }
+    .rank-info { grid-area: info; }
+    .rank-stat { grid-area: stats; display: inline-block; margin-right: 18px; }
+    .rank-stats-wrap { grid-area: stats; display: flex; gap: 18px; flex-wrap: wrap; }
+  }
+  @media (max-width: 560px) {
+    .header { padding: 0 14px; gap: 10px; }
+    .logo-name { display: none; }
+    .header-title span.t-txt { display: none; }
+    .streak-pill { display: none; }
+    .xp-pill span:last-child { display: none; }
+    .avatar-name { display: none; }
+    .wrap { padding: 0 14px; }
+    .banner { padding: 28px; }
+    .banner-mascot { width: 140px; height: 140px; font-size: 80px; }
+    .my-stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .star-grid { grid-template-columns: 1fr; }
+    .my-achieve { padding: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="header">
+  <a href="index.html" class="back-btn">← Trang chủ</a>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">🐰</div>
+    <span class="logo-name">TOÁN VUI KẾT NỐI</span>
+  </a>
+  <div class="header-title">🏆 <span class="t-txt">BẢNG XẾP HẠNG</span></div>
+  <div class="header-right">
+    <div class="xp-pill">⭐ <span>4250 XP</span></div>
+    <div class="streak-pill">🔥 <span>12 ngày</span></div>
+    <div class="avatar" title="Nguyễn Minh Anh">👧</div>
+    <span class="avatar-name">Minh Anh</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ============ BANNER VINH DANH ============ -->
+  <div class="banner">
+    <div class="banner-text">
+      <span class="banner-tag">🎉 Tôn vinh học sinh chăm chỉ</span>
+      <h1>🏆 VINH DANH NHỮNG NHÀ TOÁN HỌC NHÍ</h1>
+      <p>Học tập chăm chỉ mỗi ngày để leo lên bảng xếp hạng và nhận những huy hiệu đặc biệt nhé! ⭐</p>
+    </div>
+    <div class="banner-mascot">
+      🐰
+      <span class="spark s1">⭐</span>
+      <span class="spark s2">🏆</span>
+      <span class="spark s3">🎉</span>
+    </div>
+  </div>
+
+  <!-- ============ TOP 3 NỔI BẬT ============ -->
+  <section class="block">
+    <h2 class="section-title">🌟 Top 3 nổi bật tuần này</h2>
+    <p class="section-sub">Ba bạn xuất sắc nhất đang đứng trên bục nhận giải. Cố lên, biết đâu tuần sau là em!</p>
+
+    <div class="podium" id="podium">
+      <!-- Hạng 2 -->
+      <div class="podium-item p2">
+        <div class="podium-card">
+          <div class="podium-rankno">2</div>
+          <div class="podium-cup">🥈</div>
+          <div class="podium-avatar">👦</div>
+          <div class="podium-name">Gia Bảo</div>
+          <div class="podium-xp">⭐ 6900 XP</div>
+        </div>
+        <div class="podium-base">2</div>
+      </div>
+      <!-- Hạng 1 -->
+      <div class="podium-item p1">
+        <div class="podium-card">
+          <div class="podium-rankno">1</div>
+          <div class="podium-cup">🥇</div>
+          <div class="podium-avatar">👧</div>
+          <div class="podium-name">Minh Anh</div>
+          <div class="podium-xp">⭐ 7250 XP</div>
+        </div>
+        <div class="podium-base">1</div>
+      </div>
+      <!-- Hạng 3 -->
+      <div class="podium-item p3">
+        <div class="podium-card">
+          <div class="podium-rankno">3</div>
+          <div class="podium-cup">🥉</div>
+          <div class="podium-avatar">🧒</div>
+          <div class="podium-name">Hải Nam</div>
+          <div class="podium-xp">⭐ 6400 XP</div>
+        </div>
+        <div class="podium-base">3</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BỘ LỌC ============ -->
+  <section class="block">
+    <h2 class="section-title">🔍 Lọc bảng xếp hạng</h2>
+    <p class="section-sub">Chọn cách xem để so tài công bằng với các bạn cùng lớp nhé!</p>
+
+    <div class="filter-group" data-group="time">
+      <span class="filter-group-label">⏰ Theo thời gian</span>
+      <div class="filters">
+        <button class="filter-btn" data-val="today">Hôm nay</button>
+        <button class="filter-btn active" data-val="week">Tuần này</button>
+        <button class="filter-btn" data-val="month">Tháng này</button>
+        <button class="filter-btn" data-val="all">Tất cả</button>
+      </div>
+    </div>
+
+    <div class="filter-group" data-group="grade">
+      <span class="filter-group-label">🎓 Theo lớp</span>
+      <div class="filters">
+        <button class="filter-btn active" data-val="all">Tất cả</button>
+        <button class="filter-btn" data-val="1">Lớp 1</button>
+        <button class="filter-btn" data-val="2">Lớp 2</button>
+        <button class="filter-btn" data-val="3">Lớp 3</button>
+        <button class="filter-btn" data-val="4">Lớp 4</button>
+        <button class="filter-btn" data-val="5">Lớp 5</button>
+      </div>
+    </div>
+
+    <div class="filter-group" data-group="type">
+      <span class="filter-group-label">📊 Theo tiêu chí</span>
+      <div class="filters">
+        <button class="filter-btn active" data-val="xp">⭐ Điểm XP</button>
+        <button class="filter-btn" data-val="streak">🔥 Chuỗi học</button>
+        <button class="filter-btn" data-val="badge">🏅 Huy hiệu</button>
+        <button class="filter-btn" data-val="lesson">📚 Bài học</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DANH SÁCH XẾP HẠNG ============ -->
+  <section class="block">
+    <h2 class="section-title">📊 Xếp hạng học sinh</h2>
+    <p class="section-sub">Danh sách các bạn sau Top 3. Tìm tên em và xem mình đang ở đâu nhé!</p>
+
+    <div class="rank-list" id="rankList">
+      <div class="rank-row">
+        <div class="rank-no">#4</div>
+        <div class="rank-avatar">👧</div>
+        <div class="rank-info"><div class="rank-name">Ngọc Anh</div><div class="rank-grade">Lớp 1</div></div>
+        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 5800</div>
+        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 18 ngày</div>
+        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 12</div>
+      </div>
+
+      <div class="rank-row">
+        <div class="rank-no">#5</div>
+        <div class="rank-avatar">👦</div>
+        <div class="rank-info"><div class="rank-name">Hoàng Nam</div><div class="rank-grade">Lớp 2</div></div>
+        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 5500</div>
+        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 16 ngày</div>
+        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 11</div>
+      </div>
+
+      <div class="rank-row">
+        <div class="rank-no">#6</div>
+        <div class="rank-avatar">🧒</div>
+        <div class="rank-info"><div class="rank-name">Khánh Vy</div><div class="rank-grade">Lớp 3</div></div>
+        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 5300</div>
+        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 14 ngày</div>
+        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 10</div>
+      </div>
+
+      <div class="rank-row">
+        <div class="rank-no">#7</div>
+        <div class="rank-avatar">👦</div>
+        <div class="rank-info"><div class="rank-name">Đức Minh</div><div class="rank-grade">Lớp 2</div></div>
+        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 5100</div>
+        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 13 ngày</div>
+        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 10</div>
+      </div>
+
+      <div class="rank-row">
+        <div class="rank-no">#8</div>
+        <div class="rank-avatar">👧</div>
+        <div class="rank-info"><div class="rank-name">Bảo Ngọc</div><div class="rank-grade">Lớp 4</div></div>
+        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 4950</div>
+        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 11 ngày</div>
+        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 9</div>
+      </div>
+
+      <div class="rank-row">
+        <div class="rank-no">#9</div>
+        <div class="rank-avatar">🧒</div>
+        <div class="rank-info"><div class="rank-name">Tuấn Kiệt</div><div class="rank-grade">Lớp 3</div></div>
+        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 4700</div>
+        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 10 ngày</div>
+        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 8</div>
+      </div>
+
+      <div class="rank-row">
+        <div class="rank-no">#13</div>
+        <div class="rank-avatar">👧</div>
+        <div class="rank-info"><div class="rank-name">Thuỳ Linh</div><div class="rank-grade">Lớp 1</div></div>
+        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 4500</div>
+        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 13 ngày</div>
+        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 16</div>
+      </div>
+
+      <div class="rank-row">
+        <div class="rank-no">#14</div>
+        <div class="rank-avatar">👦</div>
+        <div class="rank-info"><div class="rank-name">Quang Huy</div><div class="rank-grade">Lớp 2</div></div>
+        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 4400</div>
+        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 9 ngày</div>
+        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 14</div>
+      </div>
+
+      <!-- Dòng của em -->
+      <div class="rank-row is-me">
+        <div class="me-tag">⭐ Đây là em</div>
+        <div class="rank-no">#15</div>
+        <div class="rank-avatar">👧</div>
+        <div class="rank-info"><div class="rank-name">Nguyễn Minh Anh</div><div class="rank-grade">Lớp 1</div></div>
+        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 4250</div>
+        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 12 ngày</div>
+        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 15</div>
+      </div>
+
+      <div class="rank-row">
+        <div class="rank-no">#16</div>
+        <div class="rank-avatar">👦</div>
+        <div class="rank-info"><div class="rank-name">Gia Hân</div><div class="rank-grade">Lớp 3</div></div>
+        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 4100</div>
+        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 8 ngày</div>
+        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 13</div>
+      </div>
+
+      <div class="rank-row">
+        <div class="rank-no">#17</div>
+        <div class="rank-avatar">🧒</div>
+        <div class="rank-info"><div class="rank-name">Minh Khôi</div><div class="rank-grade">Lớp 2</div></div>
+        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 3950</div>
+        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 7 ngày</div>
+        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 12</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ THÀNH TÍCH CỦA EM ============ -->
+  <section class="block">
+    <div class="my-achieve">
+      <h3>⭐ Thành tích của em</h3>
+      <div class="my-stat-grid">
+        <div class="my-stat"><div class="my-stat-icon">🏅</div><div class="my-stat-num" id="myRankNum">#15</div><div class="my-stat-lbl">Hạng hiện tại</div></div>
+        <div class="my-stat"><div class="my-stat-icon">⭐</div><div class="my-stat-num" id="myXpNum">4250</div><div class="my-stat-lbl">Điểm XP</div></div>
+        <div class="my-stat"><div class="my-stat-icon">🔥</div><div class="my-stat-num" id="myStreakNum">12</div><div class="my-stat-lbl">Ngày liên tiếp</div></div>
+        <div class="my-stat"><div class="my-stat-icon">🎖️</div><div class="my-stat-num">15</div><div class="my-stat-lbl">Huy hiệu</div></div>
+      </div>
+      <div class="my-msg">
+        🎯 Em đang đứng hạng <strong>#15</strong>. Chỉ cần thêm <span class="gap-num">150 XP</span> nữa là vượt bạn phía trên để lên hạng <strong>#14</strong>!
+      </div>
+      <a href="thu-thach.html" class="btn" onclick="celebrate(event)">🎯 Làm thử thách ngay</a>
+    </div>
+  </section>
+
+  <!-- ============ NGÔI SAO TUẦN ============ -->
+  <section class="block">
+    <h2 class="section-title">🌟 Ngôi sao tuần này</h2>
+    <p class="section-sub">Những bạn được vinh danh trong tuần. Mỗi bạn đều giỏi một điều đặc biệt!</p>
+    <div class="star-grid">
+      <div class="star-card sc1">
+        <div class="star-icon">🔥</div>
+        <div class="star-title">Chăm chỉ nhất</div>
+        <div class="star-name">Minh Anh</div>
+        <div class="star-value">Chuỗi học 25 ngày</div>
+      </div>
+      <div class="star-card sc2">
+        <div class="star-icon">⭐</div>
+        <div class="star-title">Nhiều XP nhất</div>
+        <div class="star-name">Gia Bảo</div>
+        <div class="star-value">850 XP trong tuần</div>
+      </div>
+      <div class="star-card sc3">
+        <div class="star-icon">🏅</div>
+        <div class="star-title">Nhiều huy hiệu nhất</div>
+        <div class="star-name">Hải Nam</div>
+        <div class="star-value">5 huy hiệu mới</div>
+      </div>
+      <div class="star-card sc4">
+        <div class="star-icon">🚀</div>
+        <div class="star-title">Tiến bộ nhất</div>
+        <div class="star-name">Khánh Vy</div>
+        <div class="star-value">Tăng 12 bậc</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HUY HIỆU XẾP HẠNG ============ -->
+  <section class="block">
+    <h2 class="section-title">🎖️ Huy hiệu xếp hạng</h2>
+    <p class="section-sub">Leo lên các vị trí cao để mở khóa những huy hiệu danh giá này nhé!</p>
+    <div class="rankbadge-grid">
+      <div class="rankbadge">
+        <div class="rankbadge-icon">👑</div>
+        <div class="rankbadge-name">Nhà vô địch tuần</div>
+        <div class="rankbadge-desc">Dành cho bạn đứng Top 1 của tuần</div>
+      </div>
+      <div class="rankbadge">
+        <div class="rankbadge-icon">🏆</div>
+        <div class="rankbadge-name">Top 10 xuất sắc</div>
+        <div class="rankbadge-desc">Dành cho bạn lọt vào Top 10 tuần</div>
+      </div>
+      <div class="rankbadge">
+        <div class="rankbadge-icon">⭐</div>
+        <div class="rankbadge-name">Ngôi sao Toán học</div>
+        <div class="rankbadge-desc">Dành cho bạn lọt vào Top 100</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ FOOTER ĐIỀU HƯỚNG ============ -->
+<nav class="footer-nav">
+  <a href="index.html"><span>🏠</span>Trang chủ</a>
+  <a href="trang-lop.html"><span>📚</span>Bài học</a>
+  <a href="tro-choi.html"><span>🎮</span>Trò chơi</a>
+  <a href="thu-thach.html"><span>🎯</span>Thử thách</a>
+  <a href="bang-xep-hang.html" class="active"><span>🏆</span>Xếp hạng</a>
+  <a href="ho-so.html"><span>👤</span>Hồ sơ</a>
+</nav>
+
+<script>
+  // Bộ lọc - toggle active trong từng nhóm
+  document.querySelectorAll('.filter-group').forEach(group => {
+    const btns = group.querySelectorAll('.filter-btn');
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  });
+
+  // Hiệu ứng confetti
+  function celebrate(e) {
+    if (e) e.preventDefault();
+    const colors = ['#4F8CFF', '#FFD93D', '#6BCB77', '#FF9F43', '#FF6B9D', '#9B72FF'];
+    const x = e ? e.clientX : window.innerWidth / 2;
+    const y = e ? e.clientY : window.innerHeight / 2;
+    for (let i = 0; i < 28; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.left = x + 'px'; c.style.top = y + 'px';
+      document.body.appendChild(c);
+      const angle = Math.random() * Math.PI * 2;
+      const v = 100 + Math.random() * 200;
+      const vx = Math.cos(angle) * v, vy = Math.sin(angle) * v - 150;
+      c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${vx}px, ${vy + 300}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+      ], { duration: 1400, easing: 'cubic-bezier(.25,.46,.45,.94)' }).onfinish = () => c.remove();
+    }
+  }
+
+  // Pháo giấy nhẹ trên bục nhận giải khi tải trang
+  window.addEventListener('load', () => {
+    const podium = document.getElementById('podium');
+    if (!podium) return;
+    const r = podium.getBoundingClientRect();
+    setTimeout(() => {
+      celebrate({ clientX: r.left + r.width / 2, clientY: r.top + 60, preventDefault(){} });
+    }, 500);
+  });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+  /* Chặn trang + hiển thị đúng người đăng nhập (Supabase) */
+  window.tvknLogout = function(){ TVKN.signOut(); };
+  TVKN.guardPage();
+</script>
+<script>
+  /* ============ ĐỔ DỮ LIỆU THẬT TỪ SUPABASE VÀO BẢNG XẾP HẠNG ============ */
+  (async function loadRealLeaderboard() {
+    try {
+      if (!window.TVKN || !TVKN.configured) return; // chưa cấu hình → giữ nội dung demo
+
+      const esc = (s) => String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      const num = (v) => Number(v || 0).toLocaleString('vi-VN');
+      const gradeText = (g) => (g == null || g === '') ? '' : ('Lớp ' + g);
+      const avatarOf = (a) => (a && String(a).trim()) ? a : '🙂';
+
+      // Lấy hồ sơ của em để highlight đúng dòng
+      let myName = '';
+      try { const me = await TVKN.getProfile(); myName = me && me.name ? me.name : ''; } catch (e) {}
+
+      // Lấy bảng xếp hạng thật (đã sắp theo xp desc, kèm rank)
+      const rows = await TVKN.getLeaderboard(20);
+      if (Array.isArray(rows) && rows.length) {
+
+        /* ---- TOP 3 PODIUM ---- */
+        // Thứ tự hiển thị: hạng 2 (trái) - hạng 1 (giữa) - hạng 3 (phải)
+        const podium = document.getElementById('podium');
+        if (podium) {
+          const slots = { 1: podium.querySelector('.p1'), 2: podium.querySelector('.p2'), 3: podium.querySelector('.p3') };
+          [1, 2, 3].forEach((pos) => {
+            const item = slots[pos];
+            if (!item) return;
+            const u = rows[pos - 1];
+            if (!u) { item.style.display = 'none'; return; } // ít hơn 3 bạn → ẩn ô trống
+            item.style.display = '';
+            const avEl = item.querySelector('.podium-avatar');
+            const nmEl = item.querySelector('.podium-name');
+            const xpEl = item.querySelector('.podium-xp');
+            if (avEl) avEl.textContent = avatarOf(u.avatar);
+            if (nmEl) nmEl.textContent = u.name || '';
+            if (xpEl) xpEl.innerHTML = '⭐ ' + num(u.xp) + ' XP';
+          });
+        }
+
+        /* ---- DANH SÁCH XẾP HẠNG (từ hạng 4 trở đi) ---- */
+        const list = document.getElementById('rankList');
+        if (list) {
+          // QUAN TRỌNG: Xoá sạch TẤT CẢ dòng demo cứng trước (kể cả dòng
+          // "⭐ Đây là em" cũ) để không còn highlight sai người nào sót lại.
+          list.innerHTML = '';
+
+          const rest = rows.slice(3); // Top 3 đã lên bục
+          // Chỉ gắn "⭐ Đây là em" đúng dòng có tên trùng hồ sơ của em,
+          // và chỉ khi em thật sự xuất hiện trong danh sách (hạng 4+).
+          // Nếu em đang ở Top 3 (trên bục) thì danh sách KHÔNG có dòng "Đây là em".
+          const html = rest.map((u) => {
+            const isMe = !!myName && u.name === myName;
+            const meTag = isMe ? '<div class="me-tag">⭐ Đây là em</div>' : '';
+            return (
+              '<div class="rank-row' + (isMe ? ' is-me' : '') + '">' +
+                meTag +
+                '<div class="rank-no">#' + esc(u.rank) + '</div>' +
+                '<div class="rank-avatar">' + esc(avatarOf(u.avatar)) + '</div>' +
+                '<div class="rank-info"><div class="rank-name">' + esc(u.name) + '</div>' +
+                  '<div class="rank-grade">' + esc(gradeText(u.grade)) + '</div></div>' +
+                '<div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ ' + num(u.xp) + '</div>' +
+                '<div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 ' + num(u.streak_days) + ' ngày</div>' +
+              '</div>'
+            );
+          }).join('');
+          list.innerHTML = html; // chỉ chứa các dòng thật, không còn dòng demo
+        }
+      }
+
+      /* ---- THÀNH TÍCH CỦA EM ---- */
+      try {
+        const myRank = await TVKN.getMyRank();
+        const elRank = document.getElementById('myRankNum');
+        if (elRank && myRank != null) elRank.textContent = '#' + myRank;
+      } catch (e) {}
+      try {
+        const prog = await TVKN.getProgress();
+        if (prog) {
+          const elXp = document.getElementById('myXpNum');
+          const elStreak = document.getElementById('myStreakNum');
+          if (elXp && prog.xp != null) elXp.textContent = Number(prog.xp || 0).toLocaleString('vi-VN');
+          if (elStreak && prog.streak_days != null) elStreak.textContent = prog.streak_days;
+        }
+      } catch (e) {}
+
+    } catch (err) {
+      // Có lỗi → giữ nguyên nội dung demo, không làm trắng trang
+      console.warn('Không tải được bảng xếp hạng thật:', err);
+    }
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 1: Các số 0, 1, 2, 3, 4, 5 - TOÁN VUI KẾT NỐI</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4F8CFF; --yellow: #FFD93D; --green: #6BCB77; --orange: #FF9F43;
+    --pink: #FF6B9D; --purple: #9B72FF; --white: #FFFFFF; --bg-soft: #F4F8FF;
+    --text-dark: #2D3748; --text-soft: #6B7280;
+    --shadow: 0 8px 24px rgba(79, 140, 255, 0.15);
+    --shadow-lg: 0 16px 40px rgba(79, 140, 255, 0.22);
+    --theme: #6BCB77; --theme-soft: #D4F4DD;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Fredoka','Baloo 2',system-ui,sans-serif; background: var(--bg-soft); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+  a { text-decoration: none; color: inherit; }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; height: 64px; background: var(--white); box-shadow: 0 4px 20px rgba(79,140,255,.08); display: flex; align-items: center; padding: 0 22px; gap: 16px; }
+  .back-btn { display: inline-flex; align-items: center; gap: 7px; padding: 8px 15px; border-radius: 12px; background: var(--bg-soft); font-weight: 700; font-size: 14px; transition: all .2s; }
+  .back-btn:hover { background: var(--theme); color: var(--white); }
+  .header-title { font-family: 'Baloo 2',sans-serif; font-weight: 700; font-size: 16px; text-align: center; flex: 1; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .xp-pill { display: flex; align-items: center; gap: 6px; padding: 7px 13px; background: linear-gradient(135deg,var(--yellow),var(--orange)); color: var(--white); border-radius: 12px; font-weight: 700; font-size: 14px; }
+  .avatar { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg,var(--green),var(--blue)); display: flex; align-items: center; justify-content: center; font-size: 20px; border: 3px solid var(--white); box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 22px 60px; }
+
+  /* BANNER BÀI HỌC */
+  .lesson-banner { margin-top: 26px; background: linear-gradient(135deg,var(--theme-soft),#EAFBEF); border-radius: 26px; padding: 32px 36px; display: flex; align-items: center; gap: 26px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+  .lesson-banner-text { flex: 1; z-index: 1; }
+  .lesson-banner h1 { font-family: 'Baloo 2',sans-serif; font-size: clamp(24px,4vw,34px); font-weight: 800; line-height: 1.15; margin-bottom: 8px; }
+  .lesson-banner p { color: var(--text-soft); font-size: 16px; }
+  .lesson-banner .mascot { width: 120px; height: 120px; flex-shrink: 0; background: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 70px; box-shadow: 0 14px 34px rgba(107,203,119,.3); animation: bounce 3s ease-in-out infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+  /* THANH TIẾN ĐỘ BÀI HỌC */
+  .steps { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 28px 0; flex-wrap: wrap; }
+  .step { display: flex; align-items: center; gap: 8px; }
+  .step-dot { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; background: var(--white); color: var(--text-soft); box-shadow: var(--shadow); border: 3px solid transparent; }
+  .step.done .step-dot { background: var(--green); color: var(--white); }
+  .step.current .step-dot { background: var(--blue); color: var(--white); border-color: rgba(79,140,255,.3); transform: scale(1.08); }
+  .step-label { font-size: 13px; font-weight: 600; color: var(--text-soft); }
+  .step.current .step-label, .step.done .step-label { color: var(--text-dark); }
+  .step-line { width: 28px; height: 3px; background: #E2E5EA; border-radius: 2px; }
+
+  /* KHỐI */
+  .block { background: var(--white); border-radius: 24px; padding: 30px; box-shadow: var(--shadow); margin-bottom: 22px; }
+  .block-title { font-family: 'Baloo 2',sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+  .block-sub { color: var(--text-soft); font-size: 15px; margin-bottom: 18px; }
+
+  .block.warmup { background: linear-gradient(135deg,#FFF8E1,#FFFDF5); }
+
+  /* HÌNH MINH HỌA */
+  .objects { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; font-size: 48px; padding: 18px; background: var(--bg-soft); border-radius: 18px; margin-bottom: 18px; min-height: 84px; align-items: center; }
+
+  /* ĐÁP ÁN */
+  .options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .opt { padding: 18px; border-radius: 16px; background: var(--white); border: 2px solid #E8ECF4; font-family: 'Baloo 2',sans-serif; font-size: 24px; font-weight: 800; cursor: pointer; transition: all .2s; text-align: center; }
+  .opt:hover { border-color: var(--blue); transform: translateY(-3px); }
+  .opt.correct { background: var(--green); color: var(--white); border-color: var(--green); }
+  .opt.wrong { background: #FFE5E5; border-color: var(--pink); }
+  .feedback { margin-top: 16px; padding: 14px 18px; border-radius: 14px; font-weight: 600; display: none; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--theme-soft); color: #2F8F3E; }
+  .feedback.no { background: #FFF0E6; color: #C76A1E; }
+
+  /* DÃY SỐ */
+  .num-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 8px 0 18px; }
+  .num-tile { width: 56px; height: 56px; border-radius: 14px; background: var(--theme-soft); color: #2F8F3E; font-family: 'Baloo 2',sans-serif; font-size: 26px; font-weight: 800; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .2s; border: none; }
+  .num-tile:hover { background: var(--green); color: var(--white); transform: translateY(-4px) scale(1.08); }
+  .num-tile.active { background: var(--blue); color: var(--white); transform: scale(1.1); }
+  .num-detail { text-align: center; padding: 16px; background: var(--bg-soft); border-radius: 16px; min-height: 70px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; font-size: 18px; font-weight: 600; }
+
+  /* THẺ ĐỌC - VIẾT SỐ */
+  .read-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .read-card { background: var(--bg-soft); border-radius: 18px; padding: 16px 12px; text-align: center; transition: all .2s; }
+  .read-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .read-num { font-family: 'Baloo 2',sans-serif; font-size: 46px; font-weight: 800; color: var(--blue); line-height: 1; }
+  .read-word { font-weight: 700; color: var(--text-dark); margin: 6px 0 4px; font-size: 17px; }
+  .read-objs { font-size: 20px; min-height: 26px; margin-bottom: 10px; }
+  .listen-btn { padding: 8px 16px; border-radius: 12px; background: var(--white); border: 2px solid #E2E5EA; font-family: inherit; font-weight: 700; font-size: 14px; cursor: pointer; transition: all .2s; }
+  .listen-btn:hover { background: var(--green); color: var(--white); border-color: var(--green); }
+
+  /* LUYỆN TẬP DÃY SỐ */
+  .seq-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; margin: 14px 0; }
+  .seq-cell { width: 56px; height: 56px; border-radius: 14px; background: var(--theme-soft); color: #2F8F3E; font-family: 'Baloo 2',sans-serif; font-size: 26px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  .seq-input { width: 56px; height: 56px; border-radius: 14px; border: 2px dashed var(--blue); background: var(--white); text-align: center; font-family: 'Baloo 2',sans-serif; font-size: 26px; font-weight: 800; color: var(--blue); outline: none; }
+  .seq-input.right { border: 2px solid var(--green); background: var(--theme-soft); color: #2F8F3E; }
+  .seq-input.wrongi { border: 2px solid var(--pink); background: #FFE5E5; }
+  .seq-label { font-weight: 700; margin-bottom: 4px; }
+
+  /* AI HỖ TRỢ */
+  .block.ai { background: linear-gradient(135deg,var(--blue),var(--purple)); color: var(--white); }
+  .block.ai .block-sub { color: rgba(255,255,255,.9); }
+  .ai-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .ai-bunny { width: 56px; height: 56px; background: rgba(255,255,255,.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; }
+  .ai-input { display: flex; gap: 8px; background: rgba(255,255,255,.95); padding: 7px; border-radius: 16px; }
+  .ai-input input { flex: 1; border: none; background: transparent; padding: 12px 14px; font-family: inherit; font-size: 15px; outline: none; color: var(--text-dark); }
+  .ai-send { background: linear-gradient(135deg,var(--orange),var(--pink)); color: var(--white); border: none; padding: 12px 22px; border-radius: 12px; font-family: inherit; font-weight: 700; cursor: pointer; transition: transform .2s; }
+  .ai-send:hover { transform: scale(1.05); }
+  .ai-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .ai-chip { background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.3); color: var(--white); padding: 7px 14px; border-radius: 999px; font-size: 13px; cursor: pointer; transition: all .2s; }
+  .ai-chip:hover { background: rgba(255,255,255,.35); }
+  .ai-answer { margin-top: 14px; background: rgba(255,255,255,.95); color: var(--text-dark); border-radius: 16px; padding: 14px 18px; font-weight: 600; display: none; }
+  .ai-answer.show { display: block; }
+
+  /* NÚT */
+  .btn { display: inline-flex; align-items: center; gap: 9px; padding: 14px 28px; border-radius: 16px; font-family: inherit; font-weight: 700; font-size: 16px; border: none; cursor: pointer; transition: all .25s cubic-bezier(.34,1.56,.64,1); }
+  .btn-primary { background: linear-gradient(135deg,var(--green),#4DBE5C); color: var(--white); box-shadow: 0 8px 20px rgba(107,203,119,.45); }
+  .btn-primary:hover { transform: translateY(-3px) scale(1.02); }
+  .btn-block { width: 100%; justify-content: center; }
+
+  /* ĐIỀU HƯỚNG */
+  .nav-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; }
+  .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 22px; border-radius: 14px; background: var(--white); font-weight: 700; font-size: 15px; box-shadow: var(--shadow); transition: all .2s; cursor: pointer; border: none; font-family: inherit; }
+  .nav-btn:hover { transform: translateY(-2px); }
+  .nav-btn.disabled { opacity: .4; pointer-events: none; }
+  .nav-btn.next { background: var(--blue); color: var(--white); }
+
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 9999; border-radius: 2px; }
+
+  @media (max-width: 560px) {
+    .header-title { display: none; }
+    .wrap { padding: 0 14px 50px; }
+    .lesson-banner { flex-direction: column; text-align: center; padding: 26px; }
+    .options { grid-template-columns: repeat(2, 1fr); }
+    .read-grid { grid-template-columns: repeat(2, 1fr); }
+    .step-label { display: none; }
+    .step-line { width: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <a href="trang-lop.html" class="back-btn">← Danh sách bài</a>
+  <div class="header-title">Bài 1: Các số 0, 1, 2, 3, 4, 5</div>
+  <div class="header-right">
+    <div class="xp-pill">🪙 <span id="xpVal">450</span></div>
+    <div class="avatar">👧</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- BANNER -->
+  <div class="lesson-banner">
+    <div class="lesson-banner-text">
+      <h1>Bài 1: Các số 0, 1, 2, 3, 4, 5</h1>
+      <p>Hôm nay chúng mình cùng khám phá, đọc, viết và đếm các số từ 0 đến 5 nhé!</p>
+    </div>
+    <div class="mascot">🐣</div>
+  </div>
+
+  <!-- THANH TIẾN ĐỘ BÀI -->
+  <div class="steps">
+    <div class="step current"><div class="step-dot">1</div><span class="step-label">Khám phá</span></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-dot">2</div><span class="step-label">Đọc - Viết</span></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-dot">3</div><span class="step-label">Đếm</span></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-dot">4</div><span class="step-label">Luyện tập</span></div>
+  </div>
+
+  <!-- KHỐI 1: KHÁM PHÁ -->
+  <div class="block">
+    <h2 class="block-title">🔍 Khám phá số lượng và chữ số</h2>
+    <p class="block-sub">Bấm vào một con số phía dưới. Bình cá sẽ hiện đúng bấy nhiêu chú cá để em đếm nhé! Số 0 là chiếc bình trống không.</p>
+    <div class="objects" id="exploreObjs">🐟🐟🐟</div>
+    <div class="num-detail" id="exploreDetail">👆 Em hãy bấm vào một con số bên dưới nhé!</div>
+    <div class="num-row" id="exploreRow"></div>
+  </div>
+
+  <!-- KHỐI 2: ĐỌC & VIẾT SỐ -->
+  <div class="block">
+    <h2 class="block-title">📖 Đọc và viết số</h2>
+    <p class="block-sub">Mỗi con số có một cách đọc riêng. Bấm nút 🔊 Nghe để luyện đọc theo nhé!</p>
+    <div class="read-grid" id="readGrid"></div>
+    <div class="feedback" id="readFb"></div>
+  </div>
+
+  <!-- KHỐI 3: HOẠT ĐỘNG ĐẾM -->
+  <div class="block">
+    <h2 class="block-title">🔢 Hoạt động đếm</h2>
+    <p class="block-sub">Em hãy đếm thật kĩ rồi chọn số đúng nhé!</p>
+
+    <!-- Câu 1: vịt -->
+    <p style="font-weight:700;margin-bottom:8px">Câu 1: Có bao nhiêu con vịt?</p>
+    <div class="objects" id="q1objs">🦆🦆🦆</div>
+    <div class="options" id="q1opts">
+      <button class="opt" data-val="2">2</button>
+      <button class="opt" data-val="3">3</button>
+      <button class="opt" data-val="4">4</button>
+      <button class="opt" data-val="5">5</button>
+    </div>
+    <div class="feedback" id="q1fb"></div>
+
+    <!-- Câu 2: cà rốt -->
+    <p style="font-weight:700;margin:22px 0 8px">Câu 2: Có bao nhiêu củ cà rốt?</p>
+    <div class="objects" id="q2objs">🥕🥕🥕🥕🥕</div>
+    <div class="options" id="q2opts">
+      <button class="opt" data-val="3">3</button>
+      <button class="opt" data-val="4">4</button>
+      <button class="opt" data-val="5">5</button>
+      <button class="opt" data-val="2">2</button>
+    </div>
+    <div class="feedback" id="q2fb"></div>
+
+    <!-- Câu 3: cá trong bình (trường hợp số 0) -->
+    <p style="font-weight:700;margin:22px 0 8px">Câu 3: Trong bình có bao nhiêu con cá?</p>
+    <div class="objects" id="q3objs" style="font-size:60px">🐠</div>
+    <div class="options" id="q3opts">
+      <button class="opt" data-val="0">0</button>
+      <button class="opt" data-val="1">1</button>
+      <button class="opt" data-val="2">2</button>
+      <button class="opt" data-val="3">3</button>
+    </div>
+    <div class="feedback" id="q3fb"></div>
+  </div>
+
+  <!-- KHỐI 4: LUYỆN TẬP DÃY SỐ -->
+  <div class="block warmup">
+    <h2 class="block-title">✏️ Luyện tập điền dãy số</h2>
+    <p class="block-sub">Em hãy điền số còn thiếu vào ô trống cho đúng thứ tự, rồi bấm Kiểm tra nhé!</p>
+
+    <p class="seq-label">a) Dãy số tiến (đếm xuôi):</p>
+    <div class="seq-row" id="seqUp"></div>
+
+    <p class="seq-label" style="margin-top:14px">b) Dãy số lùi (đếm ngược):</p>
+    <div class="seq-row" id="seqDown"></div>
+
+    <button class="btn btn-primary btn-block" style="margin-top:10px" onclick="checkSeq()">✅ Kiểm tra</button>
+    <div class="feedback" id="seqFb"></div>
+  </div>
+
+  <!-- AI HỖ TRỢ -->
+  <div class="block ai">
+    <div class="ai-head">
+      <div class="ai-bunny">🐰</div>
+      <div>
+        <h2 class="block-title" style="color:#fff;margin:0">Hỏi Thỏ Toán</h2>
+        <p class="block-sub" style="margin:0">Em chưa hiểu chỗ nào? Hỏi Thỏ Toán nhé!</p>
+      </div>
+    </div>
+    <div class="ai-input">
+      <input type="text" id="aiInput" placeholder="Nhập câu hỏi của em..." onkeydown="if(event.key==='Enter')askAi(event)">
+      <button class="ai-send" onclick="askAi(event)">💬 Hỏi</button>
+    </div>
+    <div class="ai-chips">
+      <span class="ai-chip" onclick="askChip(this)">Số 0 nghĩa là gì?</span>
+      <span class="ai-chip" onclick="askChip(this)">Làm sao để đếm đúng?</span>
+      <span class="ai-chip" onclick="askChip(this)">Em chưa biết viết số 5.</span>
+    </div>
+    <div class="ai-answer" id="aiAnswer"></div>
+  </div>
+
+  <!-- BẮT ĐẦU LUYỆN TẬP -->
+  <div class="block" style="text-align:center;background:linear-gradient(135deg,#FFF8E1,#FFFDF5)">
+    <h2 class="block-title" style="justify-content:center">🎯 Sẵn sàng luyện tập chưa?</h2>
+    <p class="block-sub">Làm bài luyện tập để nhận <b>+30 XP</b> và huy hiệu <b>Bé Đếm Số</b> nhé!</p>
+    <a href="lam-bai-tap.html?lesson=bai-1" class="btn btn-primary btn-block">Bắt đầu luyện tập →</a>
+  </div>
+
+  <!-- ĐIỀU HƯỚNG -->
+  <div class="nav-row">
+    <button class="nav-btn disabled">← Bài trước</button>
+    <a href="trang-lop.html" class="nav-btn">📚 Danh sách bài</a>
+    <a href="bai-2.html" class="nav-btn next">Bài tiếp theo →</a>
+  </div>
+
+</div>
+
+<script>
+  const words = ['không','một','hai','ba','bốn','năm'];
+
+  // ===== XP =====
+  function addXp(n) {
+    const el = document.getElementById('xpVal');
+    el.textContent = (parseInt(el.textContent, 10) || 0) + n;
+  }
+
+  // ===== KHỐI 1: KHÁM PHÁ =====
+  const exploreRow = document.getElementById('exploreRow');
+  for (let i = 0; i <= 5; i++) {
+    const b = document.createElement('button');
+    b.className = 'num-tile'; b.textContent = i; b.dataset.n = i;
+    exploreRow.appendChild(b);
+  }
+  exploreRow.addEventListener('click', e => {
+    const t = e.target.closest('.num-tile');
+    if (!t) return;
+    document.querySelectorAll('#exploreRow .num-tile').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    const n = +t.dataset.n;
+    const objs = document.getElementById('exploreObjs');
+    const detail = document.getElementById('exploreDetail');
+    objs.textContent = n === 0 ? '🐠' : '🐟'.repeat(n);
+    objs.style.fontSize = n === 0 ? '60px' : '48px';
+    if (n === 0) {
+      detail.innerHTML = '<span>Bình cá <b>trống không</b> — không có chú cá nào.</span>' +
+        '<span>Số <b style="font-size:24px;color:var(--blue)">0</b> đọc là &ldquo;không&rdquo;.</span>';
+    } else {
+      detail.innerHTML = '<span>Đếm: ' + Array.from({length:n}, (_,i)=>words[i+1]).join(' - ') + '.</span>' +
+        '<span>Có <b style="font-size:24px;color:var(--blue)">' + n + '</b> chú cá — đọc là &ldquo;' + words[n] + '&rdquo;.</span>';
+    }
+  });
+
+  // ===== KHỐI 2: ĐỌC & VIẾT SỐ =====
+  const readGrid = document.getElementById('readGrid');
+  const objMap = ['','🐟','🍎🍎','🌸🌸🌸','🐱🐱🐱🐱','🦆🦆🦆🦆🦆'];
+  for (let i = 0; i <= 5; i++) {
+    const card = document.createElement('div');
+    card.className = 'read-card';
+    card.innerHTML =
+      '<div class="read-num">' + i + '</div>' +
+      '<div class="read-word">' + words[i].charAt(0).toUpperCase() + words[i].slice(1) + '</div>' +
+      '<div class="read-objs">' + (i === 0 ? '∅' : objMap[i]) + '</div>' +
+      '<button class="listen-btn" data-n="' + i + '">🔊 Nghe</button>';
+    readGrid.appendChild(card);
+  }
+  readGrid.addEventListener('click', e => {
+    const b = e.target.closest('.listen-btn');
+    if (!b) return;
+    const n = +b.dataset.n;
+    speak(words[n]);
+    const fb = document.getElementById('readFb');
+    fb.className = 'feedback ok show';
+    fb.innerHTML = '🔊 Số <b>' + n + '</b> đọc là &ldquo;<b>' + words[n] + '</b>&rdquo;. Em đọc to theo nhé!';
+    celebrate(e);
+  });
+
+  // Phát âm (Web Speech API nếu trình duyệt hỗ trợ)
+  function speak(text) {
+    try {
+      if ('speechSynthesis' in window) {
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'vi-VN'; u.rate = 0.85;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(u);
+      }
+    } catch (err) { /* bỏ qua nếu không hỗ trợ */ }
+  }
+
+  // ===== KHỐI 3: HOẠT ĐỘNG ĐẾM =====
+  function setupCount(optsId, fbId, correct) {
+    const opts = document.querySelectorAll('#' + optsId + ' .opt');
+    let solved = false;
+    opts.forEach(opt => {
+      opt.addEventListener('click', e => {
+        const fb = document.getElementById(fbId);
+        opts.forEach(o => o.classList.remove('wrong'));
+        if (+opt.dataset.val === correct) {
+          opts.forEach(o => o.classList.remove('correct'));
+          opt.classList.add('correct');
+          fb.className = 'feedback ok show';
+          fb.innerHTML = '🎉 Chính xác! Có <b>' + correct + '</b> — đọc là &ldquo;' + words[correct] + '&rdquo;. <b>+5 XP</b>';
+          if (!solved) { addXp(5); solved = true; }
+          celebrate(e);
+        } else {
+          opt.classList.add('wrong');
+          fb.className = 'feedback no show';
+          fb.textContent = '💡 Chưa đúng rồi. Em hãy đếm lại từng cái một nhé!';
+        }
+      });
+    });
+  }
+  setupCount('q1opts', 'q1fb', 3);
+  setupCount('q2opts', 'q2fb', 5);
+  setupCount('q3opts', 'q3fb', 1);
+
+  // ===== KHỐI 4: LUYỆN TẬP DÃY SỐ =====
+  // Tiến: 0,1,2,_,4,5  (thiếu vị trí 3)
+  const upSeq = [0,1,2,null,4,5];
+  // Lùi: 5,_,3,_,1,0  (thiếu vị trí 4 và 2)
+  const downSeq = [5,null,3,null,1,0];
+
+  function buildSeq(containerId, seq, prefix) {
+    const c = document.getElementById(containerId);
+    seq.forEach((v, i) => {
+      if (v === null) {
+        const inp = document.createElement('input');
+        inp.type = 'number'; inp.className = 'seq-input';
+        inp.min = '0'; inp.max = '5'; inp.maxLength = 1;
+        inp.id = prefix + i; inp.setAttribute('inputmode', 'numeric');
+        c.appendChild(inp);
+      } else {
+        const d = document.createElement('div');
+        d.className = 'seq-cell'; d.textContent = v;
+        c.appendChild(d);
+      }
+    });
+  }
+  buildSeq('seqUp', upSeq, 'up');
+  buildSeq('seqDown', downSeq, 'down');
+
+  function checkSeq() {
+    let allRight = true, answered = false;
+    const fb = document.getElementById('seqFb');
+    const check = (seq, prefix) => {
+      seq.forEach((v, i) => {
+        if (v !== null) return;
+        const correct = (prefix === 'up') ? i : (5 - i); // dãy tiến = chỉ số; dãy lùi = 5 - chỉ số
+        const inp = document.getElementById(prefix + i);
+        inp.classList.remove('right', 'wrongi');
+        if (inp.value === '') { allRight = false; return; }
+        answered = true;
+        if (+inp.value === correct) {
+          inp.classList.add('right');
+        } else {
+          inp.classList.add('wrongi');
+          allRight = false;
+        }
+      });
+    };
+    check(upSeq, 'up');
+    check(downSeq, 'down');
+
+    if (allRight && answered) {
+      fb.className = 'feedback ok show';
+      fb.innerHTML = '🎉 Tuyệt vời! Em đã điền đúng cả hai dãy số! <b>+10 XP</b>';
+      addXp(10);
+      celebrate();
+    } else if (!answered) {
+      fb.className = 'feedback no show';
+      fb.textContent = '💡 Em hãy điền số vào các ô trống trước nhé!';
+    } else {
+      fb.className = 'feedback no show';
+      fb.textContent = '💡 Còn vài ô chưa đúng (ô đỏ). Em hãy xem lại thứ tự và thử lại nhé!';
+    }
+  }
+
+  // ===== AI THỎ TOÁN =====
+  const aiReplies = {
+    'số 0 nghĩa là gì?': 'Số 0 nghĩa là "không có gì" cả em ạ. Ví dụ chiếc bình không có chú cá nào thì ta viết số 0 nhé! 🐰',
+    'làm sao để đếm đúng?': 'Em hãy chỉ tay vào từng vật và đếm một - hai - ba... mỗi vật chỉ đếm đúng một lần thôi nhé! ✋',
+    'em chưa biết viết số 5.': 'Số 5 viết gồm một nét ngang trên, một nét sổ xuống, rồi một nét cong tròn ở dưới như cái bụng. Em tập viết theo nhé! ✏️'
+  };
+  function showAi(q) {
+    const ans = document.getElementById('aiAnswer');
+    const key = q.trim().toLowerCase();
+    ans.textContent = aiReplies[key] || ('Câu hỏi hay đó! Thỏ Toán gợi ý: em hãy đếm từ 0 đến 5 và quan sát số lượng đồ vật nhé. "' + q + '" 🐰');
+    ans.className = 'ai-answer show';
+  }
+  function askAi(e) {
+    if (e) e.preventDefault();
+    const i = document.getElementById('aiInput');
+    if (!i.value.trim()) { i.focus(); return; }
+    showAi(i.value);
+    celebrate(e);
+  }
+  function askChip(el) {
+    const i = document.getElementById('aiInput');
+    i.value = el.textContent;
+    showAi(el.textContent);
+  }
+
+  // ===== CONFETTI =====
+  function celebrate(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const colors = ['#4F8CFF','#FFD93D','#6BCB77','#FF9F43','#FF6B9D','#9B72FF'];
+    const x = (e && e.clientX) ? e.clientX : window.innerWidth/2;
+    const y = (e && e.clientY) ? e.clientY : 200;
+    for (let i = 0; i < 26; i++) {
+      const c = document.createElement('div'); c.className = 'confetti';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.left = x+'px'; c.style.top = y+'px';
+      document.body.appendChild(c);
+      const a = Math.random()*Math.PI*2, v = 100+Math.random()*200;
+      c.animate([{transform:'translate(0,0)',opacity:1},{transform:`translate(${Math.cos(a)*v}px,${Math.sin(a)*v+300}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:1400,easing:'cubic-bezier(.25,.46,.45,.94)'}).onfinish=()=>c.remove();
+    }
+  }
+</script>
+<!-- Chặn đăng nhập + đồng bộ tên/avatar người học (Supabase) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+  if (window.TVKN) { window.tvknLogout = function(){ TVKN.signOut(); }; TVKN.guardPage(); }
+</script>
+</body>
+</html>

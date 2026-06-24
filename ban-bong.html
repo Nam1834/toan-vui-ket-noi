@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎈 Bắn bóng số học - TOÁN VUI KẾT NỐI</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4F8CFF;
+    --yellow: #FFD93D;
+    --green: #6BCB77;
+    --orange: #FF9F43;
+    --pink: #FF6B9D;
+    --purple: #9B72FF;
+    --white: #FFFFFF;
+    --bg-soft: #F4F8FF;
+    --text-dark: #2D3748;
+    --text-soft: #6B7280;
+    --shadow: 0 8px 24px rgba(79, 140, 255, 0.15);
+    --shadow-lg: 0 16px 40px rgba(79, 140, 255, 0.22);
+    --theme: var(--purple);
+    --theme-soft: #ECE5FF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Fredoka', 'Baloo 2', system-ui, sans-serif;
+    background: var(--bg-soft);
+    color: var(--text-dark);
+    overflow-x: hidden;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  a { text-decoration: none; color: inherit; }
+
+  /* ============== HEADER ============== */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 68px;
+    background: var(--white);
+    box-shadow: 0 4px 20px rgba(79, 140, 255, 0.08);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 18px;
+  }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 12px;
+    background: var(--bg-soft);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-dark);
+    transition: all .2s;
+  }
+  .back-btn:hover { background: var(--theme); color: var(--white); transform: translateX(-2px); }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 6px 16px rgba(79, 140, 255, 0.35);
+  }
+  .logo-name {
+    font-weight: 800; font-size: 16px;
+    background: linear-gradient(90deg, var(--blue), var(--purple));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .header-right { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+  .xp-pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 13px;
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    color: var(--white); border-radius: 13px;
+    font-weight: 700; font-size: 14px;
+    box-shadow: 0 4px 12px rgba(255, 159, 67, 0.35);
+  }
+  .avatar {
+    width: 42px; height: 42px; border-radius: 13px;
+    background: linear-gradient(135deg, var(--green), var(--blue));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 21px; border: 3px solid var(--white);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12); cursor: pointer;
+  }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 24px; }
+
+  /* ============== SCREENS ============== */
+  .screen { display: none; animation: fadeIn .4s ease; }
+  .screen.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ============== INTRO ============== */
+  .card-intro {
+    background: linear-gradient(135deg, var(--theme-soft), #F4F0FF);
+    border-radius: 30px;
+    padding: 44px 40px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    position: relative; overflow: hidden;
+  }
+  .card-intro::before {
+    content: ''; position: absolute;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.55), transparent 70%);
+    top: -130px; right: -70px;
+  }
+  .intro-mascot {
+    font-size: 96px; margin-bottom: 10px;
+    display: inline-block;
+    animation: floaty 3s ease-in-out infinite;
+  }
+  @keyframes floaty { 0%,100%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-16px) rotate(3deg)} }
+  .intro-title {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: clamp(28px, 5vw, 42px); font-weight: 800;
+    margin-bottom: 12px; position: relative;
+  }
+  .intro-desc { font-size: 18px; color: var(--text-soft); margin-bottom: 18px; position: relative; }
+  .xp-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 20px; border-radius: 999px;
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    color: var(--white); font-weight: 800; font-size: 16px;
+    box-shadow: 0 6px 16px rgba(255,159,67,0.4); margin-bottom: 26px; position: relative;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 15px 34px; border-radius: 16px;
+    font-family: inherit; font-weight: 700; font-size: 18px;
+    border: none; cursor: pointer; transition: all .25s cubic-bezier(.34,1.56,.64,1);
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--purple), var(--blue));
+    color: var(--white); box-shadow: 0 8px 20px rgba(155, 114, 255, 0.45);
+  }
+  .btn-primary:hover { transform: translateY(-4px) scale(1.03); }
+  .btn-ghost { background: var(--white); color: var(--text-dark); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+  .btn-ghost:hover { transform: translateY(-4px); }
+  .btn-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+  /* ============== PLAY HUD ============== */
+  .hud {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .hud-pill {
+    background: var(--white); border-radius: 14px;
+    padding: 10px 16px; font-weight: 700; font-size: 15px;
+    box-shadow: var(--shadow); display: flex; align-items: center; gap: 7px;
+  }
+  .hud-pill.score { color: var(--green); }
+  .hud-pill.round { color: var(--blue); }
+  .hud-pill.xp { color: var(--orange); }
+
+  .question-box {
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    color: var(--white); border-radius: 20px;
+    padding: 20px; text-align: center; margin-bottom: 14px;
+    box-shadow: var(--shadow-lg);
+  }
+  .question-box .q-label { font-size: 14px; opacity: .9; font-weight: 600; }
+  .question-box .q-text {
+    font-family: 'Baloo 2', sans-serif; font-size: 40px; font-weight: 800; letter-spacing: 1px;
+  }
+
+  /* Timer bar */
+  .timer-wrap { height: 12px; background: var(--white); border-radius: 999px; overflow: hidden; margin-bottom: 14px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06); }
+  .timer-fill { height: 100%; width: 100%; background: linear-gradient(90deg, var(--green), var(--yellow), var(--orange)); border-radius: 999px; transition: width .25s linear; }
+
+  /* Sky */
+  .sky {
+    position: relative;
+    height: 430px;
+    background: linear-gradient(180deg, #BFE3FF 0%, #E8F5FF 60%, #FFF9E8 100%);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .cloud { position: absolute; font-size: 44px; opacity: .65; animation: drift 18s linear infinite; }
+  .cloud.c1 { top: 24px; left: -60px; }
+  .cloud.c2 { top: 120px; left: -60px; animation-duration: 26s; font-size: 60px; }
+  .cloud.c3 { top: 210px; left: -60px; animation-duration: 22s; animation-delay: 4s; }
+  @keyframes drift { from { transform: translateX(0); } to { transform: translateX(120vw); } }
+
+  /* Balloon */
+  .balloon {
+    position: absolute;
+    bottom: -130px;
+    width: 78px; height: 96px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800; font-size: 30px; color: var(--white);
+    border-radius: 50% 50% 48% 48%;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    box-shadow: inset -8px -8px 18px rgba(0,0,0,0.18), inset 8px 8px 14px rgba(255,255,255,0.35);
+    animation: rise linear forwards;
+    will-change: transform;
+    user-select: none;
+  }
+  .balloon::after {
+    content: ''; position: absolute; bottom: -10px; left: 50%;
+    width: 2px; height: 14px; background: rgba(0,0,0,0.25); transform: translateX(-50%);
+  }
+  .balloon:hover { filter: brightness(1.08); }
+  @keyframes rise {
+    0%   { transform: translateY(0) translateX(0) rotate(-3deg); }
+    25%  { transform: translateY(-140px) translateX(18px) rotate(3deg); }
+    50%  { transform: translateY(-280px) translateX(-14px) rotate(-3deg); }
+    75%  { transform: translateY(-420px) translateX(14px) rotate(3deg); }
+    100% { transform: translateY(-560px) translateX(0) rotate(0deg); }
+  }
+  .balloon.pop { animation: popOut .4s ease forwards; }
+  @keyframes popOut {
+    0% { transform: scale(1); opacity: 1; }
+    40% { transform: scale(1.4); opacity: 1; }
+    100% { transform: scale(0); opacity: 0; }
+  }
+  .balloon.wrong-shake { animation: shake .4s ease; }
+  @keyframes shake {
+    0%,100%{ transform: translateX(0) }
+    25%{ transform: translateX(-8px) rotate(-6deg) }
+    75%{ transform: translateX(8px) rotate(6deg) }
+  }
+
+  .burst {
+    position: absolute; font-size: 40px; pointer-events: none;
+    transform: translate(-50%,-50%); animation: burstUp .5s ease forwards;
+  }
+  @keyframes burstUp { 0%{ opacity:1; transform: translate(-50%,-50%) scale(.6);} 100%{ opacity:0; transform: translate(-50%,-120%) scale(1.4);} }
+
+  /* Feedback toast */
+  .feedback {
+    margin-top: 14px; text-align: center; min-height: 28px;
+    font-weight: 700; font-size: 17px;
+  }
+  .feedback.good { color: var(--green); }
+  .feedback.bad { color: var(--pink); }
+
+  /* ============== RESULT ============== */
+  .result-card, .reward-card {
+    background: var(--white); border-radius: 28px;
+    padding: 40px; text-align: center; box-shadow: var(--shadow-lg);
+  }
+  .result-emoji { font-size: 84px; margin-bottom: 8px; }
+  .result-title { font-family: 'Baloo 2', sans-serif; font-size: 32px; font-weight: 800; margin-bottom: 18px; }
+  .result-stats { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 26px; }
+  .result-stat {
+    background: var(--bg-soft); border-radius: 18px; padding: 18px 26px; min-width: 130px;
+  }
+  .result-stat .num { font-family: 'Baloo 2', sans-serif; font-size: 30px; font-weight: 800; color: var(--purple); }
+  .result-stat .lbl { font-size: 13px; color: var(--text-soft); font-weight: 600; }
+
+  .reward-badge {
+    font-size: 90px; margin-bottom: 6px;
+    display: inline-block; animation: floaty 3s ease-in-out infinite;
+  }
+  .reward-xp {
+    display: inline-block; padding: 12px 30px; border-radius: 999px;
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    color: var(--white); font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 26px;
+    box-shadow: 0 8px 20px rgba(255,159,67,0.45); margin: 14px 0 26px;
+  }
+
+  /* ============== CONFETTI ============== */
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 9999; border-radius: 2px; }
+
+  /* ============== RESPONSIVE ============== */
+  @media (max-width: 560px) {
+    .header { padding: 0 14px; gap: 10px; }
+    .logo-name { display: none; }
+    .wrap { padding: 16px; }
+    .sky { height: 380px; }
+    .balloon { width: 64px; height: 80px; font-size: 26px; }
+    .question-box .q-text { font-size: 32px; }
+    .card-intro { padding: 34px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="header">
+  <a href="tro-choi.html" class="back-btn">← Trung tâm trò chơi</a>
+  <a href="tro-choi.html" class="logo">
+    <div class="logo-icon">🎈</div>
+    <span class="logo-name">TOÁN VUI KẾT NỐI</span>
+  </a>
+  <div class="header-right">
+    <div class="xp-pill">🪙 <span id="hdrXp">450 XP</span></div>
+    <div class="avatar" title="Người chơi">👧</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ===== SCREEN 1: GIỚI THIỆU ===== -->
+  <section class="screen active" id="screen-intro">
+    <div class="card-intro">
+      <div class="intro-mascot">🎈</div>
+      <h1 class="intro-title">Bắn bóng số học</h1>
+      <p class="intro-desc">Bắn đúng đáp án trước khi bóng bay mất!</p>
+      <div class="xp-tag">⭐ Phần thưởng: +40 XP</div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="startGame()">▶️ Bắt đầu</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 2: CHƠI ===== -->
+  <section class="screen" id="screen-play">
+    <div class="hud">
+      <div class="hud-pill round">🎯 Vòng <span id="roundNum">1</span>/<span id="roundTotal">8</span></div>
+      <div class="hud-pill score">✅ Đúng: <span id="scoreNum">0</span></div>
+      <div class="hud-pill xp">⭐ <span id="xpNum">0</span> XP</div>
+    </div>
+
+    <div class="question-box">
+      <div class="q-label">Bắn quả bóng có đáp án đúng!</div>
+      <div class="q-text" id="questionText">5 + 4 = ?</div>
+    </div>
+
+    <div class="timer-wrap"><div class="timer-fill" id="timerFill"></div></div>
+
+    <div class="sky" id="sky">
+      <div class="cloud c1">☁️</div>
+      <div class="cloud c2">☁️</div>
+      <div class="cloud c3">☁️</div>
+    </div>
+
+    <div class="feedback" id="feedback">&nbsp;</div>
+  </section>
+
+  <!-- ===== SCREEN 3: KẾT QUẢ ===== -->
+  <section class="screen" id="screen-result">
+    <div class="result-card">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <h2 class="result-title" id="resultTitle">Tuyệt vời!</h2>
+      <div class="result-stats">
+        <div class="result-stat"><div class="num" id="rsCorrect">0</div><div class="lbl">Câu đúng</div></div>
+        <div class="result-stat"><div class="num" id="rsTotal">8</div><div class="lbl">Tổng vòng</div></div>
+        <div class="result-stat"><div class="num" id="rsXp">0</div><div class="lbl">XP kiếm được</div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="goReward(event)">🎁 Nhận thưởng</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 4: NHẬN THƯỞNG ===== -->
+  <section class="screen" id="screen-reward">
+    <div class="reward-card">
+      <div class="reward-badge">🏆</div>
+      <h2 class="result-title">Chúc mừng em!</h2>
+      <p class="intro-desc">Em đã hoàn thành trò chơi Bắn bóng số học.</p>
+      <div class="reward-xp">🎁 +40 XP</div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="restartGame()">🔄 Chơi lại</button>
+        <a href="tro-choi.html" class="btn btn-ghost">← Về Trung tâm trò chơi</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // ===== State =====
+  const TOTAL_ROUNDS = 8;
+  const ROUND_TIME = 7000; // ms before balloons "bay mất"
+  const REWARD_XP = 40;
+
+  let round = 0;
+  let correctCount = 0;
+  let earnedXp = 0;
+  let answerLocked = false;
+  let roundTimer = null;
+  let timerStart = 0;
+  let timerRAF = null;
+
+  const sky = document.getElementById('sky');
+
+  // ===== Helpers =====
+  function rand(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+  function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=rand(0,i); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+  function showScreen(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  // ===== Build a question =====
+  function makeQuestion(){
+    const op = Math.random() < 0.5 ? '+' : '-';
+    let a, b, answer, text;
+    if(op === '+'){
+      a = rand(1, 9); b = rand(1, 10 - a < 1 ? 1 : 10 - a);
+      b = rand(1, Math.max(1, 10 - a));
+      answer = a + b;
+      text = a + ' + ' + b + ' = ?';
+    } else {
+      a = rand(2, 10); b = rand(1, a - 1);
+      answer = a - b;
+      text = a + ' - ' + b + ' = ?';
+    }
+    // build distractors near the answer
+    const opts = new Set([answer]);
+    let guard = 0;
+    while(opts.size < 4 && guard < 50){
+      guard++;
+      let d = answer + rand(-3, 3);
+      if(d >= 0 && d <= 18 && d !== answer) opts.add(d);
+    }
+    while(opts.size < 4){ opts.add(rand(0, 18)); }
+    return { text, answer, options: shuffle([...opts]) };
+  }
+
+  // ===== Balloons =====
+  const BALLOON_COLORS = [
+    'radial-gradient(circle at 32% 28%, #FF9CC0, #FF6B9D)',
+    'radial-gradient(circle at 32% 28%, #8FD3FF, #4F8CFF)',
+    'radial-gradient(circle at 32% 28%, #B79CFF, #9B72FF)',
+    'radial-gradient(circle at 32% 28%, #9CE8A8, #6BCB77)',
+    'radial-gradient(circle at 32% 28%, #FFD98A, #FF9F43)',
+    'radial-gradient(circle at 32% 28%, #FFE676, #FFD93D)'
+  ];
+
+  function clearBalloons(){
+    sky.querySelectorAll('.balloon, .burst').forEach(el=>el.remove());
+  }
+
+  function nextRound(){
+    if(round >= TOTAL_ROUNDS){ endGame(); return; }
+    round++;
+    answerLocked = false;
+    document.getElementById('roundNum').textContent = round;
+    document.getElementById('feedback').innerHTML = '&nbsp;';
+    document.getElementById('feedback').className = 'feedback';
+
+    const q = makeQuestion();
+    document.getElementById('questionText').textContent = q.text;
+
+    clearBalloons();
+    const skyW = sky.clientWidth;
+    const balloonW = skyW < 560 ? 64 : 78;
+    const slots = q.options.length;
+    const gap = (skyW - balloonW * slots) / (slots + 1);
+    const colors = shuffle([...BALLOON_COLORS]);
+
+    q.options.forEach((val, i) => {
+      const b = document.createElement('div');
+      b.className = 'balloon';
+      b.textContent = val;
+      b.style.background = colors[i % colors.length];
+      b.style.left = (gap + i * (balloonW + gap)) + 'px';
+      b.style.animationDuration = (5.5 + Math.random()*1.6) + 's';
+      b.style.animationDelay = (Math.random()*0.5) + 's';
+      b.dataset.val = val;
+      b.dataset.correct = (val === q.answer) ? '1' : '0';
+      b.addEventListener('click', onBalloonClick);
+      sky.appendChild(b);
+    });
+
+    startTimer();
+  }
+
+  function startTimer(){
+    stopTimer();
+    const fill = document.getElementById('timerFill');
+    timerStart = performance.now();
+    function tick(now){
+      const elapsed = now - timerStart;
+      const pct = Math.max(0, 1 - elapsed / ROUND_TIME);
+      fill.style.width = (pct * 100) + '%';
+      if(pct > 0 && !answerLocked){ timerRAF = requestAnimationFrame(tick); }
+    }
+    timerRAF = requestAnimationFrame(tick);
+    roundTimer = setTimeout(()=>{
+      if(!answerLocked){ timeUp(); }
+    }, ROUND_TIME);
+  }
+  function stopTimer(){
+    if(roundTimer){ clearTimeout(roundTimer); roundTimer = null; }
+    if(timerRAF){ cancelAnimationFrame(timerRAF); timerRAF = null; }
+  }
+
+  function timeUp(){
+    answerLocked = true;
+    stopTimer();
+    const fb = document.getElementById('feedback');
+    fb.textContent = '⏰ Bóng bay mất rồi! Đáp án sẽ hiện ở vòng sau.';
+    fb.className = 'feedback bad';
+    sky.querySelectorAll('.balloon').forEach(b=>b.style.opacity = '.4');
+    setTimeout(nextRound, 1100);
+  }
+
+  function onBalloonClick(e){
+    if(answerLocked) return;
+    const b = e.currentTarget;
+    const fb = document.getElementById('feedback');
+
+    if(b.dataset.correct === '1'){
+      answerLocked = true;
+      stopTimer();
+      correctCount++;
+      earnedXp += 10;
+      document.getElementById('scoreNum').textContent = correctCount;
+      document.getElementById('xpNum').textContent = earnedXp;
+
+      // pop effect
+      const rect = b.getBoundingClientRect();
+      const skyRect = sky.getBoundingClientRect();
+      const burst = document.createElement('div');
+      burst.className = 'burst';
+      burst.textContent = '💥';
+      burst.style.left = (rect.left - skyRect.left + rect.width/2) + 'px';
+      burst.style.top = (rect.top - skyRect.top + rect.height/2) + 'px';
+      sky.appendChild(burst);
+      b.classList.add('pop');
+
+      fb.textContent = '💥 Chính xác! +10 XP';
+      fb.className = 'feedback good';
+      celebrate(e);
+      setTimeout(nextRound, 950);
+    } else {
+      // gentle wrong feedback
+      b.classList.remove('wrong-shake');
+      void b.offsetWidth;
+      b.classList.add('wrong-shake');
+      fb.textContent = '😅 Chưa đúng, thử bóng khác nhé!';
+      fb.className = 'feedback bad';
+    }
+  }
+
+  // ===== Flow =====
+  function startGame(){
+    round = 0; correctCount = 0; earnedXp = 0;
+    document.getElementById('scoreNum').textContent = 0;
+    document.getElementById('xpNum').textContent = 0;
+    document.getElementById('roundTotal').textContent = TOTAL_ROUNDS;
+    showScreen('screen-play');
+    nextRound();
+  }
+
+  function endGame(){
+    stopTimer();
+    clearBalloons();
+    document.getElementById('rsCorrect').textContent = correctCount;
+    document.getElementById('rsTotal').textContent = TOTAL_ROUNDS;
+    document.getElementById('rsXp').textContent = earnedXp;
+    const emoji = document.getElementById('resultEmoji');
+    const title = document.getElementById('resultTitle');
+    if(correctCount >= 7){ emoji.textContent = '🏆'; title.textContent = 'Xuất sắc!'; }
+    else if(correctCount >= 4){ emoji.textContent = '🎉'; title.textContent = 'Làm tốt lắm!'; }
+    else { emoji.textContent = '💪'; title.textContent = 'Cố lên, em làm được!'; }
+    showScreen('screen-result');
+    setTimeout(()=>celebrate(null), 250);
+
+    if (window.TVKN && TVKN.configured) { TVKN.recordGameWin('Bắn bóng số học', 40, 10).catch(function(){}); }
+  }
+
+  function goReward(e){
+    showScreen('screen-reward');
+    document.getElementById('hdrXp').textContent = (450 + REWARD_XP) + ' XP';
+    setTimeout(()=>celebrate(e), 200);
+  }
+
+  function restartGame(){
+    document.getElementById('hdrXp').textContent = '450 XP';
+    showScreen('screen-intro');
+  }
+
+  // ===== Confetti (from trang-lop.html) =====
+  function celebrate(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const colors = ['#4F8CFF', '#FFD93D', '#6BCB77', '#FF9F43', '#FF6B9D', '#9B72FF'];
+    const x = e && e.clientX ? e.clientX : window.innerWidth / 2;
+    const y = e && e.clientY ? e.clientY : window.innerHeight / 2;
+    for (let i = 0; i < 28; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.left = x + 'px'; c.style.top = y + 'px';
+      document.body.appendChild(c);
+      const angle = Math.random() * Math.PI * 2;
+      const v = 100 + Math.random() * 200;
+      const vx = Math.cos(angle) * v, vy = Math.sin(angle) * v - 150;
+      c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${vx}px, ${vy + 300}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+      ], { duration: 1400, easing: 'cubic-bezier(.25,.46,.45,.94)' }).onfinish = () => c.remove();
+    }
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+</body>
+</html>

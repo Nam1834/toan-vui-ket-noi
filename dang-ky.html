@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đăng ký - TOÁN VUI KẾT NỐI</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue:#4F8CFF; --yellow:#FFD93D; --green:#6BCB77; --orange:#FF9F43;
+    --pink:#FF6B9D; --purple:#9B72FF; --white:#FFFFFF; --bg-soft:#F4F8FF;
+    --text-dark:#2D3748; --text-soft:#6B7280;
+    --shadow:0 8px 24px rgba(79,140,255,.15); --shadow-lg:0 16px 40px rgba(79,140,255,.22);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Fredoka','Baloo 2',system-ui,sans-serif;color:var(--text-dark);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#E8F0FF,#F4F8FF)}
+  .card{background:var(--white);border-radius:30px;box-shadow:var(--shadow-lg);width:100%;max-width:460px;padding:34px 32px;text-align:center}
+  .logo-icon{width:70px;height:70px;margin:0 auto 12px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:38px;box-shadow:0 8px 20px rgba(79,140,255,.4)}
+  .brand{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:21px;background:linear-gradient(90deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .welcome{color:var(--text-soft);font-size:14px;margin:4px 0 20px}
+  .field-label{display:block;text-align:left;font-weight:700;font-size:13px;margin:0 0 6px 4px}
+  .row{display:flex;gap:12px}
+  .row>div{flex:1}
+  .avatar-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:16px}
+  .avatar-opt{width:48px;height:48px;border-radius:14px;border:2px solid #E8ECF4;background:var(--bg-soft);font-size:26px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
+  .avatar-opt:hover{transform:translateY(-3px)}
+  .avatar-opt.active{border-color:var(--blue);background:#E8F0FF;transform:scale(1.08)}
+  .input,.select{width:100%;padding:13px 15px;border:2px solid #E8ECF4;border-radius:14px;font-family:inherit;font-size:15px;outline:none;transition:all .2s;margin-bottom:14px;background:var(--white)}
+  .input:focus,.select:focus{border-color:var(--blue)}
+  .btn{width:100%;padding:14px;border:none;border-radius:16px;cursor:pointer;font-family:inherit;font-weight:700;font-size:16px;color:var(--white);background:linear-gradient(135deg,var(--green),#4DBE5C);box-shadow:0 8px 20px rgba(107,203,119,.45);transition:all .25s cubic-bezier(.34,1.56,.64,1)}
+  .btn:hover{transform:translateY(-3px) scale(1.02)}
+  .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+  .link{margin-top:16px;font-size:14px;color:var(--text-soft)}
+  .link a{color:var(--blue);font-weight:700}
+  .msg{font-size:13px;font-weight:600;min-height:18px;margin-bottom:10px}
+  .msg.err{color:var(--pink)} .msg.ok{color:#2F8F3E}
+  .banner{background:#FFF4E0;color:#8A5A12;border-radius:14px;padding:14px;font-size:13px;text-align:left;margin-bottom:16px;line-height:1.6;display:none}
+  .banner.show{display:block}
+  .banner code{background:rgba(0,0,0,.06);padding:1px 5px;border-radius:5px}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo-icon">🐰</div>
+    <div class="brand">TOÁN VUI KẾT NỐI</div>
+    <div class="welcome">Tạo tài khoản để lưu tiến độ học của em 🎉</div>
+
+    <div class="banner" id="cfgBanner">
+      ⚠️ <b>Chưa kết nối Supabase.</b> Hãy mở <code>supabase-config.js</code> và điền <code>SUPABASE_URL</code> + <code>SUPABASE_ANON_KEY</code>, rồi chạy <code>supabase-schema.sql</code> trong SQL Editor.
+    </div>
+
+    <span class="field-label">Chọn nhân vật:</span>
+    <div class="avatar-grid" id="avatarGrid">
+      <div class="avatar-opt active" data-av="👧">👧</div>
+      <div class="avatar-opt" data-av="👦">👦</div>
+      <div class="avatar-opt" data-av="🧒">🧒</div>
+      <div class="avatar-opt" data-av="🐰">🐰</div>
+      <div class="avatar-opt" data-av="🦊">🦊</div>
+      <div class="avatar-opt" data-av="🐼">🐼</div>
+      <div class="avatar-opt" data-av="🦁">🦁</div>
+      <div class="avatar-opt" data-av="🐯">🐯</div>
+    </div>
+
+    <div class="row">
+      <div>
+        <span class="field-label">Họ tên</span>
+        <input class="input" id="name" type="text" placeholder="Nguyễn Minh Anh" maxlength="40">
+      </div>
+      <div style="max-width:120px">
+        <span class="field-label">Lớp</span>
+        <select class="select" id="grade">
+          <option value="1">Lớp 1</option><option value="2">Lớp 2</option>
+          <option value="3">Lớp 3</option><option value="4">Lớp 4</option><option value="5">Lớp 5</option>
+        </select>
+      </div>
+    </div>
+
+    <span class="field-label">Email</span>
+    <input class="input" id="email" type="email" placeholder="email@cuaban.com" autocomplete="email">
+
+    <span class="field-label">Mật khẩu (≥ 6 ký tự)</span>
+    <input class="input" id="pass" type="password" placeholder="••••••" autocomplete="new-password">
+
+    <span class="field-label">Nhập lại mật khẩu</span>
+    <input class="input" id="pass2" type="password" placeholder="••••••" autocomplete="new-password">
+
+    <div class="msg" id="msg"></div>
+    <button class="btn" id="btn" onclick="doRegister()">✨ Đăng ký</button>
+
+    <div class="link">Đã có tài khoản? <a href="dang-nhap.html">Đăng nhập</a></div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+  let avatar = '👧';
+  document.getElementById('avatarGrid').addEventListener('click', e => {
+    const o = e.target.closest('.avatar-opt'); if (!o) return;
+    document.querySelectorAll('.avatar-opt').forEach(x => x.classList.remove('active'));
+    o.classList.add('active'); avatar = o.dataset.av;
+  });
+
+  if (!TVKN.configured) {
+    document.getElementById('cfgBanner').classList.add('show');
+    document.getElementById('btn').disabled = true;
+  }
+
+  function setMsg(t, ok) { const m = document.getElementById('msg'); m.textContent = t; m.className = 'msg ' + (ok ? 'ok' : 'err'); }
+
+  async function doRegister() {
+    const name = document.getElementById('name').value.trim();
+    const grade = +document.getElementById('grade').value;
+    const email = document.getElementById('email').value.trim();
+    const pass = document.getElementById('pass').value;
+    const pass2 = document.getElementById('pass2').value;
+    if (!name) return setMsg('✏️ Em hãy nhập họ tên.');
+    if (!email) return setMsg('📧 Em hãy nhập email.');
+    if (pass.length < 6) return setMsg('🔒 Mật khẩu cần ít nhất 6 ký tự.');
+    if (pass !== pass2) return setMsg('🔒 Hai mật khẩu chưa khớp.');
+
+    const btn = document.getElementById('btn');
+    btn.disabled = true; setMsg('⏳ Đang tạo tài khoản...', true);
+    try {
+      const data = await TVKN.signUp({ email, password: pass, name, avatar, grade });
+      const u = data.user;
+      // Supabase trả identities = [] khi email ĐÃ tồn tại (chống dò email)
+      if (u && Array.isArray(u.identities) && u.identities.length === 0) {
+        setMsg('📧 Email này đã được đăng ký rồi. Em hãy bấm "Đăng nhập" nhé!');
+        btn.disabled = false;
+        return;
+      }
+      if (data.session) {
+        // Confirm email đang TẮT → vào luôn (admin thì vào trang quản trị)
+        setMsg('🎉 Đăng ký thành công! Đang vào...', true);
+        const prof = await TVKN.getProfile();
+        window.location.href = (prof && prof.role === 'admin') ? 'admin.html' : 'index.html';
+      } else {
+        // Confirm email đang BẬT
+        setMsg('📩 Đã gửi email xác nhận. Em mở email để kích hoạt rồi đăng nhập nhé!', true);
+      }
+    } catch (err) {
+      const code = err.code || err.error_code || '';
+      let m = err.message || 'Đăng ký thất bại';
+      if (/already.*regist|already.*exist|user_already/i.test(m) || code === 'user_already_exists')
+        m = 'Email này đã được đăng ký rồi. Em hãy đăng nhập.';
+      else if (/rate limit|over_email_send/i.test(m) || code === 'over_email_send_rate_limit')
+        m = 'Gửi email xác nhận quá nhanh — thử lại sau vài phút, hoặc tắt "Confirm email" trong Supabase.';
+      else if (/email/i.test(m) && /invalid/i.test(m))
+        m = 'Email không hợp lệ, em kiểm tra lại nhé.';
+      else if (/password/i.test(m))
+        m = 'Mật khẩu chưa hợp lệ (cần ít nhất 6 ký tự).';
+      setMsg('❌ ' + m);
+      btn.disabled = false;
+    }
+  }
+</script>
+</body>
+</html>

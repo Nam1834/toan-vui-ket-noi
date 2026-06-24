@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 4: So sánh các số - TOÁN VUI KẾT NỐI</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4F8CFF; --yellow: #FFD93D; --green: #6BCB77; --orange: #FF9F43;
+    --pink: #FF6B9D; --purple: #9B72FF; --white: #FFFFFF; --bg-soft: #F4F8FF;
+    --text-dark: #2D3748; --text-soft: #6B7280;
+    --shadow: 0 8px 24px rgba(79, 140, 255, 0.15);
+    --shadow-lg: 0 16px 40px rgba(79, 140, 255, 0.22);
+    --theme: #6BCB77; --theme-soft: #D4F4DD;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Fredoka','Baloo 2',system-ui,sans-serif; background: var(--bg-soft); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+  a { text-decoration: none; color: inherit; }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; height: 64px; background: var(--white); box-shadow: 0 4px 20px rgba(79,140,255,.08); display: flex; align-items: center; padding: 0 22px; gap: 16px; }
+  .back-btn { display: inline-flex; align-items: center; gap: 7px; padding: 8px 15px; border-radius: 12px; background: var(--bg-soft); font-weight: 700; font-size: 14px; transition: all .2s; }
+  .back-btn:hover { background: var(--theme); color: var(--white); }
+  .header-title { font-family: 'Baloo 2',sans-serif; font-weight: 700; font-size: 16px; text-align: center; flex: 1; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .xp-pill { display: flex; align-items: center; gap: 6px; padding: 7px 13px; background: linear-gradient(135deg,var(--yellow),var(--orange)); color: var(--white); border-radius: 12px; font-weight: 700; font-size: 14px; }
+  .avatar { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg,var(--green),var(--blue)); display: flex; align-items: center; justify-content: center; font-size: 20px; border: 3px solid var(--white); box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 22px 60px; }
+
+  /* BANNER BÀI HỌC */
+  .lesson-banner { margin-top: 26px; background: linear-gradient(135deg,var(--theme-soft),#EAFBEF); border-radius: 26px; padding: 32px 36px; display: flex; align-items: center; gap: 26px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+  .lesson-banner-text { flex: 1; z-index: 1; }
+  .lesson-banner h1 { font-family: 'Baloo 2',sans-serif; font-size: clamp(24px,4vw,34px); font-weight: 800; line-height: 1.15; margin-bottom: 8px; }
+  .lesson-banner p { color: var(--text-soft); font-size: 16px; }
+  .lesson-banner .mascot { width: 120px; height: 120px; flex-shrink: 0; background: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 70px; box-shadow: 0 14px 34px rgba(107,203,119,.3); animation: bounce 3s ease-in-out infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+  /* THANH TIẾN ĐỘ BÀI HỌC */
+  .steps { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 28px 0; flex-wrap: wrap; }
+  .step { display: flex; align-items: center; gap: 8px; }
+  .step-dot { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; background: var(--white); color: var(--text-soft); box-shadow: var(--shadow); border: 3px solid transparent; }
+  .step.done .step-dot { background: var(--green); color: var(--white); }
+  .step.current .step-dot { background: var(--blue); color: var(--white); border-color: rgba(79,140,255,.3); transform: scale(1.08); }
+  .step-label { font-size: 13px; font-weight: 600; color: var(--text-soft); }
+  .step.current .step-label, .step.done .step-label { color: var(--text-dark); }
+  .step-line { width: 28px; height: 3px; background: #E2E5EA; border-radius: 2px; }
+
+  /* KHỐI */
+  .block { background: var(--white); border-radius: 24px; padding: 30px; box-shadow: var(--shadow); margin-bottom: 22px; }
+  .block-title { font-family: 'Baloo 2',sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+  .block-sub { color: var(--text-soft); font-size: 15px; margin-bottom: 18px; }
+
+  .block.warmup { background: linear-gradient(135deg,#FFF8E1,#FFFDF5); }
+
+  /* HÌNH MINH HỌA */
+  .objects { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; font-size: 48px; padding: 18px; background: var(--bg-soft); border-radius: 18px; margin-bottom: 18px; }
+
+  /* SO SÁNH HAI NHÓM */
+  .compare-row { display: flex; align-items: stretch; gap: 14px; justify-content: center; margin-bottom: 18px; flex-wrap: nowrap; }
+  .compare-side { flex: 1; background: var(--bg-soft); border-radius: 18px; padding: 16px; text-align: center; }
+  .compare-side .emo { font-size: 34px; line-height: 1.3; }
+  .compare-side .cnt { font-family: 'Baloo 2',sans-serif; font-size: 30px; font-weight: 800; color: var(--blue); margin-top: 6px; }
+  .compare-sign { display: flex; align-items: center; justify-content: center; font-family: 'Baloo 2',sans-serif; font-size: 48px; font-weight: 800; color: var(--orange); min-width: 56px; }
+
+  /* BẬP BÊNH */
+  .seesaw-box { background: var(--bg-soft); border-radius: 18px; padding: 22px 16px 16px; margin-bottom: 16px; }
+  .seesaw-controls { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+  .seesaw-controls label { font-weight: 600; }
+  .seesaw-controls select { font-family: inherit; font-size: 20px; font-weight: 700; padding: 8px 12px; border-radius: 12px; border: 2px solid #E8ECF4; background: var(--white); color: var(--text-dark); cursor: pointer; }
+  .seesaw-stage { position: relative; height: 150px; max-width: 420px; margin: 0 auto; }
+  .seesaw-beam { position: absolute; top: 60px; left: 0; right: 0; height: 18px; background: linear-gradient(135deg,var(--green),#4DBE5C); border-radius: 12px; transform-origin: center center; transition: transform .6s cubic-bezier(.34,1.56,.64,1); display: flex; align-items: center; justify-content: space-between; padding: 0 10px; }
+  .seesaw-pan { width: 64px; height: 64px; margin-top: -64px; border-radius: 16px; background: var(--white); box-shadow: var(--shadow); display: flex; align-items: center; justify-content: center; font-family: 'Baloo 2',sans-serif; font-size: 30px; font-weight: 800; }
+  .seesaw-pan.bigger { color: var(--pink); }
+  .seesaw-pivot { position: absolute; left: 50%; top: 70px; transform: translateX(-50%); width: 0; height: 0; border-left: 30px solid transparent; border-right: 30px solid transparent; border-bottom: 60px solid var(--orange); }
+  .seesaw-result { text-align: center; font-family: 'Baloo 2',sans-serif; font-size: 26px; font-weight: 800; margin-top: 14px; color: var(--text-dark); }
+
+  /* THẺ DẤU */
+  .sign-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 8px; }
+  .sign-card { background: var(--bg-soft); border-radius: 18px; padding: 22px; text-align: center; }
+  .sign-glyph { font-family: 'Baloo 2',sans-serif; font-size: 64px; font-weight: 800; color: var(--blue); line-height: 1; }
+  .sign-name { font-weight: 700; font-size: 18px; margin-top: 8px; }
+  .sign-how { font-size: 14px; color: var(--text-soft); margin-top: 6px; }
+  .sign-speak { margin-top: 12px; padding: 8px 16px; border-radius: 12px; background: var(--white); border: 2px solid #E8ECF4; font-family: inherit; font-weight: 700; font-size: 14px; cursor: pointer; transition: all .2s; }
+  .sign-speak:hover { background: var(--blue); color: var(--white); border-color: var(--blue); }
+
+  /* THỰC HÀNH ĐIỀN DẤU */
+  .fill-item { background: var(--bg-soft); border-radius: 18px; padding: 18px; margin-bottom: 16px; }
+  .fill-expr { display: flex; align-items: center; justify-content: center; gap: 14px; font-family: 'Baloo 2',sans-serif; font-size: 34px; font-weight: 800; margin-bottom: 14px; }
+  .fill-num { width: 60px; height: 60px; border-radius: 14px; background: var(--theme-soft); color: #2F8F3E; display: flex; align-items: center; justify-content: center; }
+  .fill-slot { width: 60px; height: 60px; border-radius: 14px; background: var(--white); border: 3px dashed var(--blue); display: flex; align-items: center; justify-content: center; color: var(--blue); }
+  .fill-slot.filled { border-style: solid; background: var(--blue); color: var(--white); }
+  .fill-choices { display: flex; gap: 12px; justify-content: center; }
+  .fill-choice { width: 64px; height: 56px; border-radius: 14px; background: var(--white); border: 2px solid #E8ECF4; font-family: 'Baloo 2',sans-serif; font-size: 30px; font-weight: 800; cursor: pointer; transition: all .2s; }
+  .fill-choice:hover { border-color: var(--blue); transform: translateY(-3px); }
+  .fill-choice.correct { background: var(--green); color: var(--white); border-color: var(--green); }
+  .fill-choice.wrong { background: #FFE5E5; border-color: var(--pink); }
+
+  /* ĐÁP ÁN */
+  .options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .opt { padding: 18px; border-radius: 16px; background: var(--white); border: 2px solid #E8ECF4; font-family: 'Baloo 2',sans-serif; font-size: 24px; font-weight: 800; cursor: pointer; transition: all .2s; text-align: center; }
+  .opt:hover { border-color: var(--blue); transform: translateY(-3px); }
+  .opt.correct { background: var(--green); color: var(--white); border-color: var(--green); }
+  .opt.wrong { background: #FFE5E5; border-color: var(--pink); }
+  .feedback { margin-top: 16px; padding: 14px 18px; border-radius: 14px; font-weight: 600; display: none; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--theme-soft); color: #2F8F3E; }
+  .feedback.no { background: #FFF0E6; color: #C76A1E; }
+
+  /* TRÒ CHƠI TÌM ĐƯỜNG */
+  .maze { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; max-width: 420px; margin: 0 auto 8px; }
+  .maze-cell { aspect-ratio: 1; border-radius: 14px; background: var(--white); border: 2px solid #E8ECF4; font-family: 'Baloo 2',sans-serif; font-size: 24px; font-weight: 800; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .2s; position: relative; }
+  .maze-cell:hover { transform: translateY(-3px); border-color: var(--blue); }
+  .maze-cell.start { background: var(--theme-soft); border-color: var(--green); }
+  .maze-cell.house { background: #FFF3D6; border-color: var(--orange); font-size: 30px; }
+  .maze-cell.visited { background: var(--green); color: var(--white); border-color: var(--green); }
+  .maze-cell.mouse { background: var(--blue); color: var(--white); border-color: var(--blue); font-size: 30px; }
+  .maze-cell.bad { background: #FFE5E5; border-color: var(--pink); animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .maze-reset { margin-top: 10px; }
+
+  /* VÍ DỤ */
+  .example { display: flex; gap: 16px; align-items: center; padding: 16px; background: var(--bg-soft); border-radius: 16px; margin-bottom: 12px; }
+  .example-img { font-size: 30px; flex-shrink: 0; width: 110px; text-align: center; }
+  .example-body { flex: 1; }
+  .example-q { font-weight: 600; margin-bottom: 4px; }
+  .example-a { color: var(--theme); font-weight: 700; }
+  .example-exp { font-size: 14px; color: var(--text-soft); margin-top: 6px; display: none; }
+  .example-exp.show { display: block; }
+  .example-btn { padding: 7px 14px; border-radius: 10px; background: var(--white); border: 1px solid #E2E5EA; font-family: inherit; font-weight: 600; font-size: 13px; cursor: pointer; transition: all .2s; }
+  .example-btn:hover { background: var(--blue); color: var(--white); border-color: var(--blue); }
+
+  /* AI HỖ TRỢ */
+  .block.ai { background: linear-gradient(135deg,var(--blue),var(--purple)); color: var(--white); }
+  .block.ai .block-sub { color: rgba(255,255,255,.9); }
+  .ai-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .ai-bunny { width: 56px; height: 56px; background: rgba(255,255,255,.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; }
+  .ai-input { display: flex; gap: 8px; background: rgba(255,255,255,.95); padding: 7px; border-radius: 16px; }
+  .ai-input input { flex: 1; border: none; background: transparent; padding: 12px 14px; font-family: inherit; font-size: 15px; outline: none; color: var(--text-dark); }
+  .ai-send { background: linear-gradient(135deg,var(--orange),var(--pink)); color: var(--white); border: none; padding: 12px 22px; border-radius: 12px; font-family: inherit; font-weight: 700; cursor: pointer; transition: transform .2s; }
+  .ai-send:hover { transform: scale(1.05); }
+  .ai-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .ai-chip { background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.3); color: var(--white); padding: 7px 14px; border-radius: 999px; font-size: 13px; cursor: pointer; transition: all .2s; }
+  .ai-chip:hover { background: rgba(255,255,255,.35); }
+
+  /* NÚT */
+  .btn { display: inline-flex; align-items: center; gap: 9px; padding: 14px 28px; border-radius: 16px; font-family: inherit; font-weight: 700; font-size: 16px; border: none; cursor: pointer; transition: all .25s cubic-bezier(.34,1.56,.64,1); }
+  .btn-primary { background: linear-gradient(135deg,var(--green),#4DBE5C); color: var(--white); box-shadow: 0 8px 20px rgba(107,203,119,.45); }
+  .btn-primary:hover { transform: translateY(-3px) scale(1.02); }
+  .btn-block { width: 100%; justify-content: center; }
+
+  /* ĐIỀU HƯỚNG */
+  .nav-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; }
+  .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 22px; border-radius: 14px; background: var(--white); font-weight: 700; font-size: 15px; box-shadow: var(--shadow); transition: all .2s; cursor: pointer; border: none; font-family: inherit; }
+  .nav-btn:hover { transform: translateY(-2px); }
+  .nav-btn.disabled { opacity: .4; pointer-events: none; }
+  .nav-btn.next { background: var(--blue); color: var(--white); }
+
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 9999; border-radius: 2px; }
+
+  @media (max-width: 560px) {
+    .header-title { display: none; }
+    .wrap { padding: 0 14px 50px; }
+    .lesson-banner { flex-direction: column; text-align: center; padding: 26px; }
+    .options { grid-template-columns: repeat(2, 1fr); }
+    .sign-cards { grid-template-columns: 1fr; }
+    .step-label { display: none; }
+    .step-line { width: 14px; }
+    .maze-cell { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <a href="trang-lop.html" class="back-btn">← Quay lại Lớp 1</a>
+  <div class="header-title">Bài 4: So sánh các số</div>
+  <div class="header-right">
+    <div class="xp-pill">🪙 <span id="xpVal">480</span></div>
+    <div class="avatar">👧</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- BANNER -->
+  <div class="lesson-banner">
+    <div class="lesson-banner-text">
+      <h1>Bài 4: So sánh các số</h1>
+      <p>Hôm nay chúng ta sẽ học dấu lớn hơn &gt; và dấu bé hơn &lt; để so sánh hai số nhé!</p>
+    </div>
+    <div class="mascot">🦆</div>
+  </div>
+
+  <!-- THANH TIẾN ĐỘ BÀI -->
+  <div class="steps" id="steps">
+    <div class="step current"><div class="step-dot">1</div><span class="step-label">Khám phá</span></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-dot">2</div><span class="step-label">Viết dấu</span></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-dot">3</div><span class="step-label">Thực hành</span></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-dot">4</div><span class="step-label">Luyện tập</span></div>
+  </div>
+
+  <!-- KHỐI 1: KHÁM PHÁ -->
+  <div class="block warmup">
+    <h2 class="block-title">🔍 Khám phá dấu &gt; và &lt;</h2>
+    <p class="block-sub">Cùng đếm rồi so sánh hai nhóm con vật xem nhóm nào nhiều hơn nhé!</p>
+
+    <div class="compare-row">
+      <div class="compare-side">
+        <div class="emo">🦆🦆🦆🦆</div>
+        <div class="cnt">4</div>
+      </div>
+      <div class="compare-sign">&gt;</div>
+      <div class="compare-side">
+        <div class="emo">🦆🦆🦆</div>
+        <div class="cnt">3</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-weight:600;margin-bottom:18px">Bên trái có 4 con vịt, nhiều hơn bên phải có 3 con. Vậy <b style="color:var(--orange)">4 &gt; 3</b> (bốn lớn hơn ba).</p>
+
+    <div class="compare-row">
+      <div class="compare-side">
+        <div class="emo">🍎🍎🍎🍎</div>
+        <div class="cnt">4</div>
+      </div>
+      <div class="compare-sign">&lt;</div>
+      <div class="compare-side">
+        <div class="emo">🍎🍎🍎🍎🍎</div>
+        <div class="cnt">5</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-weight:600;margin-bottom:8px">Bên trái có 4 quả táo, ít hơn bên phải có 5 quả. Vậy <b style="color:var(--orange)">4 &lt; 5</b> (bốn bé hơn năm).</p>
+
+    <h3 style="font-family:'Baloo 2',sans-serif;font-size:18px;font-weight:800;margin:20px 0 10px;text-align:center">⚖️ Bập bênh so sánh số</h3>
+    <p class="block-sub" style="text-align:center">Chọn hai số rồi xem bập bênh nghiêng về bên có số lớn hơn nhé!</p>
+    <div class="seesaw-box">
+      <div class="seesaw-controls">
+        <label>Bên trái:
+          <select id="leftNum"></select>
+        </label>
+        <label>Bên phải:
+          <select id="rightNum"></select>
+        </label>
+      </div>
+      <div class="seesaw-stage">
+        <div class="seesaw-beam" id="beam">
+          <div class="seesaw-pan" id="panL">2</div>
+          <div class="seesaw-pan" id="panR">5</div>
+        </div>
+        <div class="seesaw-pivot"></div>
+      </div>
+      <div class="seesaw-result" id="seesawResult">2 &lt; 5</div>
+    </div>
+  </div>
+
+  <!-- KHỐI 2: ĐỌC & VIẾT DẤU -->
+  <div class="block">
+    <h2 class="block-title">✍️ Đọc và viết dấu</h2>
+    <p class="block-sub">Hai dấu so sánh quan trọng. Bấm nút loa để nghe cách đọc nhé!</p>
+    <div class="sign-cards">
+      <div class="sign-card">
+        <div class="sign-glyph">&gt;</div>
+        <div class="sign-name">Dấu lớn hơn</div>
+        <div class="sign-how">Đầu nhọn quay về số bé. Ví dụ: 4 &gt; 3.</div>
+        <button class="sign-speak" onclick="speak('Dấu lớn hơn. Bốn lớn hơn ba.')">🔊 Nghe đọc</button>
+      </div>
+      <div class="sign-card">
+        <div class="sign-glyph">&lt;</div>
+        <div class="sign-name">Dấu bé hơn</div>
+        <div class="sign-how">Đầu nhọn vẫn quay về số bé. Ví dụ: 4 &lt; 5.</div>
+        <button class="sign-speak" onclick="speak('Dấu bé hơn. Bốn bé hơn năm.')">🔊 Nghe đọc</button>
+      </div>
+    </div>
+    <p style="text-align:center;font-weight:600;margin-top:14px">💡 Mẹo nhỏ: Đầu nhọn của dấu luôn chỉ vào số bé hơn, miệng rộng quay về số lớn hơn!</p>
+  </div>
+
+  <!-- KHỐI 3: THỰC HÀNH ĐIỀN DẤU -->
+  <div class="block">
+    <h2 class="block-title">🧩 Thực hành điền dấu</h2>
+    <p class="block-sub">Chọn dấu &gt; hoặc &lt; thích hợp để điền vào ô trống giữa hai số.</p>
+    <div id="fillWrap"></div>
+
+    <h3 style="font-family:'Baloo 2',sans-serif;font-size:18px;font-weight:800;margin:24px 0 10px">🔢 Điền số thích hợp</h3>
+    <p class="block-sub">Chọn một số để biểu thức <b>▢ &gt; 3</b> trở thành đúng.</p>
+    <div class="fill-item">
+      <div class="fill-expr">
+        <span class="fill-slot" id="numSlot">▢</span>
+        <span>&gt;</span>
+        <span class="fill-num">3</span>
+      </div>
+      <div class="options" id="numOpts">
+        <button class="opt" data-val="1">1</button>
+        <button class="opt" data-val="2">2</button>
+        <button class="opt" data-val="5">5</button>
+        <button class="opt" data-val="0">0</button>
+      </div>
+    </div>
+    <div class="feedback" id="practiceFb"></div>
+  </div>
+
+  <!-- KHỐI 4: LUYỆN TẬP - TRÒ CHƠI -->
+  <div class="block">
+    <h2 class="block-title">🎮 Trò chơi: Tìm đường về nhà</h2>
+    <p class="block-sub">Bạn chuột 🐭 chỉ được bước lên ô có số <b>lớn hơn 4</b> để về tới nhà 🏠. Bấm vào ô liền kề để đi nhé!</p>
+    <div class="maze" id="maze"></div>
+    <div class="feedback" id="mazeFb"></div>
+    <div style="text-align:center">
+      <button class="nav-btn maze-reset" onclick="buildMaze()">🔄 Chơi lại</button>
+    </div>
+  </div>
+
+  <!-- KHỐI 5: AI HỖ TRỢ -->
+  <div class="block ai">
+    <div class="ai-head">
+      <div class="ai-bunny">🐰</div>
+      <div>
+        <h2 class="block-title" style="color:#fff;margin:0">Hỏi Thỏ Toán</h2>
+        <p class="block-sub" style="margin:0">Em chưa hiểu dấu &gt; hay &lt;? Hỏi Thỏ nhé!</p>
+      </div>
+    </div>
+    <div class="ai-input">
+      <input type="text" id="aiInput" placeholder="Nhập câu hỏi của em...">
+      <button class="ai-send" onclick="celebrate(event)">💬 Hỏi</button>
+    </div>
+    <div class="ai-chips">
+      <span class="ai-chip" onclick="setAi(this)">Khi nào dùng dấu lớn hơn?</span>
+      <span class="ai-chip" onclick="setAi(this)">Làm sao nhớ dấu bé hơn?</span>
+      <span class="ai-chip" onclick="setAi(this)">5 và 3 số nào lớn hơn?</span>
+    </div>
+  </div>
+
+  <!-- BẮT ĐẦU LUYỆN TẬP -->
+  <div class="block" style="text-align:center;background:linear-gradient(135deg,#FFF8E1,#FFFDF5)">
+    <h2 class="block-title" style="justify-content:center">🎯 Sẵn sàng luyện tập chưa?</h2>
+    <p class="block-sub">Làm 10 câu luyện tập để nhận <b>+30 XP</b> và huy hiệu <b>Bé So Sánh</b> nhé!</p>
+    <a href="lam-bai-tap.html?lesson=bai-4" class="btn btn-primary btn-block">Bắt đầu luyện tập →</a>
+  </div>
+
+  <!-- ĐIỀU HƯỚNG -->
+  <div class="nav-row">
+    <a href="bai-3.html" class="nav-btn">← Bài trước</a>
+    <a href="trang-lop.html" class="nav-btn">📚 Danh sách bài</a>
+    <a href="bai-5.html" class="nav-btn next">Bài tiếp theo →</a>
+  </div>
+
+</div>
+
+<script>
+  // ===== XP =====
+  function addXp(n) {
+    const el = document.getElementById('xpVal');
+    el.textContent = (+el.textContent) + n;
+  }
+
+  // ===== Phát âm =====
+  function speak(text) {
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'vi-VN';
+      u.rate = 0.9;
+      window.speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+
+  // ===== KHÁM PHÁ: Bập bênh =====
+  const leftSel = document.getElementById('leftNum');
+  const rightSel = document.getElementById('rightNum');
+  for (let i = 0; i <= 10; i++) {
+    const o1 = document.createElement('option'); o1.value = i; o1.textContent = i; leftSel.appendChild(o1);
+    const o2 = document.createElement('option'); o2.value = i; o2.textContent = i; rightSel.appendChild(o2);
+  }
+  leftSel.value = 2; rightSel.value = 5;
+
+  function updateSeesaw() {
+    const l = +leftSel.value, r = +rightSel.value;
+    const beam = document.getElementById('beam');
+    const panL = document.getElementById('panL');
+    const panR = document.getElementById('panR');
+    const res = document.getElementById('seesawResult');
+    panL.textContent = l; panR.textContent = r;
+    panL.classList.toggle('bigger', l > r);
+    panR.classList.toggle('bigger', r > l);
+    let angle = 0, sign = '=';
+    if (l > r) { angle = -12; sign = '&gt;'; }
+    else if (l < r) { angle = 12; sign = '&lt;'; }
+    beam.style.transform = 'rotate(' + angle + 'deg)';
+    res.innerHTML = l + ' ' + sign + ' ' + r;
+  }
+  leftSel.addEventListener('change', updateSeesaw);
+  rightSel.addEventListener('change', updateSeesaw);
+  updateSeesaw();
+
+  // ===== THỰC HÀNH: Điền dấu =====
+  const fillItems = [
+    { left: 5, right: 3, answer: '>' },
+    { left: 2, right: 6, answer: '<' },
+    { left: 7, right: 4, answer: '>' }
+  ];
+  const fillWrap = document.getElementById('fillWrap');
+  let fillDone = 0;
+  fillItems.forEach((item, idx) => {
+    const div = document.createElement('div');
+    div.className = 'fill-item';
+    div.innerHTML =
+      '<div class="fill-expr">' +
+        '<span class="fill-num">' + item.left + '</span>' +
+        '<span class="fill-slot" id="slot' + idx + '">▢</span>' +
+        '<span class="fill-num">' + item.right + '</span>' +
+      '</div>' +
+      '<div class="fill-choices">' +
+        '<button class="fill-choice" data-sign=">">&gt;</button>' +
+        '<button class="fill-choice" data-sign="<">&lt;</button>' +
+      '</div>';
+    fillWrap.appendChild(div);
+    const fb = document.getElementById('practiceFb');
+    div.querySelectorAll('.fill-choice').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const slot = document.getElementById('slot' + idx);
+        div.querySelectorAll('.fill-choice').forEach(b => b.classList.remove('wrong'));
+        if (btn.dataset.sign === item.answer) {
+          btn.classList.add('correct');
+          slot.classList.add('filled');
+          slot.innerHTML = item.answer === '>' ? '&gt;' : '&lt;';
+          div.querySelectorAll('.fill-choice').forEach(b => b.disabled = true);
+          fb.className = 'feedback ok show';
+          fb.innerHTML = '🎉 Chính xác! ' + item.left + (item.answer === '>' ? ' lớn hơn ' : ' bé hơn ') + item.right + '. <b>+5 XP</b>';
+          addXp(5);
+          celebrate();
+        } else {
+          btn.classList.add('wrong');
+          fb.className = 'feedback no show';
+          fb.innerHTML = '💡 Chưa đúng. Hãy nhớ: đầu nhọn của dấu chỉ vào số bé hơn nhé!';
+        }
+      });
+    });
+  });
+
+  // ===== THỰC HÀNH: Điền số ▢ > 3 =====
+  document.querySelectorAll('#numOpts .opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const fb = document.getElementById('practiceFb');
+      const slot = document.getElementById('numSlot');
+      document.querySelectorAll('#numOpts .opt').forEach(o => o.classList.remove('wrong'));
+      if (+opt.dataset.val > 3) {
+        opt.classList.add('correct');
+        slot.textContent = opt.dataset.val;
+        slot.classList.add('filled');
+        fb.className = 'feedback ok show';
+        fb.innerHTML = '🎉 Tuyệt vời! ' + opt.dataset.val + ' &gt; 3 là đúng rồi! <b>+5 XP</b>';
+        addXp(5);
+        celebrate();
+      } else {
+        opt.classList.add('wrong');
+        fb.className = 'feedback no show';
+        fb.innerHTML = '💡 Số này không lớn hơn 3. Em hãy chọn số lớn hơn 3 nhé!';
+      }
+    });
+  });
+
+  // ===== LUYỆN TẬP: Trò chơi tìm đường =====
+  // Lưới 5x5. Chuột bắt đầu góc dưới-trái, nhà ở góc trên-phải.
+  // Đường đi hợp lệ gồm các ô có số > 4.
+  let mazeNums = [];
+  let mousePos = 20; // index ô bắt đầu (hàng cuối, cột đầu)
+  const HOUSE = 4;   // index ô nhà (hàng đầu, cột cuối)
+  const START = 20;
+
+  function buildMaze() {
+    const maze = document.getElementById('maze');
+    const fb = document.getElementById('mazeFb');
+    fb.className = 'feedback';
+    maze.innerHTML = '';
+    mazeNums = [];
+    mousePos = START;
+
+    // Tạo một đường đi đảm bảo có lời giải: các ô trên đường có số > 4
+    const pathCells = new Set([START, HOUSE]);
+    // đường mẫu: 20 -> 15 -> 10 -> 11 -> 6 -> 7 -> 2 -> ... tới 4
+    const path = [20, 15, 10, 11, 12, 7, 2, 3, 4];
+    path.forEach(p => pathCells.add(p));
+
+    for (let i = 0; i < 25; i++) {
+      let val;
+      if (pathCells.has(i)) {
+        val = 5 + Math.floor(Math.random() * 6); // 5..10 (> 4)
+      } else {
+        // chủ yếu số <= 4, đôi khi > 4 để tạo lựa chọn nhưng không bắt buộc đúng đường
+        val = Math.floor(Math.random() * 5); // 0..4
+      }
+      mazeNums.push(val);
+    }
+
+    for (let i = 0; i < 25; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'maze-cell';
+      cell.dataset.idx = i;
+      if (i === HOUSE) {
+        cell.classList.add('house');
+        cell.textContent = '🏠';
+      } else if (i === START) {
+        cell.classList.add('start', 'mouse');
+        cell.textContent = '🐭';
+      } else {
+        cell.textContent = mazeNums[i];
+      }
+      cell.addEventListener('click', () => stepMaze(i));
+      maze.appendChild(cell);
+    }
+  }
+
+  function isAdjacent(a, b) {
+    const ra = Math.floor(a / 5), ca = a % 5;
+    const rb = Math.floor(b / 5), cb = b % 5;
+    return (Math.abs(ra - rb) + Math.abs(ca - cb)) === 1;
+  }
+
+  function stepMaze(target) {
+    const fb = document.getElementById('mazeFb');
+    const cells = document.querySelectorAll('.maze-cell');
+    if (target === mousePos) return;
+    if (!isAdjacent(target, mousePos)) {
+      fb.className = 'feedback no show';
+      fb.innerHTML = '💡 Bạn chuột chỉ bước được sang ô ngay cạnh thôi nhé!';
+      return;
+    }
+    const targetCell = cells[target];
+    const reachHouse = (target === HOUSE);
+    const val = mazeNums[target];
+
+    if (!reachHouse && !(val > 4)) {
+      // ô không hợp lệ
+      targetCell.classList.add('bad');
+      setTimeout(() => targetCell.classList.remove('bad'), 400);
+      fb.className = 'feedback no show';
+      fb.innerHTML = '💡 Ô số ' + val + ' không lớn hơn 4. Hãy tìm ô có số lớn hơn 4 nhé!';
+      return;
+    }
+
+    // di chuyển hợp lệ
+    cells[mousePos].classList.remove('mouse');
+    if (mousePos !== START) cells[mousePos].classList.add('visited');
+    else cells[mousePos].classList.add('visited');
+    mousePos = target;
+
+    if (reachHouse) {
+      targetCell.textContent = '🐭🏠';
+      fb.className = 'feedback ok show';
+      fb.innerHTML = '🎉 Tuyệt vời! Bạn chuột đã về tới nhà an toàn! <b>+10 XP</b>';
+      addXp(10);
+      celebrate();
+    } else {
+      targetCell.classList.add('mouse');
+      targetCell.textContent = '🐭';
+      fb.className = 'feedback ok show';
+      fb.innerHTML = '👍 Đúng rồi! Số ' + val + ' lớn hơn 4. Đi tiếp nào!';
+    }
+  }
+  buildMaze();
+
+  // ===== AI chip =====
+  function setAi(el) { const i = document.getElementById('aiInput'); i.value = el.textContent; i.focus(); }
+
+  // ===== Confetti =====
+  function celebrate(e) {
+    if (e) e.preventDefault();
+    const colors = ['#4F8CFF','#FFD93D','#6BCB77','#FF9F43','#FF6B9D','#9B72FF'];
+    const x = e ? e.clientX : window.innerWidth/2, y = e ? e.clientY : 200;
+    for (let i = 0; i < 26; i++) {
+      const c = document.createElement('div'); c.className = 'confetti';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.left = x+'px'; c.style.top = y+'px';
+      document.body.appendChild(c);
+      const a = Math.random()*Math.PI*2, v = 100+Math.random()*200;
+      c.animate([{transform:'translate(0,0)',opacity:1},{transform:`translate(${Math.cos(a)*v}px,${Math.sin(a)*v+300}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:1400,easing:'cubic-bezier(.25,.46,.45,.94)'}).onfinish=()=>c.remove();
+    }
+  }
+</script>
+<!-- Chặn đăng nhập + đồng bộ tên/avatar người học (Supabase) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+  if (window.TVKN) { window.tvknLogout = function(){ TVKN.signOut(); }; TVKN.guardPage(); }
+</script>
+</body>
+</html>

@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trang Quản trị - TOÁN VUI KẾT NỐI</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4F8CFF;
+    --yellow: #FFD93D;
+    --green: #6BCB77;
+    --orange: #FF9F43;
+    --pink: #FF6B9D;
+    --purple: #9B72FF;
+    --white: #FFFFFF;
+    --bg-soft: #F4F8FF;
+    --text-dark: #2D3748;
+    --text-soft: #6B7280;
+    --shadow: 0 8px 24px rgba(79, 140, 255, 0.15);
+    --shadow-lg: 0 16px 40px rgba(79, 140, 255, 0.22);
+    --line: #E8EEF8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Fredoka', 'Baloo 2', system-ui, sans-serif;
+    background: var(--bg-soft);
+    color: var(--text-dark);
+    line-height: 1.6;
+  }
+  a { text-decoration: none; color: inherit; }
+  h1,h2,h3,h4 { font-family: 'Baloo 2', sans-serif; }
+
+  /* ============== LAYOUT ============== */
+  .layout { display: flex; min-height: 100vh; }
+
+  /* ============== SIDEBAR ============== */
+  .sidebar {
+    width: 256px; flex-shrink: 0;
+    background: var(--white);
+    box-shadow: 4px 0 24px rgba(79,140,255,0.07);
+    position: fixed; top: 0; left: 0; bottom: 0;
+    display: flex; flex-direction: column;
+    z-index: 200;
+    overflow-y: auto;
+  }
+  .sb-brand {
+    display: flex; align-items: center; gap: 11px;
+    padding: 20px 20px 16px;
+  }
+  .sb-logo {
+    width: 46px; height: 46px;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 6px 16px rgba(79, 140, 255, 0.35);
+  }
+  .sb-brand-name {
+    font-weight: 800; font-size: 15px; line-height: 1.1;
+    background: linear-gradient(90deg, var(--blue), var(--purple));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .sb-brand-sub { font-size: 11px; color: var(--text-soft); font-weight: 600; }
+  .sb-role {
+    margin: 0 16px 12px; padding: 9px 12px;
+    background: linear-gradient(135deg, #EEF4FF, #F4EEFF);
+    border-radius: 12px; font-size: 12px; font-weight: 600; color: var(--purple);
+    display: flex; align-items: center; gap: 7px;
+  }
+  .sb-menu { padding: 4px 12px 16px; flex: 1; }
+  .sb-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 14px; border-radius: 13px;
+    font-weight: 600; font-size: 14.5px; color: var(--text-soft);
+    cursor: pointer; transition: all .18s; margin-bottom: 3px;
+    border: none; background: none; width: 100%; text-align: left;
+    font-family: inherit;
+  }
+  .sb-item .ic { font-size: 19px; width: 24px; text-align: center; }
+  .sb-item:hover { background: var(--bg-soft); color: var(--blue); }
+  .sb-item.active {
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    color: var(--white);
+    box-shadow: 0 8px 18px rgba(79,140,255,0.35);
+  }
+  .sb-divider { height: 1px; background: var(--line); margin: 8px 14px; }
+  .sb-logout:hover { background: #FFECEF; color: var(--pink); }
+
+  /* ============== MAIN ============== */
+  .main { flex: 1; margin-left: 256px; min-width: 0; }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    height: 70px; background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 20px rgba(79,140,255,0.06);
+    display: flex; align-items: center; gap: 16px;
+    padding: 0 28px;
+  }
+  .hamburger {
+    display: none; width: 44px; height: 44px; flex-shrink: 0;
+    border: none; background: var(--bg-soft); border-radius: 12px;
+    font-size: 20px; cursor: pointer;
+  }
+  .topbar-title { font-size: 21px; font-weight: 800; }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .icon-btn {
+    position: relative; width: 44px; height: 44px;
+    border-radius: 12px; background: var(--bg-soft);
+    border: none; cursor: pointer; font-size: 19px; transition: all .2s;
+  }
+  .icon-btn:hover { background: var(--blue); transform: translateY(-2px); }
+  .badge-dot {
+    position: absolute; top: 8px; right: 8px;
+    width: 9px; height: 9px; background: var(--orange);
+    border-radius: 50%; border: 2px solid var(--white);
+  }
+  .account {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 12px 6px 6px; background: var(--bg-soft);
+    border-radius: 14px; cursor: pointer;
+  }
+  .account .av {
+    width: 36px; height: 36px; border-radius: 11px;
+    background: linear-gradient(135deg, var(--green), var(--blue));
+    display: flex; align-items: center; justify-content: center; font-size: 19px;
+  }
+  .account .nm { font-size: 13.5px; font-weight: 700; line-height: 1.1; }
+  .account .rl { font-size: 11.5px; color: var(--text-soft); }
+
+  .content { padding: 26px 28px 60px; max-width: 1280px; }
+
+  /* ============== PANELS ============== */
+  .panel { display: none; animation: fade .35s ease; }
+  .panel.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .panel-head { margin-bottom: 22px; }
+  .panel-head h2 { font-size: 25px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+  .panel-head p { color: var(--text-soft); font-size: 14.5px; margin-top: 2px; }
+
+  /* Cards / sections */
+  .card {
+    background: var(--white); border-radius: 22px;
+    padding: 22px 24px; box-shadow: var(--shadow); margin-bottom: 22px;
+  }
+  .card-title { font-size: 18px; font-weight: 800; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+
+  /* ============== STAT CARDS ============== */
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 26px; }
+  .stat-card {
+    background: var(--white); border-radius: 20px;
+    padding: 22px; box-shadow: var(--shadow);
+    display: flex; align-items: center; gap: 16px;
+    transition: transform .25s; position: relative; overflow: hidden;
+  }
+  .stat-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+  .stat-ic {
+    width: 60px; height: 60px; border-radius: 17px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 30px;
+  }
+  .s1 .stat-ic { background: #E5EEFF; } .s2 .stat-ic { background: #E3F8E8; }
+  .s3 .stat-ic { background: #F1E9FF; } .s4 .stat-ic { background: #FFEFD9; }
+  .s5 .stat-ic { background: #FFF6D6; } .s6 .stat-ic { background: #FFE6EE; }
+  .stat-num { font-family: 'Baloo 2', sans-serif; font-size: 28px; font-weight: 800; line-height: 1.1; }
+  .stat-label { font-size: 13.5px; color: var(--text-soft); font-weight: 600; }
+
+  /* ============== BUTTONS ============== */
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 10px 18px; border-radius: 13px;
+    font-family: inherit; font-weight: 700; font-size: 14px;
+    border: none; cursor: pointer; transition: all .2s; white-space: nowrap;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { background: linear-gradient(135deg, var(--blue), var(--purple)); color: var(--white); box-shadow: 0 6px 16px rgba(79,140,255,0.35); }
+  .btn-green { background: linear-gradient(135deg, var(--green), #4DBE5C); color: var(--white); box-shadow: 0 6px 14px rgba(107,203,119,0.4); }
+  .btn-soft { background: var(--bg-soft); color: var(--text-dark); }
+  .btn-soft:hover { background: var(--line); }
+  .btn-warn { background: #FFF0E0; color: var(--orange); }
+  .btn-danger { background: #FFECEF; color: var(--pink); }
+  .btn-sm { padding: 7px 12px; font-size: 12.5px; border-radius: 10px; }
+  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .back-site {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 9px 15px; border-radius: 12px; background: var(--bg-soft);
+    font-weight: 700; font-size: 13px; color: var(--text-dark); transition: all .2s;
+  }
+  .back-site:hover { background: var(--blue); color: var(--white); transform: translateX(-2px); }
+
+  /* ============== TABLES ============== */
+  .table-wrap { overflow-x: auto; border-radius: 16px; border: 1px solid var(--line); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 560px; }
+  thead th {
+    background: var(--bg-soft); text-align: left; padding: 13px 16px;
+    font-weight: 700; color: var(--text-soft); font-size: 13px;
+    white-space: nowrap;
+  }
+  tbody td { padding: 13px 16px; border-top: 1px solid var(--line); }
+  tbody tr:hover { background: #FAFCFF; }
+  .pill { display: inline-block; padding: 3px 11px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+  .pill-green { background: #E3F8E8; color: #2F8F3E; }
+  .pill-blue { background: #E5EEFF; color: var(--blue); }
+  .pill-gray { background: #EEF1F6; color: var(--text-soft); }
+  .pill-orange { background: #FFEFD9; color: #C97B17; }
+  .pill-pink { background: #FFE6EE; color: #C73E6B; }
+  .pill-purple { background: #F1E9FF; color: var(--purple); }
+  .row-actions { display: flex; gap: 6px; }
+
+  /* ============== FILTERS ============== */
+  .filters { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .filters select, .filters input, .form-field input, .form-field select, .form-field textarea {
+    padding: 10px 14px; border: 2px solid var(--line); border-radius: 12px;
+    font-family: inherit; font-size: 14px; color: var(--text-dark); background: var(--white);
+    outline: none; transition: border .2s;
+  }
+  .filters select:focus, .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--blue); }
+
+  /* ============== FORMS ============== */
+  .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .form-field { display: flex; flex-direction: column; gap: 6px; }
+  .form-field label { font-size: 13px; font-weight: 700; color: var(--text-soft); }
+  .form-field input, .form-field select, .form-field textarea { width: 100%; }
+  .form-field.full { grid-column: 1 / -1; }
+  .checks { display: flex; gap: 16px; flex-wrap: wrap; }
+  .checks label { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; }
+
+  /* ============== AI LOG ============== */
+  .ai-log { display: flex; flex-direction: column; gap: 12px; }
+  .ai-entry { background: var(--bg-soft); border-radius: 14px; padding: 14px 16px; }
+  .ai-q { font-weight: 700; }
+  .ai-a { color: var(--text-soft); font-size: 13.5px; margin-top: 4px; }
+  .ai-time { font-size: 12px; color: var(--text-soft); margin-top: 6px; }
+
+  /* ============== CHART ============== */
+  .chart-box { width: 100%; overflow-x: auto; }
+  .hard-list { display: flex; flex-direction: column; gap: 10px; }
+  .hard-item { display: flex; align-items: center; gap: 12px; }
+  .hard-item .hbar { flex: 1; height: 12px; background: var(--bg-soft); border-radius: 999px; overflow: hidden; }
+  .hard-item .hbar > div { height: 100%; background: linear-gradient(90deg, var(--orange), var(--pink)); border-radius: 999px; }
+  .hard-item .hname { width: 150px; font-weight: 600; font-size: 14px; }
+  .hard-item .hval { width: 46px; text-align: right; font-weight: 700; color: var(--pink); }
+
+  /* ============== ROLES ============== */
+  .role-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .role-card { border: 2px solid var(--line); border-radius: 16px; padding: 16px; }
+  .role-card h4 { font-size: 15px; display: flex; align-items: center; gap: 7px; margin-bottom: 8px; }
+  .role-card ul { list-style: none; font-size: 13px; color: var(--text-soft); }
+  .role-card li { padding: 3px 0 3px 16px; position: relative; }
+  .role-card li::before { content: '•'; position: absolute; left: 2px; color: var(--blue); }
+
+  .game-mini { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 16px; }
+  .game-mini .gcard { border-radius: 16px; padding: 18px; color: var(--white); }
+  .game-mini .gcard .gh { font-size: 36px; margin-bottom: 6px; }
+  .game-mini .gcard .gt { font-weight: 800; font-size: 16px; }
+  .game-mini .gcard .gm { font-size: 12.5px; opacity: .9; margin-top: 2px; }
+  .badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 14px; }
+  .bcard { background: var(--bg-soft); border-radius: 16px; padding: 16px; text-align: center; }
+  .bcard .bem { font-size: 40px; }
+  .bcard .bn { font-weight: 800; margin-top: 4px; }
+
+  .overlay { display: none; }
+
+  /* ============== RESPONSIVE ============== */
+  @media (max-width: 1100px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .role-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 820px) {
+    .sidebar { transform: translateX(-100%); transition: transform .3s; }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; }
+    .hamburger { display: flex; align-items: center; justify-content: center; }
+    .overlay.show { display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 150; }
+    .form-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .content { padding: 18px 14px 50px; }
+    .topbar { padding: 0 14px; }
+    .stat-grid { grid-template-columns: 1fr; }
+    .role-grid { grid-template-columns: 1fr; }
+    .topbar-title { font-size: 17px; }
+    .account .nm, .account .rl { display: none; }
+  }
+
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 9999; border-radius: 2px; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-logo">🐰</div>
+      <div>
+        <div class="sb-brand-name">TOÁN VUI KẾT NỐI</div>
+        <div class="sb-brand-sub">Trang Quản trị</div>
+      </div>
+    </div>
+    <div class="sb-role">🛡️ Super Admin</div>
+    <nav class="sb-menu">
+      <button class="sb-item active" data-tab="dashboard"><span class="ic">🏠</span> Dashboard</button>
+      <button class="sb-item" data-tab="lessons"><span class="ic">📚</span> Bài học</button>
+      <button class="sb-item" data-tab="questions"><span class="ic">❓</span> Ngân hàng câu hỏi</button>
+      <button class="sb-item" data-tab="students"><span class="ic">👦</span> Học sinh</button>
+      <button class="sb-item" data-tab="parents"><span class="ic">👨‍👩‍👧</span> Phụ huynh</button>
+      <button class="sb-item" data-tab="games"><span class="ic">🎮</span> Trò chơi</button>
+      <button class="sb-item" data-tab="badges"><span class="ic">🏅</span> Huy hiệu</button>
+      <button class="sb-item" data-tab="challenges"><span class="ic">🎯</span> Thử thách</button>
+      <button class="sb-item" data-tab="ai"><span class="ic">🤖</span> AI Gia sư</button>
+      <button class="sb-item" data-tab="reports"><span class="ic">📊</span> Báo cáo</button>
+      <button class="sb-item" data-tab="notify"><span class="ic">📢</span> Thông báo</button>
+      <button class="sb-item" data-tab="settings"><span class="ic">⚙️</span> Cài đặt</button>
+      <div class="sb-divider"></div>
+      <a class="sb-item sb-logout" href="#" onclick="event.preventDefault(); tvknLogout();"><span class="ic">🚪</span> Đăng xuất</a>
+    </nav>
+  </aside>
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <header class="topbar">
+      <button class="hamburger" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-title" id="pageTitle">🏠 Tổng quan</div>
+      <div class="topbar-right">
+        <a class="back-site" href="index.html">← Về website</a>
+        <button class="icon-btn" title="Thông báo">🔔<span class="badge-dot"></span></button>
+        <button class="icon-btn" title="Cài đặt nhanh" onclick="showTab('settings')">⚙️</button>
+        <div class="account" title="Tài khoản giáo viên">
+          <div class="av">👩‍🏫</div>
+          <div>
+            <div class="nm" id="adminAccountName">Cô Lan Anh</div>
+            <div class="rl" id="adminAccountRole">Giáo viên</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- ===== DASHBOARD ===== -->
+      <section class="panel active" id="tab-dashboard">
+        <div class="panel-head">
+          <h2>🏠 Tổng quan hệ thống</h2>
+          <p>Chào mừng trở lại! Đây là bức tranh toàn cảnh của TOÁN VUI KẾT NỐI hôm nay.</p>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-card s1"><div class="stat-ic">👦</div><div><div class="stat-num" id="stat-students">1.250</div><div class="stat-label" id="stat-students-label">Tổng học sinh</div></div></div>
+          <div class="stat-card s2"><div class="stat-ic">📚</div><div><div class="stat-num" id="stat-lessons">250</div><div class="stat-label" id="stat-lessons-label">Tổng bài học</div></div></div>
+          <div class="stat-card s3"><div class="stat-ic">❓</div><div><div class="stat-num" id="stat-questions">12.500</div><div class="stat-label" id="stat-questions-label">Tổng câu hỏi</div></div></div>
+          <div class="stat-card s4"><div class="stat-ic">🎮</div><div><div class="stat-num" id="stat-plays">85.000</div><div class="stat-label" id="stat-plays-label">Tổng lượt chơi</div></div></div>
+          <div class="stat-card s5"><div class="stat-ic">⭐</div><div><div class="stat-num" id="stat-xptoday">150.000</div><div class="stat-label" id="stat-xptoday-label">XP phát sinh hôm nay</div></div></div>
+          <div class="stat-card s6"><div class="stat-ic">🔥</div><div><div class="stat-num" id="stat-active">680</div><div class="stat-label" id="stat-active-label">Học sinh hoạt động hôm nay</div></div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🛡️ Phân quyền hệ thống</div>
+          <div class="role-grid">
+            <div class="role-card"><h4>🛡️ Super Admin</h4><ul><li>Toàn quyền hệ thống</li><li>Quản lý tài khoản</li><li>Cấu hình & sao lưu</li></ul></div>
+            <div class="role-card"><h4>👩‍🏫 Giáo viên</h4><ul><li>Quản lý bài học</li><li>Quản lý học sinh</li><li>Xem báo cáo</li></ul></div>
+            <div class="role-card"><h4>👨‍👩‍👧 Phụ huynh</h4><ul><li>Chỉ xem dữ liệu con mình</li><li>Nhận báo cáo tuần</li></ul></div>
+            <div class="role-card"><h4>👦 Học sinh</h4><ul><li>Chỉ xem dữ liệu cá nhân</li><li>Học & chơi game</li></ul></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== BÀI HỌC ===== -->
+      <section class="panel" id="tab-lessons">
+        <div class="panel-head">
+          <h2>📚 Quản lý bài học</h2>
+          <p>Tạo, chỉnh sửa và xuất bản bài học cho từng lớp.</p>
+        </div>
+        <div class="card">
+          <div class="toolbar">
+            <button class="btn btn-green" onclick="celebrate(event)">➕ Thêm bài học</button>
+            <button class="btn btn-soft">✏️ Sửa</button>
+            <button class="btn btn-soft">👁️ Xem trước</button>
+            <button class="btn btn-soft">📋 Sao chép</button>
+            <button class="btn btn-danger">🗑️ Xóa</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>ID</th><th>Lớp</th><th>Tên bài</th><th>Trạng thái</th><th>Ngày tạo</th><th>Thao tác</th></tr></thead>
+              <tbody>
+                <tr><td>#L001</td><td>Lớp 1</td><td>Làm quen với các số đến 10</td><td><span class="pill pill-green">Đã xuất bản</span></td><td>02/06/2026</td><td><div class="row-actions"><button class="btn btn-soft btn-sm">✏️</button><button class="btn btn-danger btn-sm">🗑️</button></div></td></tr>
+                <tr><td>#L002</td><td>Lớp 1</td><td>So sánh các số trong phạm vi 10</td><td><span class="pill pill-orange">Nháp</span></td><td>05/06/2026</td><td><div class="row-actions"><button class="btn btn-soft btn-sm">✏️</button><button class="btn btn-danger btn-sm">🗑️</button></div></td></tr>
+                <tr><td>#L003</td><td>Lớp 2</td><td>Phép cộng có nhớ trong phạm vi 100</td><td><span class="pill pill-green">Đã xuất bản</span></td><td>08/06/2026</td><td><div class="row-actions"><button class="btn btn-soft btn-sm">✏️</button><button class="btn btn-danger btn-sm">🗑️</button></div></td></tr>
+                <tr><td>#L004</td><td>Lớp 3</td><td>Bảng nhân 6, 7, 8, 9</td><td><span class="pill pill-blue">Đang soạn</span></td><td>12/06/2026</td><td><div class="row-actions"><button class="btn btn-soft btn-sm">✏️</button><button class="btn btn-danger btn-sm">🗑️</button></div></td></tr>
+                <tr><td>#L005</td><td>Lớp 5</td><td>Phân số và phép cộng phân số</td><td><span class="pill pill-green">Đã xuất bản</span></td><td>15/06/2026</td><td><div class="row-actions"><button class="btn btn-soft btn-sm">✏️</button><button class="btn btn-danger btn-sm">🗑️</button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📝 Form tạo bài học</div>
+          <div class="form-grid">
+            <div class="form-field"><label>Tên bài</label><input placeholder="VD: Phép cộng trong phạm vi 10"></div>
+            <div class="form-field"><label>Lớp</label><select><option>Lớp 1</option><option>Lớp 2</option><option>Lớp 3</option><option>Lớp 4</option><option>Lớp 5</option></select></div>
+            <div class="form-field"><label>Chủ đề</label><select><option>Số học</option><option>Hình học</option><option>Đo lường</option><option>Phân số</option></select></div>
+            <div class="form-field"><label>Trạng thái</label><select><option>Nháp</option><option>Đã xuất bản</option></select></div>
+            <div class="form-field full"><label>Mô tả</label><textarea rows="2" placeholder="Mô tả ngắn về nội dung bài học..."></textarea></div>
+            <div class="form-field full"><label>Nội dung (Khởi động · Kiến thức · Video · Ví dụ · Bài tập)</label><textarea rows="3" placeholder="Cấu trúc nội dung bài học..."></textarea></div>
+          </div>
+          <div class="toolbar" style="margin-top:16px;margin-bottom:0">
+            <button class="btn btn-green" onclick="celebrate(event)">💾 Lưu</button>
+            <button class="btn btn-primary" onclick="celebrate(event)">🚀 Xuất bản</button>
+            <button class="btn btn-soft">📄 Lưu nháp</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== NGÂN HÀNG CÂU HỎI ===== -->
+      <section class="panel" id="tab-questions">
+        <div class="panel-head">
+          <h2>❓ Ngân hàng câu hỏi</h2>
+          <p>Quản lý toàn bộ câu hỏi: trắc nghiệm, đúng/sai, điền số, kéo thả, nối cặp.</p>
+        </div>
+        <div class="card">
+          <div class="filters">
+            <select><option>Lớp · Tất cả</option><option>Lớp 1</option><option>Lớp 2</option><option>Lớp 3</option><option>Lớp 4</option><option>Lớp 5</option></select>
+            <select><option>Chủ đề · Tất cả</option><option>Số học</option><option>Hình học</option><option>Phân số</option><option>Đo lường</option></select>
+            <select><option>Độ khó · Tất cả</option><option>Dễ</option><option>Trung bình</option><option>Khó</option></select>
+            <select><option>Loại · Tất cả</option><option>Trắc nghiệm</option><option>Đúng/Sai</option><option>Điền số</option><option>Kéo thả</option><option>Nối cặp</option></select>
+          </div>
+          <div class="toolbar">
+            <button class="btn btn-green" onclick="celebrate(event)">➕ Thêm</button>
+            <button class="btn btn-soft">✏️ Sửa</button>
+            <button class="btn btn-danger">🗑️ Xóa</button>
+            <button class="btn btn-primary" onclick="celebrate(event)">📥 Import Excel</button>
+            <button class="btn btn-soft">📤 Export Excel</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>ID</th><th>Câu hỏi</th><th>Chủ đề</th><th>Độ khó</th><th>Loại</th></tr></thead>
+              <tbody>
+                <tr><td>#Q001</td><td>5 + 3 = ?</td><td>Số học</td><td><span class="pill pill-green">Dễ</span></td><td><span class="pill pill-blue">Trắc nghiệm</span></td></tr>
+                <tr><td>#Q002</td><td>Số 12 lớn hơn số 9. Đúng hay sai?</td><td>Số học</td><td><span class="pill pill-green">Dễ</span></td><td><span class="pill pill-purple">Đúng/Sai</span></td></tr>
+                <tr><td>#Q003</td><td>Điền số còn thiếu: 7 + __ = 15</td><td>Số học</td><td><span class="pill pill-orange">Trung bình</span></td><td><span class="pill pill-blue">Điền số</span></td></tr>
+                <tr><td>#Q004</td><td>Nối phân số với hình tương ứng</td><td>Phân số</td><td><span class="pill pill-pink">Khó</span></td><td><span class="pill pill-purple">Nối cặp</span></td></tr>
+                <tr><td>#Q005</td><td>Kéo thả các hình vào đúng nhóm hình học</td><td>Hình học</td><td><span class="pill pill-orange">Trung bình</span></td><td><span class="pill pill-purple">Kéo thả</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== HỌC SINH ===== -->
+      <section class="panel" id="tab-students">
+        <div class="panel-head">
+          <h2>👦 Quản lý học sinh</h2>
+          <p>Theo dõi hồ sơ, tiến độ và quản lý tài khoản học sinh.</p>
+        </div>
+        <div class="card">
+          <div class="toolbar">
+            <button class="btn btn-soft">🔒 Khóa tài khoản</button>
+            <button class="btn btn-green" onclick="celebrate(event)">🔓 Mở khóa</button>
+            <button class="btn btn-warn">🔑 Đặt lại mật khẩu</button>
+            <button class="btn btn-primary" onclick="celebrate(event)">📤 Xuất báo cáo</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Mã HS</th><th>Họ tên</th><th>Lớp</th><th>XP</th><th>Huy hiệu</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+              <tbody id="students-tbody">
+                <tr><td>#HS1001</td><td>Nguyễn Minh Anh</td><td>Lớp 1</td><td>450</td><td>🏅 4</td><td><span class="pill pill-green">Hoạt động</span></td><td><div class="row-actions"><button class="btn btn-soft btn-sm">🔒</button><button class="btn btn-warn btn-sm">🔑</button></div></td></tr>
+                <tr><td>#HS1002</td><td>Trần Gia Bảo</td><td>Lớp 2</td><td>1.220</td><td>🏅 9</td><td><span class="pill pill-green">Hoạt động</span></td><td><div class="row-actions"><button class="btn btn-soft btn-sm">🔒</button><button class="btn btn-warn btn-sm">🔑</button></div></td></tr>
+                <tr><td>#HS1003</td><td>Lê Khánh Chi</td><td>Lớp 3</td><td>2.870</td><td>🏅 15</td><td><span class="pill pill-pink">Bị khóa</span></td><td><div class="row-actions"><button class="btn btn-green btn-sm">🔓</button><button class="btn btn-warn btn-sm">🔑</button></div></td></tr>
+                <tr><td>#HS1004</td><td>Phạm Đức Duy</td><td>Lớp 4</td><td>3.540</td><td>🏅 18</td><td><span class="pill pill-green">Hoạt động</span></td><td><div class="row-actions"><button class="btn btn-soft btn-sm">🔒</button><button class="btn btn-warn btn-sm">🔑</button></div></td></tr>
+                <tr><td>#HS1005</td><td>Vũ Thảo My</td><td>Lớp 5</td><td>5.910</td><td>🏅 23</td><td><span class="pill pill-gray">Ngừng học</span></td><td><div class="row-actions"><button class="btn btn-green btn-sm">🔓</button><button class="btn btn-warn btn-sm">🔑</button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">🗂️ Hồ sơ học sinh</div>
+          <p style="color:var(--text-soft);font-size:14px">Chọn một học sinh để xem: Thông tin cá nhân · Tiến độ học tập · Lịch sử học · Lịch sử đăng nhập · Huy hiệu · Thử thách.</p>
+        </div>
+      </section>
+
+      <!-- ===== PHỤ HUYNH ===== -->
+      <section class="panel" id="tab-parents">
+        <div class="panel-head">
+          <h2>👨‍👩‍👧 Quản lý phụ huynh</h2>
+          <p>Danh sách phụ huynh và liên kết với học sinh.</p>
+        </div>
+        <div class="card">
+          <div class="toolbar">
+            <button class="btn btn-primary" onclick="celebrate(event)">📨 Gửi thông báo</button>
+            <button class="btn btn-green" onclick="celebrate(event)">📊 Gửi báo cáo tuần</button>
+            <button class="btn btn-danger">🔒 Khóa tài khoản</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Tên phụ huynh</th><th>SĐT</th><th>Email</th><th>Con đang học</th></tr></thead>
+              <tbody>
+                <tr><td>Nguyễn Văn Hùng</td><td>0901 234 567</td><td>hung.nv@email.com</td><td>Nguyễn Minh Anh (Lớp 1)</td></tr>
+                <tr><td>Trần Thị Hoa</td><td>0912 345 678</td><td>hoa.tt@email.com</td><td>Trần Gia Bảo (Lớp 2)</td></tr>
+                <tr><td>Lê Quang Vinh</td><td>0923 456 789</td><td>vinh.lq@email.com</td><td>Lê Khánh Chi (Lớp 3)</td></tr>
+                <tr><td>Phạm Thị Lan</td><td>0934 567 890</td><td>lan.pt@email.com</td><td>Phạm Đức Duy (Lớp 4)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TRÒ CHƠI ===== -->
+      <section class="panel" id="tab-games">
+        <div class="panel-head">
+          <h2>🎮 Quản lý trò chơi</h2>
+          <p>Cấu hình các game học toán: tên, ảnh, mô tả, XP & xu thưởng.</p>
+        </div>
+        <div class="card">
+          <div class="toolbar">
+            <button class="btn btn-green" onclick="celebrate(event)">➕ Tạo mới</button>
+            <button class="btn btn-soft">✏️ Sửa</button>
+            <button class="btn btn-warn">🙈 Ẩn</button>
+            <button class="btn btn-danger">🗑️ Xóa</button>
+          </div>
+          <div class="game-mini">
+            <div class="gcard" style="background:linear-gradient(135deg,#FF6B9D,#FF9F43)"><div class="gh">🚗</div><div class="gt">Đua xe Toán học</div><div class="gm">+50 XP · +20 xu</div></div>
+            <div class="gcard" style="background:linear-gradient(135deg,#9B72FF,#4F8CFF)"><div class="gh">🎈</div><div class="gt">Bắn bóng số học</div><div class="gm">+40 XP · +15 xu</div></div>
+            <div class="gcard" style="background:linear-gradient(135deg,#6BCB77,#4DD0E1)"><div class="gh">🏰</div><div class="gt">Xây lâu đài</div><div class="gm">+55 XP · +25 xu</div></div>
+            <div class="gcard" style="background:linear-gradient(135deg,#FFD93D,#FF9F43)"><div class="gh">🏴‍☠️</div><div class="gt">Kho báu phép tính</div><div class="gm">+60 XP · +30 xu</div></div>
+            <div class="gcard" style="background:linear-gradient(135deg,#4F8CFF,#9B72FF)"><div class="gh">🔔</div><div class="gt">Rung chuông vàng</div><div class="gm">+100 XP · +50 xu</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== HUY HIỆU ===== -->
+      <section class="panel" id="tab-badges">
+        <div class="panel-head">
+          <h2>🏅 Quản lý huy hiệu</h2>
+          <p>Tạo và cấu hình huy hiệu theo nhóm, độ hiếm và điều kiện đạt được.</p>
+        </div>
+        <div class="card">
+          <div class="toolbar">
+            <button class="btn btn-green" onclick="celebrate(event)">➕ Tạo huy hiệu</button>
+            <button class="btn btn-soft">✏️ Sửa</button>
+            <button class="btn btn-soft">🖼️ Đổi hình ảnh</button>
+            <button class="btn btn-danger">🗑️ Xóa</button>
+          </div>
+          <div class="badge-grid" style="margin-bottom:18px">
+            <div class="bcard"><div class="bem">🌟</div><div class="bn">Khởi đầu</div><span class="pill pill-gray">Common</span></div>
+            <div class="bcard"><div class="bem">🔥</div><div class="bn">7 ngày liên tiếp</div><span class="pill pill-blue">Rare</span></div>
+            <div class="bcard"><div class="bem">🧠</div><div class="bn">Thần đồng số học</div><span class="pill pill-purple">Epic</span></div>
+            <div class="bcard"><div class="bem">👑</div><div class="bn">Vua Toán học</div><span class="pill pill-orange">Legendary</span></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Tên huy hiệu</th><th>Nhóm</th><th>Độ hiếm</th><th>Điều kiện</th></tr></thead>
+              <tbody>
+                <tr><td>🌟 Khởi đầu</td><td>Tiến độ</td><td><span class="pill pill-gray">Common</span></td><td>Hoàn thành bài học đầu tiên</td></tr>
+                <tr><td>🔥 7 ngày liên tiếp</td><td>Chuyên cần</td><td><span class="pill pill-blue">Rare</span></td><td>Học 7 ngày liên tục</td></tr>
+                <tr><td>🧠 Thần đồng số học</td><td>Thành tích</td><td><span class="pill pill-purple">Epic</span></td><td>Đạt 100% ở 20 bài</td></tr>
+                <tr><td>👑 Vua Toán học</td><td>Thành tích</td><td><span class="pill pill-orange">Legendary</span></td><td>Đạt 10.000 XP</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== THỬ THÁCH ===== -->
+      <section class="panel" id="tab-challenges">
+        <div class="panel-head">
+          <h2>🎯 Quản lý thử thách</h2>
+          <p>Tạo thử thách hằng ngày cho từng lớp.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">🗓️ Tạo thử thách ngày</div>
+          <div class="form-grid">
+            <div class="form-field"><label>Ngày áp dụng</label><input type="date" value="2026-06-24"></div>
+            <div class="form-field"><label>Lớp áp dụng</label><select><option>Tất cả các lớp</option><option>Lớp 1</option><option>Lớp 2</option><option>Lớp 3</option><option>Lớp 4</option><option>Lớp 5</option></select></div>
+            <div class="form-field"><label>Số câu</label><input type="number" value="10"></div>
+            <div class="form-field"><label>XP thưởng</label><input type="number" value="100"></div>
+          </div>
+          <div class="toolbar" style="margin-top:16px;margin-bottom:0">
+            <button class="btn btn-green" onclick="celebrate(event)">💾 Lưu</button>
+            <button class="btn btn-primary" onclick="celebrate(event)">🚀 Xuất bản</button>
+            <button class="btn btn-soft">📋 Nhân bản từ ngày trước</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📅 Thử thách gần đây</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Ngày</th><th>Lớp</th><th>Số câu</th><th>XP</th><th>Trạng thái</th></tr></thead>
+              <tbody>
+                <tr><td>23/06/2026</td><td>Tất cả</td><td>10</td><td>100</td><td><span class="pill pill-green">Đang chạy</span></td></tr>
+                <tr><td>22/06/2026</td><td>Lớp 1-3</td><td>8</td><td>80</td><td><span class="pill pill-gray">Đã kết thúc</span></td></tr>
+                <tr><td>24/06/2026</td><td>Tất cả</td><td>10</td><td>100</td><td><span class="pill pill-orange">Lên lịch</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== AI GIA SƯ ===== -->
+      <section class="panel" id="tab-ai">
+        <div class="panel-head">
+          <h2>🤖 Quản lý AI Gia sư</h2>
+          <p>Cấu hình trợ lý AI và theo dõi nhật ký hỏi đáp.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">⚙️ Cấu hình AI</div>
+          <div class="form-grid">
+            <div class="form-field"><label>Tên trợ lý</label><input value="Thỏ Toán Học"></div>
+            <div class="form-field"><label>Avatar</label><select><option>🐰 Thỏ</option><option>🦉 Cú</option><option>🤖 Robot</option><option>🐱 Mèo</option></select></div>
+            <div class="form-field"><label>Giới hạn trả lời (token)</label><input type="number" value="300"></div>
+            <div class="form-field"><label>Độ tuổi mục tiêu</label><select><option>6-11 tuổi (Tiểu học)</option></select></div>
+            <div class="form-field full"><label>Prompt hệ thống</label><textarea rows="3">Bạn là gia sư toán thân thiện cho học sinh tiểu học Việt Nam. Trả lời ngắn gọn, dễ hiểu, khích lệ, dùng ví dụ gần gũi và không bao giờ làm hộ bài tập.</textarea></div>
+          </div>
+          <div class="toolbar" style="margin-top:16px;margin-bottom:0">
+            <button class="btn btn-green" onclick="celebrate(event)">💾 Lưu cấu hình</button>
+            <button class="btn btn-warn">🚫 Chặn câu hỏi không phù hợp</button>
+            <button class="btn btn-soft">📤 Xuất dữ liệu</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📜 Nhật ký AI</div>
+          <div class="ai-log">
+            <div class="ai-entry"><div class="ai-q">👦 Học sinh: 8 cộng 5 bằng mấy ạ?</div><div class="ai-a">🐰 AI: Em thử đếm tiếp từ 8 nhé: 9, 10, 11, 12, 13. Vậy 8 + 5 = 13!</div><div class="ai-time">🕒 23/06/2026 · 09:14</div></div>
+            <div class="ai-entry"><div class="ai-q">👦 Học sinh: Phân số 1/2 nghĩa là gì?</div><div class="ai-a">🐰 AI: Là khi em chia một chiếc bánh thành 2 phần bằng nhau và lấy 1 phần đó!</div><div class="ai-time">🕒 23/06/2026 · 10:02</div></div>
+            <div class="ai-entry"><div class="ai-q">👦 Học sinh: Hình vuông có mấy cạnh?</div><div class="ai-a">🐰 AI: Hình vuông có 4 cạnh bằng nhau và 4 góc vuông đó em!</div><div class="ai-time">🕒 23/06/2026 · 11:20</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== BÁO CÁO ===== -->
+      <section class="panel" id="tab-reports">
+        <div class="panel-head">
+          <h2>📊 Báo cáo thống kê</h2>
+          <p>Theo dõi học sinh hoạt động, XP phát sinh và các chủ đề khó nhất.</p>
+        </div>
+        <div class="card" id="cohort-card" style="display:none">
+          <div class="card-title">📊 So sánh: Người mới vs Đã dùng lâu</div>
+          <div class="stat-grid" id="cohort-grid" style="margin-bottom:0"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📈 Học sinh hoạt động trong tuần</div>
+          <div class="toolbar">
+            <button class="btn btn-soft btn-sm" onclick="setReportRange(this)">📅 Theo ngày</button>
+            <button class="btn btn-primary btn-sm" onclick="setReportRange(this)">🗓️ Theo tuần</button>
+            <button class="btn btn-soft btn-sm" onclick="setReportRange(this)">📆 Theo tháng</button>
+          </div>
+          <div class="chart-box">
+            <svg viewBox="0 0 560 260" width="100%" height="260" role="img" aria-label="Biểu đồ học sinh hoạt động">
+              <line x1="40" y1="220" x2="540" y2="220" stroke="#E8EEF8" stroke-width="2"/>
+              <line x1="40" y1="20" x2="40" y2="220" stroke="#E8EEF8" stroke-width="2"/>
+              <g font-size="11" fill="#6B7280" text-anchor="middle" font-family="Fredoka,sans-serif">
+                <rect x="60"  y="120" width="44" height="100" rx="8" fill="url(#g1)"/><text x="82"  y="240">T2</text><text x="82"  y="110">520</text>
+                <rect x="128" y="90"  width="44" height="130" rx="8" fill="url(#g1)"/><text x="150" y="240">T3</text><text x="150" y="80">610</text>
+                <rect x="196" y="70"  width="44" height="150" rx="8" fill="url(#g1)"/><text x="218" y="240">T4</text><text x="218" y="60">680</text>
+                <rect x="264" y="110" width="44" height="110" rx="8" fill="url(#g1)"/><text x="286" y="240">T5</text><text x="286" y="100">560</text>
+                <rect x="332" y="60"  width="44" height="160" rx="8" fill="url(#g1)"/><text x="354" y="240">T6</text><text x="354" y="50">720</text>
+                <rect x="400" y="100" width="44" height="120" rx="8" fill="url(#g1)"/><text x="422" y="240">T7</text><text x="422" y="90">590</text>
+                <rect x="468" y="130" width="44" height="90"  rx="8" fill="url(#g1)"/><text x="490" y="240">CN</text><text x="490" y="120">480</text>
+              </g>
+              <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4F8CFF"/><stop offset="1" stop-color="#9B72FF"/></linearGradient></defs>
+            </svg>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📚 Bài được học nhiều nhất</div>
+          <div class="hard-list">
+            <div class="hard-item"><div class="hname">Phép cộng đến 10</div><div class="hbar"><div style="width:94%"></div></div><div class="hval">9.4k</div></div>
+            <div class="hard-item"><div class="hname">Bảng nhân 2, 5</div><div class="hbar"><div style="width:81%"></div></div><div class="hval">8.1k</div></div>
+            <div class="hard-item"><div class="hname">So sánh số đến 100</div><div class="hbar"><div style="width:67%"></div></div><div class="hval">6.7k</div></div>
+            <div class="hard-item"><div class="hname">Phân số cơ bản</div><div class="hbar"><div style="width:52%"></div></div><div class="hval">5.2k</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">🧩 Chủ đề khó nhất</div>
+          <div class="hard-list">
+            <div class="hard-item"><div class="hname">Phân số</div><div class="hbar"><div style="width:88%"></div></div><div class="hval">88%</div></div>
+            <div class="hard-item"><div class="hname">Tỉ số phần trăm</div><div class="hbar"><div style="width:76%"></div></div><div class="hval">76%</div></div>
+            <div class="hard-item"><div class="hname">Toán có lời văn</div><div class="hbar"><div style="width:71%"></div></div><div class="hval">71%</div></div>
+            <div class="hard-item"><div class="hname">Diện tích hình</div><div class="hbar"><div style="width:58%"></div></div><div class="hval">58%</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== THÔNG BÁO HỆ THỐNG ===== -->
+      <section class="panel" id="tab-notify">
+        <div class="panel-head">
+          <h2>📢 Thông báo hệ thống</h2>
+          <p>Gửi thông báo tới học sinh theo phạm vi: tất cả, theo lớp hoặc theo nhóm.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">✉️ Gửi thông báo</div>
+          <div class="form-grid">
+            <div class="form-field"><label>Phạm vi gửi</label>
+              <select id="notifyScope" onchange="toggleNotifyTarget()">
+                <option value="all">Tất cả học sinh</option>
+                <option value="class">Theo lớp</option>
+                <option value="group">Theo nhóm</option>
+              </select>
+            </div>
+            <div class="form-field" id="notifyTarget" style="display:none"><label>Chọn lớp / nhóm</label>
+              <select>
+                <option>Lớp 1</option><option>Lớp 2</option><option>Lớp 3</option>
+                <option>Lớp 4</option><option>Lớp 5</option>
+                <option>Nhóm Chuyên cần</option><option>Nhóm Cần hỗ trợ</option>
+              </select>
+            </div>
+            <div class="form-field full"><label>Nội dung thông báo</label>
+              <textarea rows="3" placeholder="Ngày mai có thử thách đặc biệt."></textarea>
+            </div>
+          </div>
+          <div class="toolbar" style="margin-top:16px;margin-bottom:0">
+            <button class="btn btn-primary" onclick="celebrate(event)">📨 Gửi</button>
+            <button class="btn btn-soft">📄 Lưu nháp</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">🕒 Thông báo đã gửi gần đây</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nội dung</th><th>Phạm vi</th><th>Người nhận</th><th>Thời gian</th><th>Trạng thái</th></tr></thead>
+              <tbody>
+                <tr><td>Ngày mai có thử thách đặc biệt.</td><td><span class="pill pill-blue">Tất cả</span></td><td>1.250</td><td>23/06/2026 · 08:30</td><td><span class="pill pill-green">Đã gửi</span></td></tr>
+                <tr><td>Lớp 3 nhớ hoàn thành bài tập phân số nhé!</td><td><span class="pill pill-purple">Theo lớp</span></td><td>248</td><td>22/06/2026 · 16:10</td><td><span class="pill pill-green">Đã gửi</span></td></tr>
+                <tr><td>Chúc mừng nhóm Chuyên cần đạt mốc 7 ngày!</td><td><span class="pill pill-orange">Theo nhóm</span></td><td>64</td><td>21/06/2026 · 19:45</td><td><span class="pill pill-green">Đã gửi</span></td></tr>
+                <tr><td>Bảo trì hệ thống 22h-23h tối nay.</td><td><span class="pill pill-blue">Tất cả</span></td><td>1.250</td><td>20/06/2026 · 12:00</td><td><span class="pill pill-gray">Đã lên lịch</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CÀI ĐẶT ===== -->
+      <section class="panel" id="tab-settings">
+        <div class="panel-head">
+          <h2>⚙️ Cài đặt hệ thống</h2>
+          <p>Cấu hình chung, bảo mật, phân quyền và sao lưu dữ liệu.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">🏷️ Cấu hình chung</div>
+          <div class="form-grid">
+            <div class="form-field"><label>Tên website</label><input value="TOÁN VUI KẾT NỐI"></div>
+            <div class="form-field"><label>Logo</label><input type="file"></div>
+            <div class="form-field"><label>Màu chủ đạo</label><input type="color" value="#4F8CFF"></div>
+            <div class="form-field"><label>Ngôn ngữ</label><select><option>Tiếng Việt</option></select></div>
+          </div>
+          <div class="toolbar" style="margin-top:14px;margin-bottom:0"><button class="btn btn-green" onclick="celebrate(event)">💾 Lưu cấu hình</button></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🔐 Bảo mật</div>
+          <div class="form-grid">
+            <div class="form-field"><label>Mật khẩu mới</label><input type="password" placeholder="••••••••"></div>
+            <div class="form-field"><label>Xác nhận mật khẩu</label><input type="password" placeholder="••••••••"></div>
+          </div>
+          <div class="checks" style="margin-top:14px">
+            <label><input type="checkbox" checked> Bật xác thực 2 lớp (2FA)</label>
+            <label><input type="checkbox" checked> Ghi nhật ký đăng nhập</label>
+          </div>
+          <div class="toolbar" style="margin-top:14px;margin-bottom:0"><button class="btn btn-primary" onclick="celebrate(event)">🔑 Đổi mật khẩu</button></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🛡️ Phân quyền</div>
+          <div class="role-grid">
+            <div class="role-card"><h4>🛡️ Super Admin</h4><ul><li>Toàn quyền</li></ul></div>
+            <div class="role-card"><h4>👩‍🏫 Giáo viên</h4><ul><li>Quản lý bài học</li><li>Quản lý học sinh</li><li>Xem báo cáo</li></ul></div>
+            <div class="role-card"><h4>👨‍👩‍👧 Phụ huynh</h4><ul><li>Chỉ xem dữ liệu con mình</li></ul></div>
+            <div class="role-card"><h4>👦 Học sinh</h4><ul><li>Chỉ xem dữ liệu cá nhân</li></ul></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">💾 Sao lưu</div>
+          <div class="toolbar" style="margin-bottom:0">
+            <button class="btn btn-green" onclick="celebrate(event)">⬇️ Backup dữ liệu</button>
+            <button class="btn btn-soft">⬆️ Khôi phục dữ liệu</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  const titles = {
+    dashboard: '🏠 Tổng quan',
+    lessons: '📚 Quản lý bài học',
+    questions: '❓ Ngân hàng câu hỏi',
+    students: '👦 Quản lý học sinh',
+    parents: '👨‍👩‍👧 Quản lý phụ huynh',
+    games: '🎮 Quản lý trò chơi',
+    badges: '🏅 Quản lý huy hiệu',
+    challenges: '🎯 Quản lý thử thách',
+    ai: '🤖 AI Gia sư',
+    reports: '📊 Báo cáo thống kê',
+    notify: '📢 Thông báo hệ thống',
+    settings: '⚙️ Cài đặt hệ thống'
+  };
+
+  function setReportRange(btn) {
+    btn.parentElement.querySelectorAll('.btn').forEach(b => {
+      b.classList.remove('btn-primary'); b.classList.add('btn-soft');
+    });
+    btn.classList.remove('btn-soft'); btn.classList.add('btn-primary');
+  }
+
+  function toggleNotifyTarget() {
+    const scope = document.getElementById('notifyScope').value;
+    document.getElementById('notifyTarget').style.display = scope === 'all' ? 'none' : 'flex';
+  }
+
+  function showTab(tab) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
+    const panel = document.getElementById('tab-' + tab);
+    if (panel) panel.classList.add('active');
+    const btn = document.querySelector('.sb-item[data-tab="' + tab + '"]');
+    if (btn) btn.classList.add('active');
+    document.getElementById('pageTitle').textContent = titles[tab] || '';
+    document.querySelector('.content').scrollTo(0, 0);
+    window.scrollTo(0, 0);
+    closeSidebar();
+  }
+
+  document.querySelectorAll('.sb-item[data-tab]').forEach(btn => {
+    btn.addEventListener('click', () => showTab(btn.dataset.tab));
+  });
+
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('show');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('show');
+  }
+
+  // Hiệu ứng confetti
+  function celebrate(e) {
+    if (e) e.preventDefault();
+    const colors = ['#4F8CFF', '#FFD93D', '#6BCB77', '#FF9F43', '#FF6B9D', '#9B72FF'];
+    const x = e ? e.clientX : window.innerWidth / 2;
+    const y = e ? e.clientY : window.innerHeight / 2;
+    for (let i = 0; i < 24; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.left = x + 'px'; c.style.top = y + 'px';
+      document.body.appendChild(c);
+      const angle = Math.random() * Math.PI * 2;
+      const v = 100 + Math.random() * 200;
+      const vx = Math.cos(angle) * v, vy = Math.sin(angle) * v - 150;
+      c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${vx}px, ${vy + 300}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+      ], { duration: 1300, easing: 'cubic-bezier(.25,.46,.45,.94)' }).onfinish = () => c.remove();
+    }
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+  /* Chỉ cho quản trị viên (role='admin') vào trang này */
+  window.tvknLogout = function(){ TVKN.signOut(); };
+  TVKN.requireAdmin().then(function(p){
+    if (p) {
+      // hiện tên admin ở topbar nếu có chỗ
+      document.querySelectorAll('.admin-name,.account-name').forEach(function(el){ el.textContent = p.name; });
+      var _nameEl = document.getElementById('adminAccountName');
+      if (_nameEl && p.name) _nameEl.textContent = p.name;
+      var _roleEl = document.getElementById('adminAccountRole');
+      if (_roleEl) _roleEl.textContent = 'Quản trị viên';
+      loadAdminData();
+    }
+  });
+
+  // ===== Tải dữ liệu thật từ Supabase =====
+  function fmtNum(n) {
+    var v = Number(n);
+    if (!isFinite(v)) return '0';
+    return Math.round(v).toLocaleString('vi-VN');
+  }
+
+  function setStat(id, value) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = fmtNum(value);
+  }
+  function setLabel(id, text) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = text;
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function rolePill(role) {
+    var r = (role || '').toLowerCase();
+    if (r === 'admin') return '<span class="pill pill-purple">Admin</span>';
+    if (r === 'parent') return '<span class="pill pill-orange">Phụ huynh</span>';
+    if (r === 'teacher') return '<span class="pill pill-blue">Giáo viên</span>';
+    return '<span class="pill pill-green">Học sinh</span>';
+  }
+
+  async function loadAdminData() {
+    // --- Tổng quan (stat cards) ---
+    try {
+      var o = await TVKN.adminOverview();
+      if (o) {
+        setStat('stat-students', o.students);                 // 👦 Tổng học sinh
+        setStat('stat-xptoday', o.xp_today);                  // ⭐ XP phát sinh hôm nay
+        setStat('stat-active', o.active_today);               // 🔥 Học sinh hoạt động hôm nay
+        // Card "📚 bài học" -> Bài đã hoàn thành
+        setStat('stat-lessons', o.lessons_completed);
+        setLabel('stat-lessons-label', 'Bài đã hoàn thành');
+        // Card "❓ câu hỏi" -> Tổng XP toàn hệ thống
+        setStat('stat-questions', o.total_xp);
+        setLabel('stat-questions-label', 'Tổng XP toàn hệ thống');
+        // Card "🎮 lượt chơi" -> Tổng hoạt động
+        setStat('stat-plays', o.activities_total);
+        setLabel('stat-plays-label', 'Tổng hoạt động');
+      }
+    } catch (e) {
+      console.warn('adminOverview lỗi, giữ dữ liệu demo:', e);
+    }
+
+    // --- Danh sách học sinh / người dùng ---
+    try {
+      var users = await TVKN.adminUsers();
+      var tbody = document.getElementById('students-tbody');
+      if (tbody && Array.isArray(users)) {
+        if (users.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-soft)">Chưa có người dùng</td></tr>';
+        } else {
+          tbody.innerHTML = users.map(function (u) {
+            var name = escapeHtml(u.name || u.email || '—');
+            var email = escapeHtml(u.email || '');
+            var grade = (u.grade !== null && u.grade !== undefined && u.grade !== '') ? 'Lớp ' + escapeHtml(u.grade) : '—';
+            var xp = fmtNum(u.xp || 0);
+            return '<tr>' +
+              '<td>' + email + '</td>' +
+              '<td>' + name + '</td>' +
+              '<td>' + grade + '</td>' +
+              '<td>' + xp + '</td>' +
+              '<td>' + rolePill(u.role) + '</td>' +
+              '<td><span class="pill pill-green">Hoạt động</span></td>' +
+              '<td><div class="row-actions"><button class="btn btn-soft btn-sm">🔒</button><button class="btn btn-warn btn-sm">🔑</button></div></td>' +
+              '</tr>';
+          }).join('');
+        }
+      }
+    } catch (e) {
+      console.warn('adminUsers lỗi, giữ dữ liệu demo:', e);
+    }
+
+    // --- So sánh cohort (Báo cáo) ---
+    try {
+      var cohort = await TVKN.getCohortStats();
+      var grid = document.getElementById('cohort-grid');
+      var card = document.getElementById('cohort-card');
+      if (grid && Array.isArray(cohort) && cohort.length) {
+        grid.innerHTML = cohort.map(function (c, i) {
+          var cls = (i % 2 === 0) ? 's1' : 's3';
+          var ic = /lâu/i.test(c.cohort || '') ? '🏆' : '🌱';
+          return '<div class="stat-card ' + cls + '" style="flex-direction:column;align-items:flex-start;gap:10px">' +
+            '<div style="display:flex;align-items:center;gap:12px">' +
+              '<div class="stat-ic">' + ic + '</div>' +
+              '<div><div class="stat-num">' + escapeHtml(c.cohort || '—') + '</div>' +
+              '<div class="stat-label">' + fmtNum(c.so_nguoi) + ' người</div></div>' +
+            '</div>' +
+            '<div style="width:100%;font-size:13.5px;color:var(--text-soft);font-weight:600;line-height:1.9">' +
+              '<div>⭐ XP trung bình: <b style="color:var(--text-dark)">' + fmtNum(c.xp_trung_binh) + '</b></div>' +
+              '<div>🔥 Chuỗi trung bình: <b style="color:var(--text-dark)">' + fmtNum(c.chuoi_trung_binh) + '</b> ngày</div>' +
+              '<div>📈 Level trung bình: <b style="color:var(--text-dark)">' + fmtNum(c.level_trung_binh) + '</b></div>' +
+            '</div>' +
+            '</div>';
+        }).join('');
+        if (card) card.style.display = 'block';
+      }
+    } catch (e) {
+      console.warn('getCohortStats lỗi, giữ dữ liệu demo:', e);
+    }
+  }
+</script>
+</body>
+</html>

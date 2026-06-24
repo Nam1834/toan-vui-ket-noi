@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trung tâm Trò chơi Toán học - TOÁN VUI KẾT NỐI</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4F8CFF;
+    --yellow: #FFD93D;
+    --green: #6BCB77;
+    --orange: #FF9F43;
+    --pink: #FF6B9D;
+    --purple: #9B72FF;
+    --white: #FFFFFF;
+    --bg-soft: #F4F8FF;
+    --text-dark: #2D3748;
+    --text-soft: #6B7280;
+    --shadow: 0 8px 24px rgba(79, 140, 255, 0.15);
+    --shadow-lg: 0 16px 40px rgba(79, 140, 255, 0.22);
+    /* Màu chủ đạo trang trò chơi */
+    --theme: var(--purple);
+    --theme-soft: #EFE7FF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Fredoka', 'Baloo 2', system-ui, sans-serif;
+    background: var(--bg-soft);
+    color: var(--text-dark);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+  a { text-decoration: none; color: inherit; }
+
+  /* ============== HEADER GAME CENTER ============== */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 68px;
+    background: var(--white);
+    box-shadow: 0 4px 20px rgba(79, 140, 255, 0.08);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 18px;
+  }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 12px;
+    background: var(--bg-soft);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-dark);
+    transition: all .2s;
+  }
+  .back-btn:hover { background: var(--theme); color: var(--white); transform: translateX(-2px); }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 6px 16px rgba(79, 140, 255, 0.35);
+  }
+  .logo-name {
+    font-weight: 800; font-size: 16px;
+    background: linear-gradient(90deg, var(--blue), var(--purple));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .header-title {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 800; font-size: 17px;
+    color: var(--text-dark);
+    margin: 0 auto;
+    white-space: nowrap;
+  }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .icon-btn {
+    position: relative;
+    width: 42px; height: 42px;
+    border-radius: 12px; background: var(--bg-soft);
+    border: none; cursor: pointer; font-size: 19px; transition: all .2s;
+  }
+  .icon-btn:hover { background: var(--blue); transform: translateY(-2px); }
+  .badge-dot {
+    position: absolute; top: 7px; right: 7px;
+    width: 9px; height: 9px; background: var(--orange);
+    border-radius: 50%; border: 2px solid var(--white);
+  }
+  .xp-pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 13px;
+    border-radius: 13px;
+    font-weight: 700; font-size: 14px;
+    color: var(--white);
+  }
+  .xp-pill.xp { background: linear-gradient(135deg, var(--yellow), var(--orange)); box-shadow: 0 4px 12px rgba(255, 159, 67, 0.35); }
+  .xp-pill.coin { background: linear-gradient(135deg, #FFB23E, #FF8A00); box-shadow: 0 4px 12px rgba(255, 138, 0, 0.35); }
+  .xp-pill.badge { background: linear-gradient(135deg, var(--pink), var(--purple)); box-shadow: 0 4px 12px rgba(155, 114, 255, 0.35); }
+  .avatar {
+    width: 42px; height: 42px; border-radius: 13px;
+    background: linear-gradient(135deg, var(--green), var(--blue));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 21px; border: 3px solid var(--white);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12); cursor: pointer;
+  }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* ============== BANNER NỔI BẬT ============== */
+  .banner {
+    margin-top: 28px;
+    background: linear-gradient(135deg, #9B72FF, #4F8CFF);
+    border-radius: 30px;
+    padding: 40px 44px;
+    display: flex; align-items: center; gap: 32px;
+    position: relative; overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    color: var(--white);
+  }
+  .banner::before {
+    content: ''; position: absolute;
+    width: 340px; height: 340px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.28), transparent 70%);
+    top: -130px; right: -60px;
+  }
+  .banner-text { flex: 1; z-index: 1; }
+  .banner-tag {
+    display: inline-block; padding: 6px 14px;
+    background: rgba(255,255,255,0.22); color: var(--white);
+    border-radius: 999px; font-weight: 700; font-size: 13px; margin-bottom: 14px;
+  }
+  .banner h1 {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: clamp(26px, 3.6vw, 40px); font-weight: 800;
+    line-height: 1.18; margin-bottom: 10px;
+  }
+  .banner p { font-size: 17px; opacity: .95; margin-bottom: 24px; max-width: 480px; }
+  .banner-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 14px 28px; border-radius: 16px;
+    font-family: inherit; font-weight: 700; font-size: 16px;
+    border: none; cursor: pointer; transition: all .25s cubic-bezier(.34,1.56,.64,1);
+  }
+  .btn-primary {
+    background: var(--white); color: var(--purple);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  }
+  .btn-primary:hover { transform: translateY(-4px) scale(1.03); }
+  .banner-mascots {
+    display: flex; gap: 10px; flex-shrink: 0; z-index: 1; flex-wrap: wrap;
+    justify-content: center; max-width: 230px;
+  }
+  .mascot-bubble {
+    width: 96px; height: 96px;
+    background: rgba(255,255,255,0.9); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 52px; box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+    animation: bounce 3s ease-in-out infinite;
+  }
+  .mascot-bubble:nth-child(2) { animation-delay: .4s; }
+  .mascot-bubble:nth-child(3) { animation-delay: .8s; }
+  .mascot-bubble:nth-child(4) { animation-delay: 1.2s; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+  /* ============== SECTION ============== */
+  section.block { margin-top: 48px; }
+  .section-title {
+    font-family: 'Baloo 2', sans-serif; font-size: 26px; font-weight: 800;
+    margin-bottom: 6px; display: flex; align-items: center; gap: 10px;
+  }
+  .section-sub { color: var(--text-soft); font-size: 15px; margin-bottom: 22px; }
+
+  /* ============== BỘ LỌC ============== */
+  .filter-group { margin-bottom: 18px; }
+  .filter-group-label { font-weight: 700; font-size: 14px; color: var(--text-soft); margin-bottom: 8px; }
+  .filters { display: flex; gap: 10px; flex-wrap: wrap; }
+  .filter-btn {
+    padding: 9px 18px; border-radius: 999px;
+    background: var(--white); border: 2px solid transparent;
+    font-family: inherit; font-weight: 600; font-size: 14px;
+    color: var(--text-soft); cursor: pointer; transition: all .2s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+  .filter-btn:hover { color: var(--theme); }
+  .filter-btn.active { background: var(--theme); color: var(--white); box-shadow: 0 6px 14px rgba(155, 114, 255, 0.4); }
+
+  /* ============== DANH SÁCH TRÒ CHƠI ============== */
+  .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 22px; }
+  .game-card {
+    background: var(--white); border-radius: 24px; overflow: hidden;
+    box-shadow: var(--shadow); transition: all .3s cubic-bezier(.34,1.56,.64,1);
+    display: flex; flex-direction: column;
+  }
+  .game-card:hover { transform: translateY(-8px) rotate(-1deg); box-shadow: var(--shadow-lg); }
+  .game-thumb {
+    height: 140px; display: flex; align-items: center; justify-content: center;
+    font-size: 70px; position: relative;
+  }
+  .game-card.gc1 .game-thumb { background: linear-gradient(135deg, #FF6B9D, #FF9F43); }
+  .game-card.gc2 .game-thumb { background: linear-gradient(135deg, #9B72FF, #4F8CFF); }
+  .game-card.gc3 .game-thumb { background: linear-gradient(135deg, #6BCB77, #4DD0E1); }
+  .game-card.gc4 .game-thumb { background: linear-gradient(135deg, #FFD93D, #FF9F43); }
+  .game-card.gc5 .game-thumb { background: linear-gradient(135deg, #FF6B9D, #9B72FF); }
+  .game-xp-badge {
+    position: absolute; top: 12px; right: 12px;
+    background: rgba(255,255,255,0.92); color: var(--orange);
+    font-weight: 800; font-size: 13px; padding: 5px 12px; border-radius: 999px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  }
+  .game-body { padding: 18px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .game-title { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 18px; }
+  .game-desc { font-size: 13px; color: var(--text-soft); min-height: 36px; }
+  .game-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag {
+    font-size: 12px; font-weight: 700; padding: 4px 11px; border-radius: 999px;
+  }
+  .tag-grade { background: var(--bg-soft); color: var(--blue); }
+  .tag-diff.easy { background: #E3F8E7; color: #2F8F3E; }
+  .tag-diff.medium { background: #FFF3DB; color: #C7860B; }
+  .tag-diff.hard { background: #FEE2E5; color: #D6334A; }
+  .game-play-btn {
+    margin-top: auto; padding: 12px; border-radius: 14px;
+    text-align: center; font-weight: 800; font-size: 15px;
+    border: none; cursor: pointer; font-family: inherit;
+    color: var(--white); transition: all .2s;
+    background: linear-gradient(135deg, var(--purple), var(--blue));
+    box-shadow: 0 6px 16px rgba(155, 114, 255, 0.35);
+  }
+  .game-play-btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 22px rgba(155, 114, 255, 0.5); }
+
+  /* ============== THÀNH TÍCH GAME ============== */
+  .achieve-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .achieve-card {
+    border-radius: 22px; padding: 26px; color: var(--white);
+    box-shadow: var(--shadow); transition: transform .25s;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .achieve-card:hover { transform: translateY(-6px); }
+  .achieve-card.a1 { background: linear-gradient(135deg, var(--pink), var(--orange)); }
+  .achieve-card.a2 { background: linear-gradient(135deg, var(--blue), var(--purple)); }
+  .achieve-card.a3 { background: linear-gradient(135deg, var(--green), #4DD0E1); }
+  .achieve-icon { font-size: 40px; }
+  .achieve-num { font-family: 'Baloo 2', sans-serif; font-size: 30px; font-weight: 800; }
+  .achieve-label { font-size: 14px; opacity: .95; }
+
+  /* ============== BẢNG XẾP HẠNG ============== */
+  .rank-wrap {
+    background: var(--white); border-radius: 24px; padding: 26px 28px;
+    box-shadow: var(--shadow);
+  }
+  .rank-row {
+    display: flex; align-items: center; gap: 16px;
+    padding: 14px 16px; border-radius: 16px; margin-bottom: 10px;
+    background: var(--bg-soft); transition: transform .2s;
+  }
+  .rank-row:hover { transform: translateX(4px); }
+  .rank-row.r1 { background: linear-gradient(135deg, #FFF6D6, #FFE9A8); }
+  .rank-row.r2 { background: linear-gradient(135deg, #F0F2F6, #DCE1EA); }
+  .rank-row.r3 { background: linear-gradient(135deg, #FBE6D4, #F6D2B0); }
+  .rank-medal { font-size: 30px; flex-shrink: 0; }
+  .rank-avatar {
+    width: 46px; height: 46px; border-radius: 14px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 24px;
+    background: var(--white); box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  }
+  .rank-info { flex: 1; }
+  .rank-name { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 16px; }
+  .rank-sub { font-size: 12px; color: var(--text-soft); }
+  .rank-xp { font-weight: 800; color: var(--orange); font-size: 16px; }
+  .rank-footer { text-align: center; margin-top: 8px; }
+  .rank-all-btn {
+    background: var(--theme-soft); color: var(--purple);
+    padding: 10px 24px; border-radius: 14px; font-weight: 700; font-size: 14px;
+    border: none; cursor: pointer; font-family: inherit; transition: all .2s;
+  }
+  .rank-all-btn:hover { background: var(--purple); color: var(--white); transform: translateY(-2px); }
+
+  /* ============== HUY HIỆU GAME ============== */
+  .badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; }
+  .badge-card {
+    background: var(--white); border-radius: 20px; padding: 22px 20px;
+    text-align: center; box-shadow: var(--shadow); transition: transform .25s;
+    border: 2px solid transparent;
+  }
+  .badge-card:hover { transform: translateY(-6px); border-color: var(--theme); }
+  .badge-emoji {
+    width: 70px; height: 70px; margin: 0 auto 12px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 38px;
+    background: linear-gradient(135deg, var(--theme-soft), #FFF1F8);
+  }
+  .badge-name { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 16px; margin-bottom: 4px; }
+  .badge-cond { font-size: 12px; color: var(--text-soft); }
+
+  /* ============== FOOTER ĐIỀU HƯỚNG ============== */
+  .footer-nav {
+    margin-top: 56px; background: var(--white);
+    box-shadow: 0 -4px 20px rgba(79,140,255,0.08);
+    padding: 16px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
+  }
+  .footer-nav a {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 8px 20px; border-radius: 14px;
+    font-size: 12px; font-weight: 600; color: var(--text-soft); transition: all .2s;
+  }
+  .footer-nav a:hover, .footer-nav a.active { background: var(--bg-soft); color: var(--theme); }
+  .footer-nav a span { font-size: 22px; }
+
+  /* ============== CONFETTI ============== */
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 9999; border-radius: 2px; }
+
+  /* ============== RESPONSIVE ============== */
+  @media (max-width: 900px) {
+    .header-title { display: none; }
+    .achieve-grid { grid-template-columns: 1fr; }
+    .banner { flex-direction: column; text-align: center; }
+    .banner p { margin-left: auto; margin-right: auto; }
+    .banner-buttons { justify-content: center; }
+    .banner-mascots { max-width: 100%; }
+  }
+  @media (max-width: 560px) {
+    .header { padding: 0 14px; gap: 10px; }
+    .logo-name { display: none; }
+    .xp-pill.coin, .xp-pill.badge { display: none; }
+    .wrap { padding: 0 14px; }
+    .game-grid { grid-template-columns: 1fr; }
+    .banner { padding: 28px; }
+    .mascot-bubble { width: 76px; height: 76px; font-size: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER GAME CENTER ============ -->
+<header class="header">
+  <a href="index.html" class="back-btn">← Trang chủ</a>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">🐰</div>
+    <span class="logo-name">TOÁN VUI KẾT NỐI</span>
+  </a>
+  <div class="header-title">🎮 TRUNG TÂM TRÒ CHƠI TOÁN HỌC</div>
+  <div class="header-right">
+    <div class="xp-pill xp">⭐ <span>4250 XP</span></div>
+    <div class="xp-pill coin">🪙 <span>350 Xu</span></div>
+    <div class="xp-pill badge">🏅 <span>15 Huy hiệu</span></div>
+    <button class="icon-btn" title="Thông báo">🔔<span class="badge-dot"></span></button>
+    <div class="avatar" title="Nguyễn Minh Anh">👧</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ============ BANNER NỔI BẬT ============ -->
+  <div class="banner">
+    <div class="banner-text">
+      <span class="banner-tag">🎁 Chơi là có thưởng!</span>
+      <h1>🎮 Chơi game - Nhận thưởng - Giỏi Toán hơn mỗi ngày</h1>
+      <p>Hoàn thành trò chơi để nhận XP, xu vàng và huy hiệu đặc biệt. Cùng các bạn Thỏ phiêu lưu trong thế giới Toán học nào!</p>
+      <div class="banner-buttons">
+        <button class="btn btn-primary" onclick="document.getElementById('games').scrollIntoView({behavior:'smooth'})">▶️ Chơi ngay</button>
+      </div>
+    </div>
+    <div class="banner-mascots">
+      <div class="mascot-bubble" title="Thỏ Toán">🐰</div>
+      <div class="mascot-bubble" title="Thỏ Hải Tặc">🏴‍☠️</div>
+      <div class="mascot-bubble" title="Thỏ Tay Đua">🚗</div>
+      <div class="mascot-bubble" title="Thỏ Kiến Trúc Sư">🏰</div>
+    </div>
+  </div>
+
+  <!-- ============ BỘ LỌC TRÒ CHƠI ============ -->
+  <section class="block">
+    <h2 class="section-title">🔎 Bộ lọc trò chơi</h2>
+    <p class="section-sub">Chọn lớp, kỹ năng và độ khó để tìm trò chơi phù hợp với em!</p>
+
+    <div class="filter-group">
+      <div class="filter-group-label">📚 Theo lớp</div>
+      <div class="filters" id="gradeFilters">
+        <button class="filter-btn active" data-grade="all">Tất cả</button>
+        <button class="filter-btn" data-grade="1">Lớp 1</button>
+        <button class="filter-btn" data-grade="2">Lớp 2</button>
+        <button class="filter-btn" data-grade="3">Lớp 3</button>
+        <button class="filter-btn" data-grade="4">Lớp 4</button>
+        <button class="filter-btn" data-grade="5">Lớp 5</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-group-label">🧠 Theo kỹ năng</div>
+      <div class="filters" id="skillFilters">
+        <button class="filter-btn active" data-skill="all">Tất cả</button>
+        <button class="filter-btn" data-skill="dem">Đếm số</button>
+        <button class="filter-btn" data-skill="cong">Cộng</button>
+        <button class="filter-btn" data-skill="tru">Trừ</button>
+        <button class="filter-btn" data-skill="nhan">Nhân</button>
+        <button class="filter-btn" data-skill="chia">Chia</button>
+        <button class="filter-btn" data-skill="hinh">Hình học</button>
+        <button class="filter-btn" data-skill="do">Đo lường</button>
+        <button class="filter-btn" data-skill="logic">Tư duy logic</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-group-label">🎚️ Theo độ khó</div>
+      <div class="filters" id="diffFilters">
+        <button class="filter-btn active" data-diff="all">Tất cả</button>
+        <button class="filter-btn" data-diff="easy">🟢 Dễ</button>
+        <button class="filter-btn" data-diff="medium">🟡 Trung bình</button>
+        <button class="filter-btn" data-diff="hard">🔴 Nâng cao</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DANH SÁCH TRÒ CHƠI ============ -->
+  <section class="block" id="games">
+    <h2 class="section-title">🕹️ Danh sách trò chơi</h2>
+    <p class="section-sub">Chọn một trò chơi và bắt đầu cuộc phiêu lưu Toán học của em!</p>
+
+    <div class="game-grid" id="gameGrid">
+
+      <!-- Game 1 -->
+      <div class="game-card gc1" data-grades="1,2,3,4,5" data-diff="easy" data-skill="cong">
+        <div class="game-thumb">🚗<span class="game-xp-badge">⭐ +50 XP</span></div>
+        <div class="game-body">
+          <div class="game-title">Đua xe Toán học</div>
+          <div class="game-desc">Trả lời đúng để xe chạy nhanh hơn và về đích đầu tiên! 🏁</div>
+          <div class="game-tags">
+            <span class="tag tag-grade">Lớp 1-5</span>
+            <span class="tag tag-diff easy">🟢 Dễ</span>
+          </div>
+          <button class="game-play-btn" onclick="location.href='dua-xe.html'">▶️ Chơi ngay</button>
+        </div>
+      </div>
+
+      <!-- Game 2 -->
+      <div class="game-card gc2" data-grades="2,3,4,5" data-diff="medium" data-skill="tru">
+        <div class="game-thumb">🏴‍☠️<span class="game-xp-badge">⭐ +60 XP</span></div>
+        <div class="game-body">
+          <div class="game-title">Kho báu phép tính</div>
+          <div class="game-desc">Giải đúng các phép tính để mở khóa 5 rương kho báu bí ẩn! 🪙</div>
+          <div class="game-tags">
+            <span class="tag tag-grade">Lớp 2-5</span>
+            <span class="tag tag-diff medium">🟡 Trung bình</span>
+          </div>
+          <button class="game-play-btn" onclick="location.href='kho-bau.html'">▶️ Chơi ngay</button>
+        </div>
+      </div>
+
+      <!-- Game 3 -->
+      <div class="game-card gc3" data-grades="1,2,3" data-diff="easy" data-skill="cong">
+        <div class="game-thumb">🎈<span class="game-xp-badge">⭐ +40 XP</span></div>
+        <div class="game-body">
+          <div class="game-title">Bắn bóng số học</div>
+          <div class="game-desc">Bắn trúng đáp án đúng trước khi quả bóng bay mất! 🎯</div>
+          <div class="game-tags">
+            <span class="tag tag-grade">Lớp 1-3</span>
+            <span class="tag tag-diff easy">🟢 Dễ</span>
+          </div>
+          <button class="game-play-btn" onclick="location.href='ban-bong.html'">▶️ Chơi ngay</button>
+        </div>
+      </div>
+
+      <!-- Game 4 -->
+      <div class="game-card gc4" data-grades="2,3,4,5" data-diff="medium" data-skill="nhan">
+        <div class="game-thumb">🏰<span class="game-xp-badge">⭐ +80 XP</span></div>
+        <div class="game-body">
+          <div class="game-title">Xây lâu đài Toán học</div>
+          <div class="game-desc">Mỗi câu trả lời đúng xây thêm một phần lâu đài kỳ vĩ! 👑</div>
+          <div class="game-tags">
+            <span class="tag tag-grade">Lớp 2-5</span>
+            <span class="tag tag-diff medium">🟡 Trung bình</span>
+          </div>
+          <button class="game-play-btn" onclick="location.href='xay-lau-dai.html'">▶️ Chơi ngay</button>
+        </div>
+      </div>
+
+      <!-- Game 5 -->
+      <div class="game-card gc5" data-grades="3,4,5" data-diff="hard" data-skill="logic">
+        <div class="game-thumb">🔔<span class="game-xp-badge">⭐ +100 XP</span></div>
+        <div class="game-body">
+          <div class="game-title">Rung chuông vàng</div>
+          <div class="game-desc">Trả lời liên tục 15 câu để trở thành quán quân Toán học! 🏆</div>
+          <div class="game-tags">
+            <span class="tag tag-grade">Lớp 3-5</span>
+            <span class="tag tag-diff hard">🔴 Nâng cao</span>
+          </div>
+          <button class="game-play-btn" onclick="location.href='rung-chuong.html'">▶️ Chơi ngay</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ TRÒ CHƠI ĐỀ XUẤT ============ -->
+  <section class="block" id="suggested">
+    <h2 class="section-title">🌟 Trò chơi đề xuất cho em</h2>
+    <p class="section-sub">Những trò chơi được chọn riêng cho Minh Anh dựa trên lớp học và bài đang luyện!</p>
+
+    <div class="game-grid">
+
+      <!-- Đề xuất 1 -->
+      <div class="game-card gc1">
+        <div class="game-thumb">🚗<span class="game-xp-badge">⭐ +50 XP</span></div>
+        <div class="game-body">
+          <div class="game-title">Đua xe Toán học</div>
+          <div class="game-desc">💡 Vì em đang học phép cộng - luyện tính nhanh để về đích đầu tiên!</div>
+          <div class="game-tags">
+            <span class="tag tag-grade">Lớp 1-5</span>
+            <span class="tag tag-diff easy">🟢 Dễ</span>
+          </div>
+          <button class="game-play-btn" onclick="location.href='dua-xe.html'">▶️ Chơi ngay</button>
+        </div>
+      </div>
+
+      <!-- Đề xuất 2 -->
+      <div class="game-card gc3">
+        <div class="game-thumb">🎈<span class="game-xp-badge">⭐ +40 XP</span></div>
+        <div class="game-body">
+          <div class="game-title">Bắn bóng số học</div>
+          <div class="game-desc">💡 Trò chơi phù hợp lớp của em - cộng nhanh trước khi bóng bay mất!</div>
+          <div class="game-tags">
+            <span class="tag tag-grade">Lớp 1-3</span>
+            <span class="tag tag-diff easy">🟢 Dễ</span>
+          </div>
+          <button class="game-play-btn" onclick="location.href='ban-bong.html'">▶️ Chơi ngay</button>
+        </div>
+      </div>
+
+      <!-- Đề xuất 3 -->
+      <div class="game-card gc2">
+        <div class="game-thumb">🏴‍☠️<span class="game-xp-badge">⭐ +60 XP</span></div>
+        <div class="game-body">
+          <div class="game-title">Kho báu phép tính</div>
+          <div class="game-desc">💡 Thử thách tiếp theo cho em - giải phép tính để mở rương kho báu!</div>
+          <div class="game-tags">
+            <span class="tag tag-grade">Lớp 2-5</span>
+            <span class="tag tag-diff medium">🟡 Trung bình</span>
+          </div>
+          <button class="game-play-btn" onclick="location.href='kho-bau.html'">▶️ Chơi ngay</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ THÀNH TÍCH GAME ============ -->
+  <section class="block">
+    <h2 class="section-title">🏆 Thành tích trò chơi</h2>
+    <p class="section-sub">Xem lại hành trình chơi game của em nào!</p>
+    <div class="achieve-grid">
+      <div class="achieve-card a1">
+        <div class="achieve-icon">🎮</div>
+        <div class="achieve-num">57</div>
+        <div class="achieve-label">Game đã chơi</div>
+      </div>
+      <div class="achieve-card a2">
+        <div class="achieve-icon">⭐</div>
+        <div class="achieve-num">2350</div>
+        <div class="achieve-label">XP nhận từ game</div>
+      </div>
+      <div class="achieve-card a3">
+        <div class="achieve-icon">💖</div>
+        <div class="achieve-num" style="font-size:22px;">🚗 Đua xe Toán học</div>
+        <div class="achieve-label">Game yêu thích</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BẢNG XẾP HẠNG GAME ============ -->
+  <section class="block">
+    <h2 class="section-title">🥇 Bảng xếp hạng game</h2>
+    <p class="section-sub">Top những bạn chơi giỏi nhất tuần này!</p>
+    <div class="rank-wrap">
+      <div class="rank-row r1">
+        <div class="rank-medal">🥇</div>
+        <div class="rank-avatar">👧</div>
+        <div class="rank-info">
+          <div class="rank-name">Minh Anh</div>
+          <div class="rank-sub">🎮 32 game đã chơi tuần này</div>
+        </div>
+        <div class="rank-xp">⭐ 1840 XP</div>
+      </div>
+      <div class="rank-row r2">
+        <div class="rank-medal">🥈</div>
+        <div class="rank-avatar">👦</div>
+        <div class="rank-info">
+          <div class="rank-name">Gia Bảo</div>
+          <div class="rank-sub">🎮 28 game đã chơi tuần này</div>
+        </div>
+        <div class="rank-xp">⭐ 1620 XP</div>
+      </div>
+      <div class="rank-row r3">
+        <div class="rank-medal">🥉</div>
+        <div class="rank-avatar">🧒</div>
+        <div class="rank-info">
+          <div class="rank-name">Hoàng Nam</div>
+          <div class="rank-sub">🎮 25 game đã chơi tuần này</div>
+        </div>
+        <div class="rank-xp">⭐ 1455 XP</div>
+      </div>
+      <div class="rank-footer">
+        <button class="rank-all-btn" onclick="celebrate(event)">Xem tất cả →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HUY HIỆU GAME ============ -->
+  <section class="block">
+    <h2 class="section-title">🏅 Huy hiệu game</h2>
+    <p class="section-sub">Sưu tầm huy hiệu đặc biệt bằng cách chơi game nhé!</p>
+    <div class="badge-grid">
+      <div class="badge-card">
+        <div class="badge-emoji">🏎️</div>
+        <div class="badge-name">Tay đua siêu tốc</div>
+        <div class="badge-cond">Chơi Đua xe Toán học 20 lần</div>
+      </div>
+      <div class="badge-card">
+        <div class="badge-emoji">🏴‍☠️</div>
+        <div class="badge-name">Thợ săn kho báu</div>
+        <div class="badge-cond">Mở 100 rương kho báu</div>
+      </div>
+      <div class="badge-card">
+        <div class="badge-emoji">🎯</div>
+        <div class="badge-name">Xạ thủ số học</div>
+        <div class="badge-cond">Bắn trúng 500 quả bóng</div>
+      </div>
+      <div class="badge-card">
+        <div class="badge-emoji">🏰</div>
+        <div class="badge-name">Kiến trúc sư nhí</div>
+        <div class="badge-cond">Xây hoàn thành 20 lâu đài</div>
+      </div>
+      <div class="badge-card">
+        <div class="badge-emoji">🔔</div>
+        <div class="badge-name">Nhà vô địch</div>
+        <div class="badge-cond">Rung chuông vàng 10 lần</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ FOOTER ĐIỀU HƯỚNG ============ -->
+<nav class="footer-nav">
+  <a href="index.html"><span>🏠</span>Trang chủ</a>
+  <a href="trang-lop.html"><span>📚</span>Bài học</a>
+  <a href="tro-choi.html" class="active"><span>🎮</span>Trò chơi</a>
+  <a href="thu-thach.html"><span>🎯</span>Thử thách</a>
+  <a href="ho-so.html"><span>👤</span>Hồ sơ</a>
+</nav>
+
+<script>
+  // ====== Bộ lọc trò chơi ======
+  const gameCards = Array.from(document.querySelectorAll('#gameGrid .game-card'));
+  const state = { grade: 'all', skill: 'all', diff: 'all' };
+
+  function applyFilters() {
+    gameCards.forEach(card => {
+      const grades = (card.dataset.grades || '').split(',');
+      const okGrade = state.grade === 'all' || grades.includes(state.grade);
+      const okSkill = state.skill === 'all' || card.dataset.skill === state.skill;
+      const okDiff = state.diff === 'all' || card.dataset.diff === state.diff;
+      card.style.display = (okGrade && okSkill && okDiff) ? '' : 'none';
+    });
+  }
+
+  function setupFilterGroup(containerId, key) {
+    const container = document.getElementById(containerId);
+    const btns = container.querySelectorAll('.filter-btn');
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state[key] = btn.dataset[key];
+        applyFilters();
+      });
+    });
+  }
+
+  setupFilterGroup('gradeFilters', 'grade');
+  setupFilterGroup('skillFilters', 'skill');
+  setupFilterGroup('diffFilters', 'diff');
+
+  // ====== Hiệu ứng confetti ======
+  function celebrate(e) {
+    if (e) e.preventDefault();
+    const colors = ['#4F8CFF', '#FFD93D', '#6BCB77', '#FF9F43', '#FF6B9D', '#9B72FF'];
+    const x = e ? e.clientX : window.innerWidth / 2;
+    const y = e ? e.clientY : window.innerHeight / 2;
+    for (let i = 0; i < 28; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.left = x + 'px'; c.style.top = y + 'px';
+      document.body.appendChild(c);
+      const angle = Math.random() * Math.PI * 2;
+      const v = 100 + Math.random() * 200;
+      const vx = Math.cos(angle) * v, vy = Math.sin(angle) * v - 150;
+      c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${vx}px, ${vy + 300}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+      ], { duration: 1400, easing: 'cubic-bezier(.25,.46,.45,.94)' }).onfinish = () => c.remove();
+    }
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+  /* Chặn trang + hiển thị đúng người đăng nhập (Supabase) */
+  window.tvknLogout = function(){ TVKN.signOut(); };
+  TVKN.guardPage();
+</script>
+</body>
+</html>

@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thử thách hằng ngày - TOÁN VUI KẾT NỐI</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4F8CFF;
+    --yellow: #FFD93D;
+    --green: #6BCB77;
+    --orange: #FF9F43;
+    --pink: #FF6B9D;
+    --purple: #9B72FF;
+    --white: #FFFFFF;
+    --bg-soft: #F4F8FF;
+    --text-dark: #2D3748;
+    --text-soft: #6B7280;
+    --shadow: 0 8px 24px rgba(79, 140, 255, 0.15);
+    --shadow-lg: 0 16px 40px rgba(79, 140, 255, 0.22);
+    --theme: var(--orange);
+    --theme-soft: #FFEAD2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Fredoka', 'Baloo 2', system-ui, sans-serif;
+    background: var(--bg-soft);
+    color: var(--text-dark);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+  a { text-decoration: none; color: inherit; }
+
+  /* ============== HEADER NHỎ ============== */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 68px;
+    background: var(--white);
+    box-shadow: 0 4px 20px rgba(79, 140, 255, 0.08);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 18px;
+  }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 12px;
+    background: var(--bg-soft);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-dark);
+    transition: all .2s;
+  }
+  .back-btn:hover { background: var(--theme); color: var(--white); transform: translateX(-2px); }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 6px 16px rgba(79, 140, 255, 0.35);
+  }
+  .logo-name {
+    font-weight: 800; font-size: 16px;
+    background: linear-gradient(90deg, var(--blue), var(--purple));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .header-title {
+    font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 18px;
+    color: var(--text-dark); margin: 0 auto;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .xp-pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 13px;
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    color: var(--white); border-radius: 13px;
+    font-weight: 700; font-size: 14px;
+    box-shadow: 0 4px 12px rgba(255, 159, 67, 0.35);
+  }
+  .streak-pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 13px;
+    background: linear-gradient(135deg, var(--pink), var(--orange));
+    color: var(--white); border-radius: 13px;
+    font-weight: 700; font-size: 14px;
+    box-shadow: 0 4px 12px rgba(255, 107, 157, 0.35);
+  }
+  .avatar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 12px 6px 6px; border-radius: 13px; background: var(--bg-soft);
+    cursor: pointer; font-weight: 700; font-size: 13px;
+  }
+  .avatar .av-face {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--green), var(--blue));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* ============== BANNER THỬ THÁCH ============== */
+  .banner {
+    margin-top: 28px;
+    background: linear-gradient(135deg, #FFF1E0, var(--theme-soft));
+    border-radius: 30px;
+    padding: 38px 44px;
+    display: flex; align-items: center; gap: 32px;
+    position: relative; overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .banner::before {
+    content: ''; position: absolute;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.55), transparent 70%);
+    top: -120px; right: -60px;
+  }
+  .banner-text { flex: 1; z-index: 1; }
+  .banner-tag {
+    display: inline-block; padding: 6px 14px;
+    background: var(--white); color: var(--theme);
+    border-radius: 999px; font-weight: 700; font-size: 13px; margin-bottom: 14px;
+  }
+  .banner h1 {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: clamp(26px, 4vw, 40px); font-weight: 800;
+    line-height: 1.15; margin-bottom: 10px;
+  }
+  .banner p { font-size: 16px; color: var(--text-soft); margin-bottom: 18px; max-width: 480px; }
+  .banner-chips { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--white); padding: 8px 14px; border-radius: 999px;
+    font-weight: 700; font-size: 13px; color: var(--text-dark);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  }
+  .banner-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 14px 28px; border-radius: 16px;
+    font-family: inherit; font-weight: 700; font-size: 16px;
+    border: none; cursor: pointer; transition: all .25s cubic-bezier(.34,1.56,.64,1);
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--orange), var(--yellow));
+    color: var(--white); box-shadow: 0 8px 20px rgba(255, 159, 67, 0.45);
+  }
+  .btn-primary:hover { transform: translateY(-4px) scale(1.03); }
+  .btn-ghost { background: var(--white); color: var(--text-dark); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+  .btn-ghost:hover { transform: translateY(-4px); }
+  .banner-mascot {
+    width: 170px; height: 170px; flex-shrink: 0; z-index: 1;
+    background: var(--white); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 100px; box-shadow: 0 16px 40px rgba(255, 159, 67, 0.3);
+    animation: bounce 3s ease-in-out infinite;
+  }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+
+  /* ============== SECTION ============== */
+  section.block { margin-top: 40px; }
+  .section-title {
+    font-family: 'Baloo 2', sans-serif; font-size: 24px; font-weight: 800;
+    margin-bottom: 6px; display: flex; align-items: center; gap: 10px;
+  }
+  .section-sub { color: var(--text-soft); font-size: 15px; margin-bottom: 20px; }
+
+  .card {
+    background: var(--white); border-radius: 24px;
+    padding: 26px 28px; box-shadow: var(--shadow);
+  }
+
+  /* ============== CHUỖI HỌC TẬP ============== */
+  .streak-grid { display: flex; gap: 12px; flex-wrap: wrap; justify-content: space-between; }
+  .day-box {
+    flex: 1; min-width: 86px;
+    background: var(--bg-soft); border-radius: 18px;
+    padding: 16px 8px; text-align: center;
+    border: 2px solid transparent; transition: all .2s;
+  }
+  .day-box.done { background: #EAFBEF; border-color: rgba(107,203,119,0.3); }
+  .day-box.today {
+    background: linear-gradient(135deg, var(--orange), var(--yellow));
+    color: var(--white); transform: scale(1.05);
+    box-shadow: 0 8px 18px rgba(255,159,67,0.4);
+  }
+  .day-label { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .day-emoji { font-size: 28px; }
+  .streak-count {
+    margin-top: 18px; text-align: center;
+    font-family: 'Baloo 2', sans-serif; font-size: 18px; font-weight: 800;
+  }
+  .streak-count b { color: var(--orange); font-size: 22px; }
+
+  /* ============== NHIỆM VỤ ============== */
+  .task-list { display: grid; gap: 12px; }
+  .task-item {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--bg-soft); border-radius: 16px; padding: 14px 18px;
+    font-weight: 600; transition: all .25s;
+  }
+  .task-check {
+    width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0;
+    background: var(--white); border: 2px solid #D8E1F0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; font-weight: 800; color: transparent;
+    transition: all .25s;
+  }
+  .task-item.done { background: #EAFBEF; }
+  .task-item.done .task-check { background: var(--green); border-color: var(--green); color: var(--white); }
+  .task-item.done .task-text { text-decoration: line-through; color: var(--text-soft); }
+  .task-tag { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--orange); }
+
+  /* ============== QUIZ ============== */
+  .quiz-card {
+    background: var(--white); border-radius: 24px;
+    padding: 30px 32px; box-shadow: var(--shadow);
+    position: relative;
+  }
+  .quiz-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+  .quiz-counter { font-weight: 800; font-family: 'Baloo 2', sans-serif; font-size: 17px; }
+  .quiz-timer {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--theme-soft); color: var(--orange);
+    padding: 7px 14px; border-radius: 999px; font-weight: 800; font-size: 15px;
+  }
+  .quiz-timer.warn { background: #FFE0E0; color: #E84545; animation: pulse .6s infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+  .progress-bar {
+    height: 14px; background: var(--bg-soft);
+    border-radius: 999px; overflow: hidden; margin-bottom: 24px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+  }
+  .progress-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--green), var(--yellow), var(--orange));
+    border-radius: 999px; transition: width .4s cubic-bezier(.34,1.56,.64,1);
+  }
+  .quiz-question {
+    font-family: 'Baloo 2', sans-serif; font-size: 30px; font-weight: 800;
+    text-align: center; margin-bottom: 24px;
+  }
+  .options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .option {
+    padding: 18px; border-radius: 16px; border: 2px solid #E5EBF5;
+    background: var(--bg-soft); font-family: 'Baloo 2', sans-serif;
+    font-size: 22px; font-weight: 700; cursor: pointer; transition: all .2s;
+    text-align: center;
+  }
+  .option:hover:not(.disabled) { border-color: var(--orange); transform: translateY(-3px); }
+  .option.correct { background: #EAFBEF; border-color: var(--green); color: #2F8F3E; }
+  .option.wrong { background: #FFEDED; border-color: var(--pink); color: #E84545; }
+  .option.disabled { cursor: default; }
+  .feedback {
+    margin-top: 20px; text-align: center; min-height: 30px;
+    font-weight: 800; font-size: 18px; font-family: 'Baloo 2', sans-serif;
+  }
+  .feedback.good { color: var(--green); }
+  .feedback.bad { color: var(--pink); }
+
+  /* ============== CÂU TƯ DUY ============== */
+  .think-card {
+    background: linear-gradient(135deg, var(--purple), var(--blue));
+    border-radius: 24px; padding: 30px 32px; color: var(--white);
+    box-shadow: var(--shadow); position: relative; overflow: hidden;
+  }
+  .think-card::before { content:'🧠'; position:absolute; font-size:200px; right:-30px; bottom:-60px; opacity:.12; }
+  .think-card .section-title { color: var(--white); }
+  .think-q { font-size: 18px; line-height: 1.7; margin: 6px 0 20px; z-index:1; position:relative; }
+  .think-input-row { display: flex; gap: 12px; flex-wrap: wrap; z-index:1; position:relative; }
+  .think-input {
+    flex: 1; min-width: 160px; padding: 14px 18px; border-radius: 14px;
+    border: none; font-family: 'Baloo 2', sans-serif; font-size: 20px; font-weight: 700;
+    color: var(--text-dark); outline: none;
+  }
+  .think-submit {
+    background: var(--white); color: var(--purple); padding: 14px 26px;
+    border-radius: 14px; border: none; font-family: inherit; font-weight: 800;
+    font-size: 16px; cursor: pointer; transition: transform .2s;
+  }
+  .think-submit:hover { transform: scale(1.05); }
+  .think-feedback { margin-top: 16px; font-weight: 800; font-size: 17px; min-height: 24px; z-index:1; position:relative; }
+
+  /* ============== PHẦN THƯỞNG ============== */
+  .reward-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .reward-item {
+    display: flex; gap: 14px; align-items: center;
+    background: var(--bg-soft); border-radius: 18px; padding: 18px 20px;
+  }
+  .reward-emoji {
+    width: 54px; height: 54px; border-radius: 15px; flex-shrink: 0;
+    background: var(--theme-soft); display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+  }
+  .reward-title { font-weight: 800; font-family: 'Baloo 2', sans-serif; font-size: 15px; }
+  .reward-desc { font-size: 13px; color: var(--text-soft); }
+
+  /* ============== THÀNH TÍCH THÁNG ============== */
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .stat-card {
+    background: var(--white); border-radius: 20px;
+    padding: 22px; text-align: center; box-shadow: var(--shadow);
+    transition: transform .25s;
+  }
+  .stat-card:hover { transform: translateY(-4px); }
+  .stat-icon { font-size: 30px; margin-bottom: 6px; }
+  .stat-num { font-family: 'Baloo 2', sans-serif; font-size: 26px; font-weight: 800; }
+  .stat-label { font-size: 13px; color: var(--text-soft); }
+
+  /* ============== BẢNG XẾP HẠNG ============== */
+  .rank-list { display: grid; gap: 12px; }
+  .rank-item {
+    display: flex; align-items: center; gap: 16px;
+    background: var(--bg-soft); border-radius: 16px; padding: 14px 18px;
+  }
+  .rank-item.me { background: linear-gradient(135deg, var(--theme-soft), #FFF1E0); border: 2px solid var(--orange); }
+  .rank-medal { font-size: 28px; flex-shrink: 0; width: 40px; text-align: center; }
+  .rank-name { font-weight: 800; font-family: 'Baloo 2', sans-serif; font-size: 16px; }
+  .rank-days { margin-left: auto; font-weight: 700; color: var(--orange); font-size: 14px; }
+  .rank-more {
+    margin-top: 16px; text-align: center;
+  }
+
+  /* ============== HUY HIỆU ============== */
+  .badge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+  .badge-card {
+    background: var(--white); border-radius: 20px; padding: 22px 18px;
+    text-align: center; box-shadow: var(--shadow); transition: transform .25s;
+  }
+  .badge-card:hover { transform: translateY(-5px) rotate(-2deg); }
+  .badge-card.locked { opacity: .55; filter: grayscale(.6); }
+  .badge-ic { font-size: 44px; margin-bottom: 8px; }
+  .badge-nm { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 16px; }
+  .badge-cond { font-size: 12px; color: var(--text-soft); }
+
+  /* ============== MODAL HOÀN THÀNH ============== */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(45,55,72,0.55); backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--white); border-radius: 30px; max-width: 460px; width: 100%;
+    padding: 38px 32px; text-align: center; box-shadow: var(--shadow-lg);
+    animation: pop .4s cubic-bezier(.34,1.56,.64,1);
+    position: relative;
+  }
+  @keyframes pop { 0%{transform:scale(.7); opacity:0} 100%{transform:scale(1); opacity:1} }
+  .modal-emoji { font-size: 70px; animation: bounce 2s ease-in-out infinite; }
+  .modal h2 { font-family: 'Baloo 2', sans-serif; font-size: 30px; font-weight: 800; margin: 6px 0; }
+  .modal p { color: var(--text-soft); margin-bottom: 18px; }
+  .modal-results {
+    display: grid; gap: 10px; margin-bottom: 22px; text-align: left;
+  }
+  .modal-row {
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--bg-soft); border-radius: 14px; padding: 12px 16px;
+    font-weight: 700;
+  }
+  .modal-row b { font-family: 'Baloo 2', sans-serif; font-size: 18px; }
+  .modal-row .hl { color: var(--orange); }
+  .modal-row .hl-g { color: var(--green); }
+  .modal-buttons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .modal-buttons .btn { padding: 12px 20px; font-size: 14px; }
+
+  /* ============== FOOTER ĐIỀU HƯỚNG ============== */
+  .footer-nav {
+    margin-top: 56px; background: var(--white);
+    box-shadow: 0 -4px 20px rgba(79,140,255,0.08);
+    padding: 16px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
+  }
+  .footer-nav a {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 8px 20px; border-radius: 14px;
+    font-size: 12px; font-weight: 600; color: var(--text-soft); transition: all .2s;
+  }
+  .footer-nav a:hover, .footer-nav a.active { background: var(--bg-soft); color: var(--theme); }
+  .footer-nav a span { font-size: 22px; }
+
+  /* ============== CONFETTI ============== */
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 9999; border-radius: 2px; }
+
+  /* ============== RESPONSIVE ============== */
+  @media (max-width: 900px) {
+    .header-title { font-size: 15px; }
+    .reward-grid { grid-template-columns: 1fr; }
+    .stat-grid { grid-template-columns: 1fr; }
+    .banner { flex-direction: column; text-align: center; }
+    .banner p { margin-left: auto; margin-right: auto; }
+    .banner-chips, .banner-buttons { justify-content: center; }
+  }
+  @media (max-width: 560px) {
+    .header { padding: 0 12px; gap: 8px; }
+    .logo, .logo-name { display: none; }
+    .header-title { font-size: 13px; margin-right: auto; }
+    .streak-pill span:last-child, .xp-pill span:last-child, .avatar span { display: none; }
+    .wrap { padding: 0 14px; }
+    .banner { padding: 26px; }
+    .banner-mascot { width: 120px; height: 120px; font-size: 72px; }
+    .options { grid-template-columns: 1fr; }
+    .quiz-question { font-size: 24px; }
+    .day-box { min-width: 60px; padding: 12px 4px; }
+    .day-emoji { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="header">
+  <a href="index.html" class="back-btn">← Trang chủ</a>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">🐰</div>
+    <span class="logo-name">TOÁN VUI KẾT NỐI</span>
+  </a>
+  <div class="header-title">🎯 THỬ THÁCH HẰNG NGÀY</div>
+  <div class="header-right">
+    <div class="xp-pill">⭐ <span>4250 XP</span></div>
+    <div class="streak-pill">🔥 <span>12 ngày</span></div>
+    <div class="avatar" title="Minh Anh"><div class="av-face">👧</div><span>Minh Anh</span></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ============ BANNER THỬ THÁCH HÔM NAY ============ -->
+  <div class="banner">
+    <div class="banner-text">
+      <span class="banner-tag">⏱️ Chỉ mất 5 phút - vẫn nhận thưởng!</span>
+      <h1>🎯 THỬ THÁCH NGÀY 23/06/2026</h1>
+      <p>Hoàn thành thử thách hôm nay để nhận XP và kéo dài chuỗi học tập của em nhé!</p>
+      <div class="banner-chips">
+        <span class="chip">📚 5 câu hỏi nhanh</span>
+        <span class="chip">🧠 1 câu tư duy</span>
+        <span class="chip">🎁 +50 XP</span>
+        <span class="chip">🏅 Cơ hội nhận huy hiệu</span>
+      </div>
+      <div class="banner-buttons">
+        <a href="#quiz" class="btn btn-primary" onclick="startQuiz(event)">▶️ Bắt đầu ngay</a>
+      </div>
+    </div>
+    <div class="banner-mascot">🦊</div>
+  </div>
+
+  <!-- ============ CHUỖI HỌC TẬP ============ -->
+  <section class="block">
+    <h2 class="section-title">🔥 Chuỗi học của em</h2>
+    <p class="section-sub">Học mỗi ngày để ngọn lửa của em không bao giờ tắt!</p>
+    <div class="card">
+      <div class="streak-grid">
+        <div class="day-box done"><div class="day-label">T2</div><div class="day-emoji">✅</div></div>
+        <div class="day-box done"><div class="day-label">T3</div><div class="day-emoji">✅</div></div>
+        <div class="day-box done"><div class="day-label">T4</div><div class="day-emoji">✅</div></div>
+        <div class="day-box done"><div class="day-label">T5</div><div class="day-emoji">✅</div></div>
+        <div class="day-box done"><div class="day-label">T6</div><div class="day-emoji">✅</div></div>
+        <div class="day-box done"><div class="day-label">T7</div><div class="day-emoji">✅</div></div>
+        <div class="day-box today"><div class="day-label">CN</div><div class="day-emoji">🔥</div></div>
+      </div>
+      <div class="streak-count">Chuỗi hiện tại: <b id="streakNum">🔥 12 ngày</b></div>
+    </div>
+  </section>
+
+  <!-- ============ NHIỆM VỤ HÔM NAY ============ -->
+  <section class="block">
+    <h2 class="section-title">📋 Nhiệm vụ hôm nay</h2>
+    <p class="section-sub">Hoàn thành đủ 4 nhiệm vụ để nhận trọn phần thưởng!</p>
+    <div class="card">
+      <div class="task-list">
+        <div class="task-item" id="task-quiz">
+          <div class="task-check">✓</div>
+          <div class="task-text">Hoàn thành 5 câu hỏi nhanh</div>
+          <div class="task-tag">+50 XP</div>
+        </div>
+        <div class="task-item" id="task-think">
+          <div class="task-check">✓</div>
+          <div class="task-text">Hoàn thành câu tư duy</div>
+          <div class="task-tag">+20 XP</div>
+        </div>
+        <div class="task-item" id="task-xp">
+          <div class="task-check">✓</div>
+          <div class="task-text">Nhận đủ XP hôm nay</div>
+          <div class="task-tag">🎁</div>
+        </div>
+        <div class="task-item" id="task-streak">
+          <div class="task-check">✓</div>
+          <div class="task-text">Duy trì chuỗi học</div>
+          <div class="task-tag">🔥</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ THỬ THÁCH CHÍNH ============ -->
+  <section class="block" id="quiz">
+    <h2 class="section-title">⚡ 5 CÂU HỎI NHANH</h2>
+    <p class="section-sub">Trả lời nhanh để nhận +10 XP mỗi câu đúng. Cố lên nào!</p>
+    <div class="quiz-card">
+      <div class="quiz-top">
+        <div class="quiz-counter">Câu <span id="qNow">1</span>/5</div>
+        <div class="quiz-timer" id="timer">⏱️ <span id="timeLeft">30</span>s</div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="quizFill"></div></div>
+      <div class="quiz-question" id="qText">Nhấn "▶️ Bắt đầu ngay" để bắt đầu!</div>
+      <div class="options" id="qOptions"></div>
+      <div class="feedback" id="qFeedback"></div>
+    </div>
+  </section>
+
+  <!-- ============ CÂU TƯ DUY ============ -->
+  <section class="block" id="think">
+    <div class="think-card">
+      <h2 class="section-title">🧠 SIÊU THỬ THÁCH</h2>
+      <p class="think-q">
+        Lan có <b>8 viên bi</b>. Nam có nhiều hơn Lan <b>3 viên</b>.<br>
+        Hỏi Nam có bao nhiêu viên bi? 🔵🔵🔵
+      </p>
+      <div class="think-input-row">
+        <input type="number" class="think-input" id="thinkInput" placeholder="Nhập đáp án của em...">
+        <button class="think-submit" onclick="checkThink()">Trả lời (+20 XP)</button>
+      </div>
+      <div class="think-feedback" id="thinkFeedback"></div>
+    </div>
+  </section>
+
+  <!-- ============ PHẦN THƯỞNG HÔM NAY ============ -->
+  <section class="block">
+    <h2 class="section-title">🎁 Phần thưởng hôm nay</h2>
+    <p class="section-sub">Càng hoàn thành nhiều, phần thưởng càng lớn!</p>
+    <div class="card">
+      <div class="reward-grid">
+        <div class="reward-item">
+          <div class="reward-emoji">⭐</div>
+          <div><div class="reward-title">Hoàn thành cơ bản</div><div class="reward-desc">+50 XP</div></div>
+        </div>
+        <div class="reward-item">
+          <div class="reward-emoji">🪙</div>
+          <div><div class="reward-title">Hoàn thành 100%</div><div class="reward-desc">+70 XP & +20 Xu vàng</div></div>
+        </div>
+        <div class="reward-item">
+          <div class="reward-emoji">🏅</div>
+          <div><div class="reward-title">Đủ 7 ngày liên tiếp</div><div class="reward-desc">Huy hiệu Chăm Chỉ</div></div>
+        </div>
+        <div class="reward-item">
+          <div class="reward-emoji">👑</div>
+          <div><div class="reward-title">Đủ 30 ngày liên tiếp</div><div class="reward-desc">Huy hiệu Siêu Kiên Trì</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ THÀNH TÍCH THÁNG ============ -->
+  <section class="block">
+    <h2 class="section-title">📈 Thành tích tháng này</h2>
+    <p class="section-sub">Tháng 6/2026 - em đang làm rất tốt!</p>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num">22/30</div><div class="stat-label">Ngày hoàn thành</div></div>
+      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num">1250</div><div class="stat-label">XP nhận trong tháng</div></div>
+      <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-num">18</div><div class="stat-label">Chuỗi dài nhất</div></div>
+    </div>
+  </section>
+
+  <!-- ============ BẢNG XẾP HẠNG ============ -->
+  <section class="block">
+    <h2 class="section-title">🏆 Top thử thách</h2>
+    <p class="section-sub">Cùng thi đua giữ chuỗi học tập với các bạn nhé!</p>
+    <div class="card">
+      <div class="rank-list" id="challengeRankList">
+        <div class="rank-item me" id="rankRow0">
+          <div class="rank-medal">🥇</div>
+          <div class="rank-name" id="rankName0">Minh Anh <span style="font-size:12px;color:var(--text-soft)">(em)</span></div>
+          <div class="rank-days" id="rankDays0">🔥 25 ngày liên tiếp</div>
+        </div>
+        <div class="rank-item" id="rankRow1">
+          <div class="rank-medal">🥈</div>
+          <div class="rank-name" id="rankName1">Gia Bảo</div>
+          <div class="rank-days" id="rankDays1">🔥 22 ngày liên tiếp</div>
+        </div>
+        <div class="rank-item" id="rankRow2">
+          <div class="rank-medal">🥉</div>
+          <div class="rank-name" id="rankName2">Hải Nam</div>
+          <div class="rank-days" id="rankDays2">🔥 20 ngày liên tiếp</div>
+        </div>
+      </div>
+      <div class="rank-more">
+        <button class="btn btn-ghost" onclick="celebrate(event)">Xem bảng xếp hạng đầy đủ →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HUY HIỆU THỬ THÁCH ============ -->
+  <section class="block">
+    <h2 class="section-title">🏅 Huy hiệu thử thách</h2>
+    <p class="section-sub">Sưu tầm huy hiệu để khoe với bạn bè!</p>
+    <div class="badge-grid">
+      <div class="badge-card">
+        <div class="badge-ic">🏅</div>
+        <div class="badge-nm">Chăm Chỉ</div>
+        <div class="badge-cond">Hoàn thành 7 ngày</div>
+      </div>
+      <div class="badge-card">
+        <div class="badge-ic">🎖️</div>
+        <div class="badge-nm">Kiên Trì</div>
+        <div class="badge-cond">Hoàn thành 14 ngày</div>
+      </div>
+      <div class="badge-card locked">
+        <div class="badge-ic">👑</div>
+        <div class="badge-nm">Siêu Kiên Trì</div>
+        <div class="badge-cond">Hoàn thành 30 ngày</div>
+      </div>
+      <div class="badge-card locked">
+        <div class="badge-ic">🧭</div>
+        <div class="badge-nm">Nhà Thám Hiểm Toán</div>
+        <div class="badge-cond">Hoàn thành 50 thử thách</div>
+      </div>
+      <div class="badge-card locked">
+        <div class="badge-ic">🌟</div>
+        <div class="badge-nm">Huyền Thoại Thử Thách</div>
+        <div class="badge-cond">Hoàn thành 100 thử thách</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ FOOTER ĐIỀU HƯỚNG ============ -->
+<nav class="footer-nav">
+  <a href="index.html"><span>🏠</span>Trang chủ</a>
+  <a href="trang-lop.html"><span>📚</span>Bài học</a>
+  <a href="tro-choi.html"><span>🎮</span>Trò chơi</a>
+  <a href="thu-thach.html" class="active"><span>🎯</span>Thử thách</a>
+  <a href="ho-so.html"><span>👤</span>Hồ sơ</a>
+</nav>
+
+<!-- ============ MODAL HOÀN THÀNH ============ -->
+<div class="modal-overlay" id="completeModal">
+  <div class="modal">
+    <div class="modal-emoji">🎉</div>
+    <h2>CHÚC MỪNG!</h2>
+    <p>Em đã hoàn thành thử thách hôm nay rồi!</p>
+    <div class="modal-results">
+      <div class="modal-row"><span>✅ Số câu đúng</span><b id="rCorrect" class="hl-g">5/5 câu</b></div>
+      <div class="modal-row"><span>🧠 Câu tư duy</span><b id="rThink" class="hl-g">Hoàn thành</b></div>
+      <div class="modal-row"><span>⭐ XP nhận được</span><b id="rXP" class="hl">+70 XP</b></div>
+      <div class="modal-row"><span>🔥 Chuỗi học</span><b class="hl">13 ngày</b></div>
+    </div>
+    <div class="modal-buttons">
+      <a href="trang-lop.html" class="btn btn-primary">📚 Học tiếp</a>
+      <a href="tro-choi.html" class="btn btn-ghost">🎮 Chơi game</a>
+      <a href="index.html" class="btn btn-ghost">🏠 Trang chủ</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== Dữ liệu 5 câu hỏi nhanh =====
+  const questions = [
+    { q: '7 + 5 = ?',  options: [10, 11, 12, 13], correct: 12 },
+    { q: '9 - 4 = ?',  options: [3, 4, 5, 6],     correct: 5  },
+    { q: '6 + 8 = ?',  options: [12, 13, 14, 15], correct: 14 },
+    { q: '15 - 7 = ?', options: [6, 7, 8, 9],     correct: 8  },
+    { q: '4 + 9 = ?',  options: [11, 12, 13, 14], correct: 13 }
+  ];
+
+  let qIndex = 0;
+  let correctCount = 0;
+  let quizXP = 0;
+  let thinkDone = false;
+  let timer = null;
+  let timeLeft = 30;
+
+  const qNow = document.getElementById('qNow');
+  const qText = document.getElementById('qText');
+  const qOptions = document.getElementById('qOptions');
+  const qFeedback = document.getElementById('qFeedback');
+  const quizFill = document.getElementById('quizFill');
+  const timerEl = document.getElementById('timer');
+  const timeLeftEl = document.getElementById('timeLeft');
+
+  function startQuiz(e) {
+    if (e) e.preventDefault();
+    qIndex = 0; correctCount = 0; quizXP = 0;
+    document.getElementById('quiz').scrollIntoView({ behavior: 'smooth' });
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    const item = questions[qIndex];
+    qNow.textContent = qIndex + 1;
+    qText.textContent = item.q;
+    qFeedback.textContent = '';
+    qFeedback.className = 'feedback';
+    quizFill.style.width = (qIndex / questions.length) * 100 + '%';
+    qOptions.innerHTML = '';
+    item.options.forEach(opt => {
+      const div = document.createElement('div');
+      div.className = 'option';
+      div.textContent = opt;
+      div.onclick = () => pickAnswer(div, opt, item.correct);
+      qOptions.appendChild(div);
+    });
+    startTimer();
+  }
+
+  function startTimer() {
+    clearInterval(timer);
+    timeLeft = 30;
+    timeLeftEl.textContent = timeLeft;
+    timerEl.classList.remove('warn');
+    timer = setInterval(() => {
+      timeLeft--;
+      timeLeftEl.textContent = timeLeft;
+      if (timeLeft <= 10) timerEl.classList.add('warn');
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        timeOut();
+      }
+    }, 1000);
+  }
+
+  function lockOptions() {
+    document.querySelectorAll('#qOptions .option').forEach(o => {
+      o.classList.add('disabled');
+      o.onclick = null;
+    });
+  }
+
+  function pickAnswer(div, chosen, correct) {
+    clearInterval(timer);
+    lockOptions();
+    if (chosen === correct) {
+      div.classList.add('correct');
+      correctCount++;
+      quizXP += 10;
+      qFeedback.textContent = '🎉 Chính xác! +10 XP';
+      qFeedback.className = 'feedback good';
+    } else {
+      div.classList.add('wrong');
+      qFeedback.textContent = '💡 Chưa đúng rồi, cố lên nhé!';
+      qFeedback.className = 'feedback bad';
+      // hiện đáp án đúng
+      document.querySelectorAll('#qOptions .option').forEach(o => {
+        if (Number(o.textContent) === correct) o.classList.add('correct');
+      });
+    }
+    setTimeout(nextQuestion, 1100);
+  }
+
+  function timeOut() {
+    lockOptions();
+    qFeedback.textContent = '⏰ Hết giờ! Câu tiếp theo nào...';
+    qFeedback.className = 'feedback bad';
+    const correct = questions[qIndex].correct;
+    document.querySelectorAll('#qOptions .option').forEach(o => {
+      if (Number(o.textContent) === correct) o.classList.add('correct');
+    });
+    setTimeout(nextQuestion, 1100);
+  }
+
+  function nextQuestion() {
+    qIndex++;
+    if (qIndex < questions.length) {
+      renderQuestion();
+    } else {
+      finishQuiz();
+    }
+  }
+
+  function finishQuiz() {
+    clearInterval(timer);
+    quizFill.style.width = '100%';
+    qText.textContent = '✅ Hoàn thành 5 câu hỏi nhanh!';
+    qOptions.innerHTML = '';
+    qFeedback.textContent = '⭐ Em đã đúng ' + correctCount + '/5 câu! Tiếp tục câu tư duy nhé 👇';
+    qFeedback.className = 'feedback good';
+    markTask('task-quiz');
+    maybeComplete();
+    // cuộn xuống câu tư duy
+    setTimeout(() => document.getElementById('think').scrollIntoView({ behavior: 'smooth' }), 600);
+  }
+
+  // ===== Câu tư duy =====
+  function checkThink() {
+    if (thinkDone) return;
+    const val = Number(document.getElementById('thinkInput').value);
+    const fb = document.getElementById('thinkFeedback');
+    if (val === 11) {
+      thinkDone = true;
+      fb.textContent = '🎉 Tuyệt vời! Nam có 11 viên bi. +20 XP';
+      fb.style.color = '#FFE08A';
+      markTask('task-think');
+      celebrate(event);
+      maybeComplete();
+    } else {
+      fb.textContent = '💡 Thử lại nhé! Gợi ý: Nam = 8 + 3.';
+      fb.style.color = '#FFD6E0';
+    }
+  }
+
+  function markTask(id) {
+    document.getElementById(id).classList.add('done');
+  }
+
+  function maybeComplete() {
+    // Khi đã xong cả quiz và câu tư duy
+    if (correctCount >= 0 && document.getElementById('task-quiz').classList.contains('done') && thinkDone) {
+      markTask('task-xp');
+      markTask('task-streak');
+      const totalXP = correctCount * 10 + 20;
+      document.getElementById('rCorrect').textContent = correctCount + '/5 câu';
+      document.getElementById('rThink').textContent = 'Hoàn thành';
+      document.getElementById('rXP').textContent = '+' + totalXP + ' XP';
+      // Ghi tiến độ thật vào Supabase: cộng XP + xu, tăng chuỗi ngày học
+      if (window.TVKN && TVKN.configured) {
+        TVKN.bumpStreak().then(function (s) {
+          if (s) document.getElementById('streakNum').textContent = '🔥 ' + s + ' ngày';
+        }).catch(function () {});
+        TVKN.addXp(totalXP, 'Hoàn thành thử thách hằng ngày (' + correctCount + '/5 câu)', 20)
+          .then(function () { return TVKN.checkBadges(); }).catch(function () {});
+      } else {
+        document.getElementById('streakNum').textContent = '🔥 13 ngày';
+      }
+      setTimeout(showComplete, 700);
+    }
+  }
+
+  function showComplete() {
+    document.getElementById('completeModal').classList.add('show');
+    burstConfetti();
+    setTimeout(burstConfetti, 400);
+    setTimeout(burstConfetti, 800);
+  }
+
+  // ===== Confetti =====
+  function celebrate(e) {
+    if (e) e.preventDefault();
+    const x = e ? e.clientX : window.innerWidth / 2;
+    const y = e ? e.clientY : window.innerHeight / 2;
+    spawnConfetti(x, y, 28);
+  }
+  function burstConfetti() {
+    spawnConfetti(window.innerWidth / 2, window.innerHeight / 3, 40);
+  }
+  function spawnConfetti(x, y, count) {
+    const colors = ['#4F8CFF', '#FFD93D', '#6BCB77', '#FF9F43', '#FF6B9D', '#9B72FF'];
+    for (let i = 0; i < count; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.left = x + 'px'; c.style.top = y + 'px';
+      document.body.appendChild(c);
+      const angle = Math.random() * Math.PI * 2;
+      const v = 100 + Math.random() * 220;
+      const vx = Math.cos(angle) * v, vy = Math.sin(angle) * v - 150;
+      c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${vx}px, ${vy + 320}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+      ], { duration: 1500, easing: 'cubic-bezier(.25,.46,.45,.94)' }).onfinish = () => c.remove();
+    }
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+  /* Chặn trang + hiển thị đúng người đăng nhập (Supabase) */
+  window.tvknLogout = function(){ TVKN.signOut(); };
+  TVKN.guardPage();
+</script>
+<script>
+  /* Đổ dữ liệu thật vào bảng "Top thử thách" (xếp theo chuỗi ngày) */
+  (async function () {
+    if (!(window.TVKN && TVKN.configured)) return;
+    try {
+      var list = await TVKN.getLeaderboard(10);
+      if (!Array.isArray(list) || !list.length) return;
+      // Bảng thử thách xếp theo chuỗi ngày liên tiếp (streak), lấy top 3
+      var top = list.slice().sort(function (a, b) {
+        return (b.streak_days || 0) - (a.streak_days || 0);
+      }).slice(0, 3);
+      for (var i = 0; i < 3; i++) {
+        var row = document.getElementById('rankRow' + i);
+        var nameEl = document.getElementById('rankName' + i);
+        var daysEl = document.getElementById('rankDays' + i);
+        if (!row || !nameEl || !daysEl) continue;
+        var u = top[i];
+        if (!u) {
+          row.style.display = 'none';
+          continue;
+        }
+        row.style.display = '';
+        nameEl.textContent = u.name || 'Bạn nhỏ';
+        daysEl.textContent = '🔥 ' + (u.streak_days || 0) + ' ngày liên tiếp';
+      }
+    } catch (e) {
+      /* Lỗi: giữ nguyên dữ liệu mẫu đã có sẵn */
+    }
+  })();
+</script>
+</body>
+</html>

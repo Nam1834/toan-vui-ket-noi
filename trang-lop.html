@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hành trình Toán Lớp 1 - TOÁN VUI KẾT NỐI</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4F8CFF;
+    --yellow: #FFD93D;
+    --green: #6BCB77;
+    --orange: #FF9F43;
+    --pink: #FF6B9D;
+    --purple: #9B72FF;
+    --white: #FFFFFF;
+    --bg-soft: #F4F8FF;
+    --text-dark: #2D3748;
+    --text-soft: #6B7280;
+    --shadow: 0 8px 24px rgba(79, 140, 255, 0.15);
+    --shadow-lg: 0 16px 40px rgba(79, 140, 255, 0.22);
+    /* Màu chủ đạo của lớp (đổi theo từng lớp) */
+    --theme: var(--green);
+    --theme-soft: #D4F4DD;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Fredoka', 'Baloo 2', system-ui, sans-serif;
+    background: var(--bg-soft);
+    color: var(--text-dark);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+  a { text-decoration: none; color: inherit; }
+
+  /* ============== HEADER NHỎ ============== */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 68px;
+    background: var(--white);
+    box-shadow: 0 4px 20px rgba(79, 140, 255, 0.08);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 18px;
+  }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 12px;
+    background: var(--bg-soft);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-dark);
+    transition: all .2s;
+  }
+  .back-btn:hover { background: var(--theme); color: var(--white); transform: translateX(-2px); }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 6px 16px rgba(79, 140, 255, 0.35);
+  }
+  .logo-name {
+    font-weight: 800; font-size: 16px;
+    background: linear-gradient(90deg, var(--blue), var(--purple));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .header-right { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+  .icon-btn {
+    position: relative;
+    width: 42px; height: 42px;
+    border-radius: 12px; background: var(--bg-soft);
+    border: none; cursor: pointer; font-size: 19px; transition: all .2s;
+  }
+  .icon-btn:hover { background: var(--blue); transform: translateY(-2px); }
+  .badge-dot {
+    position: absolute; top: 7px; right: 7px;
+    width: 9px; height: 9px; background: var(--orange);
+    border-radius: 50%; border: 2px solid var(--white);
+  }
+  .xp-pill {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 13px;
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    color: var(--white); border-radius: 13px;
+    font-weight: 700; font-size: 14px;
+    box-shadow: 0 4px 12px rgba(255, 159, 67, 0.35);
+  }
+  .avatar {
+    width: 42px; height: 42px; border-radius: 13px;
+    background: linear-gradient(135deg, var(--green), var(--blue));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 21px; border: 3px solid var(--white);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12); cursor: pointer;
+  }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* ============== BANNER LỚP ============== */
+  .banner {
+    margin-top: 28px;
+    background: linear-gradient(135deg, var(--theme-soft), #EAFBEF);
+    border-radius: 30px;
+    padding: 40px 44px;
+    display: flex; align-items: center; gap: 32px;
+    position: relative; overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .banner::before {
+    content: ''; position: absolute;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.5), transparent 70%);
+    top: -120px; right: -60px;
+  }
+  .banner-text { flex: 1; z-index: 1; }
+  .banner-tag {
+    display: inline-block; padding: 6px 14px;
+    background: var(--white); color: var(--theme);
+    border-radius: 999px; font-weight: 700; font-size: 13px; margin-bottom: 14px;
+  }
+  .banner h1 {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: clamp(28px, 4vw, 44px); font-weight: 800;
+    line-height: 1.15; margin-bottom: 10px;
+  }
+  .banner p { font-size: 17px; color: var(--text-soft); margin-bottom: 24px; max-width: 460px; }
+  .banner-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 14px 28px; border-radius: 16px;
+    font-family: inherit; font-weight: 700; font-size: 16px;
+    border: none; cursor: pointer; transition: all .25s cubic-bezier(.34,1.56,.64,1);
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--theme), #4DBE5C);
+    color: var(--white); box-shadow: 0 8px 20px rgba(107, 203, 119, 0.45);
+  }
+  .btn-primary:hover { transform: translateY(-4px) scale(1.03); }
+  .btn-ghost { background: var(--white); color: var(--text-dark); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+  .btn-ghost:hover { transform: translateY(-4px); }
+  .banner-mascot {
+    width: 180px; height: 180px; flex-shrink: 0; z-index: 1;
+    background: var(--white); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 110px; box-shadow: 0 16px 40px rgba(107, 203, 119, 0.3);
+    animation: bounce 3s ease-in-out infinite;
+  }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+
+  /* ============== THANH TIẾN ĐỘ ============== */
+  .progress-section { margin-top: 24px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .stat-card {
+    background: var(--white); border-radius: 20px;
+    padding: 20px; text-align: center; box-shadow: var(--shadow);
+    transition: transform .25s;
+  }
+  .stat-card:hover { transform: translateY(-4px); }
+  .stat-icon { font-size: 30px; margin-bottom: 6px; }
+  .stat-num { font-family: 'Baloo 2', sans-serif; font-size: 24px; font-weight: 800; }
+  .stat-label { font-size: 13px; color: var(--text-soft); }
+  .progress-wrap {
+    margin-top: 18px; background: var(--white);
+    border-radius: 20px; padding: 22px 26px; box-shadow: var(--shadow);
+  }
+  .progress-label {
+    display: flex; justify-content: space-between;
+    font-weight: 700; margin-bottom: 10px; font-size: 15px;
+  }
+  .progress-bar {
+    height: 16px; background: var(--bg-soft);
+    border-radius: 999px; overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+  }
+  .progress-fill {
+    height: 100%; width: 30%;
+    background: linear-gradient(90deg, var(--green), var(--yellow), var(--orange));
+    border-radius: 999px;
+  }
+
+  /* ============== SECTION ============== */
+  section.block { margin-top: 48px; }
+  .section-title {
+    font-family: 'Baloo 2', sans-serif; font-size: 26px; font-weight: 800;
+    margin-bottom: 6px; display: flex; align-items: center; gap: 10px;
+  }
+  .section-sub { color: var(--text-soft); font-size: 15px; margin-bottom: 22px; }
+  .topic-head { font-family: 'Baloo 2', sans-serif; font-size: 19px; font-weight: 800; margin: 26px 0 14px; padding-left: 12px; border-left: 5px solid var(--theme); }
+  .topic-head:first-of-type { margin-top: 4px; }
+
+  /* ============== BỘ LỌC ============== */
+  .filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+  .filter-btn {
+    padding: 9px 18px; border-radius: 999px;
+    background: var(--white); border: 2px solid transparent;
+    font-family: inherit; font-weight: 600; font-size: 14px;
+    color: var(--text-soft); cursor: pointer; transition: all .2s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+  .filter-btn:hover { color: var(--theme); }
+  .filter-btn.active { background: var(--theme); color: var(--white); box-shadow: 0 6px 14px rgba(107, 203, 119, 0.4); }
+
+  /* ============== DANH SÁCH BÀI HỌC ============== */
+  .lesson-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .lesson-card {
+    background: var(--white); border-radius: 22px;
+    padding: 22px; box-shadow: var(--shadow);
+    transition: all .3s cubic-bezier(.34,1.56,.64,1);
+    position: relative; display: flex; flex-direction: column; gap: 12px;
+    border: 2px solid transparent;
+  }
+  .lesson-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); }
+  .lesson-top { display: flex; align-items: center; gap: 14px; }
+  .lesson-icon {
+    width: 56px; height: 56px; border-radius: 16px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 30px;
+    background: var(--theme-soft);
+  }
+  .lesson-no { font-size: 12px; font-weight: 700; color: var(--text-soft); }
+  .lesson-name { font-family: 'Baloo 2', sans-serif; font-size: 17px; font-weight: 700; line-height: 1.25; }
+  .lesson-desc { font-size: 13px; color: var(--text-soft); min-height: 38px; }
+  .lesson-meta { display: flex; gap: 14px; font-size: 12px; color: var(--text-soft); font-weight: 600; }
+  .lesson-meta span { display: inline-flex; align-items: center; gap: 4px; }
+  .lesson-progress { height: 8px; background: var(--bg-soft); border-radius: 999px; overflow: hidden; }
+  .lesson-progress > div { height: 100%; background: var(--blue); border-radius: 999px; }
+  .lesson-btn {
+    margin-top: auto; padding: 11px; border-radius: 13px;
+    text-align: center; font-weight: 700; font-size: 14px;
+    border: none; cursor: pointer; font-family: inherit; transition: all .2s;
+  }
+  .badge-status {
+    position: absolute; top: 16px; right: 16px;
+    font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+  }
+
+  /* Trạng thái */
+  .lesson-card.completed { background: #F2FCF4; }
+  .lesson-card.completed .badge-status { background: var(--green); color: var(--white); }
+  .lesson-card.completed .lesson-btn { background: var(--theme-soft); color: #2F8F3E; }
+  .lesson-card.completed .lesson-btn:hover { background: var(--green); color: var(--white); }
+
+  .lesson-card.in_progress { background: #F2F7FF; border-color: rgba(79,140,255,0.25); }
+  .lesson-card.in_progress .badge-status { background: var(--blue); color: var(--white); }
+  .lesson-card.in_progress .lesson-btn { background: var(--blue); color: var(--white); }
+  .lesson-card.in_progress .lesson-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(79,140,255,0.4); }
+
+  .lesson-card.not_started .badge-status { background: var(--bg-soft); color: var(--text-soft); }
+  .lesson-card.not_started .lesson-btn { background: var(--theme); color: var(--white); }
+  .lesson-card.not_started .lesson-btn:hover { transform: translateY(-2px); }
+
+  .lesson-card.locked { background: #F7F8FA; opacity: .85; }
+  .lesson-card.locked .lesson-icon { filter: grayscale(1); opacity: .6; }
+  .lesson-card.locked .badge-status { background: #E2E5EA; color: var(--text-soft); }
+  .lesson-card.locked .lesson-btn { background: #E2E5EA; color: var(--text-soft); cursor: not-allowed; }
+  .lesson-card.locked a.lesson-btn.preview { cursor: pointer; }
+  .lesson-card.locked a.lesson-btn.preview:hover { background: var(--theme); color: var(--white); }
+  .lesson-card.locked .lesson-note { font-size: 11px; color: var(--text-soft); text-align: center; }
+
+  /* ============== LUYỆN TẬP NHANH ============== */
+  .quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .quick-card {
+    border-radius: 22px; padding: 26px; color: var(--white);
+    box-shadow: var(--shadow); transition: transform .25s;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .quick-card:hover { transform: translateY(-6px); }
+  .quick-card.q1 { background: linear-gradient(135deg, var(--orange), var(--yellow)); }
+  .quick-card.q2 { background: linear-gradient(135deg, var(--blue), var(--purple)); }
+  .quick-card.q3 { background: linear-gradient(135deg, var(--pink), var(--orange)); }
+  .quick-icon { font-size: 38px; }
+  .quick-title { font-family: 'Baloo 2', sans-serif; font-size: 19px; font-weight: 700; }
+  .quick-desc { font-size: 14px; opacity: .92; margin-bottom: 6px; }
+  .quick-btn {
+    margin-top: auto; align-self: flex-start;
+    background: var(--white); padding: 9px 20px; border-radius: 12px;
+    font-weight: 700; font-size: 14px; border: none; cursor: pointer;
+    font-family: inherit; transition: transform .2s;
+  }
+  .quick-card.q1 .quick-btn { color: var(--orange); }
+  .quick-card.q2 .quick-btn { color: var(--blue); }
+  .quick-card.q3 .quick-btn { color: var(--pink); }
+  .quick-btn:hover { transform: scale(1.06); }
+
+  /* ============== TRÒ CHƠI ============== */
+  .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; }
+  .game-card {
+    background: var(--white); border-radius: 20px; overflow: hidden;
+    box-shadow: var(--shadow); cursor: pointer; transition: all .3s;
+  }
+  .game-card:hover { transform: translateY(-8px) rotate(-1deg); box-shadow: var(--shadow-lg); }
+  .game-thumb { height: 120px; display: flex; align-items: center; justify-content: center; font-size: 60px; }
+  .game-card.gc1 .game-thumb { background: linear-gradient(135deg, #FF6B9D, #FF9F43); }
+  .game-card.gc2 .game-thumb { background: linear-gradient(135deg, #9B72FF, #4F8CFF); }
+  .game-card.gc3 .game-thumb { background: linear-gradient(135deg, #6BCB77, #4DD0E1); }
+  .game-card.gc4 .game-thumb { background: linear-gradient(135deg, #FFD93D, #FF9F43); }
+  .game-body { padding: 16px; }
+  .game-title { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 4px; }
+  .game-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-soft); }
+  .game-xp { color: var(--orange); font-weight: 700; }
+
+  /* ============== GỢI Ý HỌC TIẾP ============== */
+  .suggest {
+    margin-top: 48px;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    border-radius: 26px; padding: 36px 40px; color: var(--white);
+    display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
+    position: relative; overflow: hidden;
+  }
+  .suggest::before {
+    content: '💡'; position: absolute; font-size: 200px;
+    right: -20px; bottom: -50px; opacity: .12;
+  }
+  .suggest-icon {
+    width: 90px; height: 90px; flex-shrink: 0;
+    background: rgba(255,255,255,0.2); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 50px;
+  }
+  .suggest-text { flex: 1; min-width: 260px; z-index: 1; }
+  .suggest-text h3 { font-family: 'Baloo 2', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+  .suggest-text p { opacity: .92; font-size: 15px; }
+  .suggest .btn-primary { background: var(--white); color: var(--blue); box-shadow: 0 8px 20px rgba(0,0,0,0.18); z-index: 1; }
+
+  /* ============== FOOTER ĐIỀU HƯỚNG ============== */
+  .footer-nav {
+    margin-top: 56px; background: var(--white);
+    box-shadow: 0 -4px 20px rgba(79,140,255,0.08);
+    padding: 16px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
+  }
+  .footer-nav a {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 8px 20px; border-radius: 14px;
+    font-size: 12px; font-weight: 600; color: var(--text-soft); transition: all .2s;
+  }
+  .footer-nav a:hover, .footer-nav a.active { background: var(--bg-soft); color: var(--theme); }
+  .footer-nav a span { font-size: 22px; }
+
+  /* ============== CONFETTI ============== */
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 9999; border-radius: 2px; }
+
+  /* ============== RESPONSIVE ============== */
+  @media (max-width: 900px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .lesson-grid { grid-template-columns: repeat(2, 1fr); }
+    .quick-grid { grid-template-columns: 1fr; }
+    .banner { flex-direction: column; text-align: center; }
+    .banner p { margin-left: auto; margin-right: auto; }
+    .banner-buttons { justify-content: center; }
+  }
+  @media (max-width: 560px) {
+    .header { padding: 0 14px; gap: 10px; }
+    .logo-name { display: none; }
+    .xp-pill span:last-child { display: none; }
+    .wrap { padding: 0 14px; }
+    .lesson-grid { grid-template-columns: 1fr; }
+    .banner { padding: 28px; }
+    .banner-mascot { width: 130px; height: 130px; font-size: 80px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER NHỎ ============ -->
+<header class="header">
+  <a href="index.html" class="back-btn">← Trang chủ</a>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">🐰</div>
+    <span class="logo-name">TOÁN VUI KẾT NỐI</span>
+  </a>
+  <div class="header-right">
+    <button class="icon-btn" title="Thông báo">🔔<span class="badge-dot"></span></button>
+    <div class="xp-pill">🪙 <span><span data-bind="xp">450</span> XP</span></div>
+    <div class="avatar" title="Nguyễn Minh Anh">👧</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ============ BANNER LỚP ============ -->
+  <div class="banner">
+    <div class="banner-text">
+      <span class="banner-tag">📘 SGK Kết nối tri thức với cuộc sống</span>
+      <h1>🐣 Hành trình Toán Lớp 1</h1>
+      <p>Cùng Gà Con làm quen với các con số nhé! Mỗi ngày một bài, em sẽ giỏi Toán lúc nào không hay.</p>
+      <div class="banner-buttons">
+        <a href="bai-4.html" class="btn btn-primary">▶️ Học tiếp</a>
+        <button class="btn btn-ghost" onclick="document.getElementById('lessons').scrollIntoView({behavior:'smooth'})">📚 Xem tất cả bài</button>
+      </div>
+    </div>
+    <div class="banner-mascot">🐣</div>
+  </div>
+
+  <!-- ============ THANH TIẾN ĐỘ ============ -->
+  <div class="progress-section">
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num" id="lessonsDoneNum">3/10</div><div class="stat-label">Bài đã học</div></div>
+      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num" data-bind="xp">450</div><div class="stat-label">Điểm XP</div></div>
+      <div class="stat-card"><div class="stat-icon">🏅</div><div class="stat-num">4</div><div class="stat-label">Huy hiệu</div></div>
+      <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-num" data-bind="streak">7</div><div class="stat-label">Ngày liên tiếp</div></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>📈 Tiến độ hoàn thành</span><span id="progressPct">30%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+  </div>
+
+  <!-- ============ DANH SÁCH BÀI HỌC ============ -->
+  <section class="block" id="lessons">
+    <h2 class="section-title">📚 Danh sách bài học</h2>
+    <p class="section-sub">Bản đồ hành trình học Toán của em. Hoàn thành từng bài để mở khóa bài tiếp theo!</p>
+
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-filter="all">Tất cả</button>
+      <button class="filter-btn" data-filter="not_started">Chưa học</button>
+      <button class="filter-btn" data-filter="in_progress">Đang học</button>
+      <button class="filter-btn" data-filter="completed">Đã hoàn thành</button>
+      <button class="filter-btn" data-filter="locked">Bị khóa</button>
+    </div>
+
+    <!-- Chủ đề 1 -->
+    <h3 class="topic-head">📗 Chủ đề 1: Các số từ 0 đến 10</h3>
+    <div class="lesson-grid" id="lessonGrid">
+      <!-- Bài 1 - Đã hoàn thành -->
+      <div class="lesson-card completed" data-status="completed" data-lesson="bai-1">
+        <span class="badge-status">✓ Đã hoàn thành</span>
+        <div class="lesson-top">
+          <div class="lesson-icon">5️⃣</div>
+          <div><div class="lesson-no">Bài 1</div><div class="lesson-name">Các số 0, 1, 2, 3, 4, 5</div></div>
+        </div>
+        <div class="lesson-desc">Nhận biết, đọc và viết các số từ 0 đến 5.</div>
+        <div class="lesson-meta"><span>📝 10 câu</span><span>⭐ 30 XP</span><span>🏅 95%</span></div>
+        <a href="bai-1.html" class="lesson-btn">Ôn lại</a>
+      </div>
+
+      <!-- Bài 2 - Đã hoàn thành -->
+      <div class="lesson-card completed" data-status="completed" data-lesson="bai-2">
+        <span class="badge-status">✓ Đã hoàn thành</span>
+        <div class="lesson-top">
+          <div class="lesson-icon">🔟</div>
+          <div><div class="lesson-no">Bài 2</div><div class="lesson-name">Các số 6, 7, 8, 9, 10</div></div>
+        </div>
+        <div class="lesson-desc">Nhận biết, đọc và viết các số từ 6 đến 10.</div>
+        <div class="lesson-meta"><span>📝 10 câu</span><span>⭐ 30 XP</span><span>🏅 90%</span></div>
+        <a href="bai-2.html" class="lesson-btn">Ôn lại</a>
+      </div>
+
+      <!-- Bài 3 - Đã hoàn thành -->
+      <div class="lesson-card completed" data-status="completed" data-lesson="bai-3">
+        <span class="badge-status">✓ Đã hoàn thành</span>
+        <div class="lesson-top">
+          <div class="lesson-icon">⚖️</div>
+          <div><div class="lesson-no">Bài 3</div><div class="lesson-name">Nhiều hơn, ít hơn, bằng nhau</div></div>
+        </div>
+        <div class="lesson-desc">So sánh số lượng hai nhóm đồ vật bằng cách ghép đôi.</div>
+        <div class="lesson-meta"><span>📝 10 câu</span><span>⭐ 30 XP</span><span>🏅 88%</span></div>
+        <a href="bai-3.html" class="lesson-btn">Ôn lại</a>
+      </div>
+
+      <!-- Bài 4 - Đang học -->
+      <div class="lesson-card in_progress" data-status="in_progress" data-lesson="bai-4">
+        <span class="badge-status">⏳ Đang học</span>
+        <div class="lesson-top">
+          <div class="lesson-icon">🔣</div>
+          <div><div class="lesson-no">Bài 4</div><div class="lesson-name">So sánh các số (dấu &gt;, &lt;)</div></div>
+        </div>
+        <div class="lesson-desc">Dùng dấu lớn hơn, bé hơn để so sánh hai số.</div>
+        <div class="lesson-meta"><span>📝 10 câu</span><span>⭐ 30 XP</span></div>
+        <div class="lesson-progress"><div style="width:40%"></div></div>
+        <a href="bai-4.html" class="lesson-btn">Học tiếp</a>
+      </div>
+
+      <!-- Bài 5 - Chưa học -->
+      <div class="lesson-card not_started" data-status="not_started" data-lesson="bai-5">
+        <span class="badge-status">● Chưa học</span>
+        <div class="lesson-top">
+          <div class="lesson-icon">🧩</div>
+          <div><div class="lesson-no">Bài 5</div><div class="lesson-name">Mấy và mấy (tách – gộp số)</div></div>
+        </div>
+        <div class="lesson-desc">Một số được tạo từ hai số nhỏ hơn: tách và gộp.</div>
+        <div class="lesson-meta"><span>📝 10 câu</span><span>⭐ 30 XP</span></div>
+        <a href="bai-5.html" class="lesson-btn">Bắt đầu</a>
+      </div>
+
+      <!-- Bài 6 - Chưa học -->
+      <div class="lesson-card not_started" data-status="not_started" data-lesson="bai-6">
+        <span class="badge-status">● Chưa học</span>
+        <div class="lesson-top">
+          <div class="lesson-icon">🎯</div>
+          <div><div class="lesson-no">Bài 6</div><div class="lesson-name">Luyện tập chung</div></div>
+        </div>
+        <div class="lesson-desc">Hệ thống lại toàn bộ các số từ 0 đến 10.</div>
+        <div class="lesson-meta"><span>📝 10 câu</span><span>⭐ 30 XP</span></div>
+        <a href="bai-6.html" class="lesson-btn">Bắt đầu</a>
+      </div>
+    </div>
+
+    <!-- Chủ đề 2 -->
+    <h3 class="topic-head">📐 Chủ đề 2: Làm quen với một số hình phẳng</h3>
+    <div class="lesson-grid" id="lessonGrid2">
+      <!-- Bài 7 - Bị khóa -->
+      <div class="lesson-card locked" data-status="locked" data-lesson="bai-7">
+        <span class="badge-status">🔒 Bị khóa</span>
+        <div class="lesson-top">
+          <div class="lesson-icon">🔷</div>
+          <div><div class="lesson-no">Bài 7</div><div class="lesson-name">Hình vuông, tròn, tam giác, chữ nhật</div></div>
+        </div>
+        <div class="lesson-desc">Nhận biết và gọi tên các hình phẳng cơ bản.</div>
+        <div class="lesson-note">Hoàn thành bài trước để mở khóa</div>
+        <a href="bai-7.html" class="lesson-btn preview">🔒 Xem thử</a>
+      </div>
+
+      <!-- Bài 8 - Bị khóa -->
+      <div class="lesson-card locked" data-status="locked" data-lesson="bai-8">
+        <span class="badge-status">🔒 Bị khóa</span>
+        <div class="lesson-top">
+          <div class="lesson-icon">🧱</div>
+          <div><div class="lesson-no">Bài 8</div><div class="lesson-name">Thực hành lắp ghép, xếp hình</div></div>
+        </div>
+        <div class="lesson-desc">Ghép các mảnh hình thành thuyền, nhà, tên lửa...</div>
+        <div class="lesson-note">Hoàn thành bài trước để mở khóa</div>
+        <a href="bai-8.html" class="lesson-btn preview">🔒 Xem thử</a>
+      </div>
+
+      <!-- Bài 9 - Bị khóa -->
+      <div class="lesson-card locked" data-status="locked" data-lesson="bai-9">
+        <span class="badge-status">🔒 Bị khóa</span>
+        <div class="lesson-top">
+          <div class="lesson-icon">📐</div>
+          <div><div class="lesson-no">Bài 9</div><div class="lesson-name">Luyện tập chung về hình phẳng</div></div>
+        </div>
+        <div class="lesson-desc">Phân loại đồ vật theo hình và xếp hình sáng tạo.</div>
+        <div class="lesson-note">Hoàn thành bài trước để mở khóa</div>
+        <a href="bai-9.html" class="lesson-btn preview">🔒 Xem thử</a>
+      </div>
+    </div>
+
+    <!-- Chủ đề 3 -->
+    <h3 class="topic-head">➕ Chủ đề 3: Phép cộng, phép trừ trong phạm vi 10</h3>
+    <div class="lesson-grid" id="lessonGrid3">
+      <!-- Bài 10 - Bị khóa -->
+      <div class="lesson-card locked" data-status="locked" data-lesson="bai-10">
+        <span class="badge-status">🔒 Bị khóa</span>
+        <div class="lesson-top">
+          <div class="lesson-icon">➕</div>
+          <div><div class="lesson-no">Bài 10</div><div class="lesson-name">Phép cộng trong phạm vi 10</div></div>
+        </div>
+        <div class="lesson-desc">Gộp lại và thêm vào – làm quen phép cộng.</div>
+        <div class="lesson-note">Hoàn thành bài trước để mở khóa</div>
+        <a href="bai-10.html" class="lesson-btn preview">🔒 Xem thử</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LUYỆN TẬP NHANH ============ -->
+  <section class="block">
+    <h2 class="section-title">⚡ Luyện tập nhanh</h2>
+    <p class="section-sub">Chỉ vài phút mỗi ngày để não luôn nhạy bén!</p>
+    <div class="quick-grid">
+      <div class="quick-card q1">
+        <div class="quick-icon">🔥</div>
+        <div class="quick-title">5 câu khởi động</div>
+        <div class="quick-desc">Làm nhanh 5 câu để làm nóng não.</div>
+        <a href="lam-bai-tap.html" class="quick-btn">Làm ngay</a>
+      </div>
+      <div class="quick-card q2">
+        <div class="quick-icon">🔁</div>
+        <div class="quick-title">Ôn bài đã học</div>
+        <div class="quick-desc">Ôn lại những bài em đã hoàn thành.</div>
+        <a href="lam-bai-tap.html" class="quick-btn">Ôn tập</a>
+      </div>
+      <div class="quick-card q3">
+        <div class="quick-icon">🛠️</div>
+        <div class="quick-title">Sửa lỗi sai</div>
+        <div class="quick-desc">Làm lại các câu em từng trả lời sai.</div>
+        <a href="lam-bai-tap.html" class="quick-btn">Sửa lỗi</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TRÒ CHƠI THEO LỚP ============ -->
+  <section class="block">
+    <h2 class="section-title">🎮 Trò chơi Toán học</h2>
+    <p class="section-sub">Vừa chơi vừa luyện - giỏi Toán cực vui!</p>
+    <div class="game-grid">
+      <div class="game-card gc1" onclick="celebrate(event)">
+        <div class="game-thumb">🚗</div>
+        <div class="game-body"><div class="game-title">Đua xe Toán học</div><div class="game-meta"><span>Lớp 1-5</span><span class="game-xp">+50 XP</span></div></div>
+      </div>
+      <div class="game-card gc2" onclick="celebrate(event)">
+        <div class="game-thumb">🎈</div>
+        <div class="game-body"><div class="game-title">Bắn bóng số học</div><div class="game-meta"><span>Lớp 1-3</span><span class="game-xp">+40 XP</span></div></div>
+      </div>
+      <div class="game-card gc3" onclick="celebrate(event)">
+        <div class="game-thumb">🏴‍☠️</div>
+        <div class="game-body"><div class="game-title">Kho báu phép tính</div><div class="game-meta"><span>Lớp 2-5</span><span class="game-xp">+60 XP</span></div></div>
+      </div>
+      <div class="game-card gc4" onclick="celebrate(event)">
+        <div class="game-thumb">🔔</div>
+        <div class="game-body"><div class="game-title">Rung chuông vàng</div><div class="game-meta"><span>Lớp 1-5</span><span class="game-xp">+100 XP</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GỢI Ý HỌC TIẾP ============ -->
+  <div class="suggest">
+    <div class="suggest-icon">🎯</div>
+    <div class="suggest-text">
+      <h3>Gợi ý cho em hôm nay</h3>
+      <p>Em đang học đến Bài 4: So sánh các số (dấu &gt;, &lt;). Hãy tiếp tục để nhận thêm 30 XP nhé!</p>
+    </div>
+    <a href="bai-4.html" class="btn btn-primary">Học tiếp bài này →</a>
+  </div>
+
+</div>
+
+<!-- ============ FOOTER ĐIỀU HƯỚNG ============ -->
+<nav class="footer-nav">
+  <a href="index.html"><span>🏠</span>Trang chủ</a>
+  <a href="trang-lop.html" class="active"><span>📚</span>Bài học</a>
+  <a href="#" onclick="celebrate(event)"><span>🎮</span>Trò chơi</a>
+  <a href="#" onclick="celebrate(event)"><span>🎯</span>Thử thách</a>
+  <a href="#" onclick="celebrate(event)"><span>👤</span>Hồ sơ</a>
+</nav>
+
+<script>
+  // Bộ lọc bài học
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.lesson-card');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      cards.forEach(c => {
+        c.style.display = (f === 'all' || c.dataset.status === f) ? '' : 'none';
+      });
+    });
+  });
+
+  // Hiệu ứng confetti
+  function celebrate(e) {
+    if (e) e.preventDefault();
+    const colors = ['#4F8CFF', '#FFD93D', '#6BCB77', '#FF9F43', '#FF6B9D', '#9B72FF'];
+    const x = e ? e.clientX : window.innerWidth / 2;
+    const y = e ? e.clientY : window.innerHeight / 2;
+    for (let i = 0; i < 28; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.left = x + 'px'; c.style.top = y + 'px';
+      document.body.appendChild(c);
+      const angle = Math.random() * Math.PI * 2;
+      const v = 100 + Math.random() * 200;
+      const vx = Math.cos(angle) * v, vy = Math.sin(angle) * v - 150;
+      c.animate([
+        { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+        { transform: `translate(${vx}px, ${vy + 300}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+      ], { duration: 1400, easing: 'cubic-bezier(.25,.46,.45,.94)' }).onfinish = () => c.remove();
+    }
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+  /* Chặn trang + hiển thị đúng người đăng nhập (Supabase) */
+  window.tvknLogout = function(){ TVKN.signOut(); };
+  TVKN.guardPage();
+</script>
+<script>
+  /* Đồng bộ tiến độ bài học thật từ Supabase */
+  (async function syncLessonProgress() {
+    try {
+      if (!window.TVKN || !TVKN.configured) return; // chưa cấu hình → giữ demo
+      const lessons = await TVKN.getLessons();
+      if (!Array.isArray(lessons) || lessons.length === 0) return; // rỗng → giữ demo
+
+      // 1) Map: lesson_id → { status, best_score }
+      const dataMap = {};
+      lessons.forEach(l => {
+        if (l && l.lesson_id) dataMap[l.lesson_id] = { status: l.status, best_score: l.best_score };
+      });
+
+      // Cấu hình hiển thị cho từng trạng thái (mirror đúng cách trang đang style)
+      const VIEW = {
+        completed:   { badge: '✓ Đã hoàn thành', btn: 'Ôn lại' },
+        in_progress: { badge: '⏳ Đang học',     btn: 'Học tiếp' },
+        not_started: { badge: '● Chưa học',      btn: 'Bắt đầu' },
+        locked:      { badge: '🔒 Bị khóa',      btn: '🔒 Xem thử' }
+      };
+
+      // Lấy tất cả thẻ bài (theo thứ tự bài 1..10)
+      const allCards = Array.from(document.querySelectorAll('.lesson-card[data-lesson]'));
+      const cardById = {};
+      allCards.forEach(c => { cardById['' + c.getAttribute('data-lesson')] = c; });
+
+      let completed = 0;
+
+      // 2+3) Xác định trạng thái thật cho từng bài, áp dụng quy tắc mở khóa
+      const states = {}; // lesson-id → status cuối cùng
+      for (let n = 1; n <= 10; n++) {
+        const id = 'bai-' + n;
+        const card = cardById[id];
+        if (!card) continue;
+
+        const entry = dataMap[id];
+        let status = (entry && entry.status) || 'not_started';
+
+        // Chuẩn hóa giá trị lạ về not_started
+        if (status !== 'completed' && status !== 'in_progress') status = 'not_started';
+
+        // Quy tắc mở khóa: nếu chưa completed/in_progress và bài trước chưa hoàn thành → khóa.
+        // Bài 1 không bao giờ bị khóa.
+        if (status === 'not_started' && n > 1) {
+          if (states['bai-' + (n - 1)] !== 'completed') status = 'locked';
+        }
+
+        states[id] = status;
+        if (status === 'completed') completed++;
+      }
+
+      // 4) Áp dụng giao diện cho từng thẻ
+      for (let n = 1; n <= 10; n++) {
+        const id = 'bai-' + n;
+        const card = cardById[id];
+        if (!card) continue;
+        const status = states[id];
+        const view = VIEW[status];
+
+        card.classList.remove('completed', 'in_progress', 'not_started', 'locked');
+        card.classList.add(status);
+        card.dataset.status = status;
+
+        const badge = card.querySelector('.badge-status');
+        if (badge && view) badge.textContent = view.badge;
+
+        const btn = card.querySelector('.lesson-btn');
+        if (btn && view) {
+          if (status === 'locked') {
+            // Giữ link click được như trang vốn làm (a.lesson-btn.preview "🔒 Xem thử")
+            btn.classList.add('preview');
+          } else {
+            btn.classList.remove('preview');
+          }
+          btn.textContent = view.btn;
+        }
+      }
+
+      // 5) Cập nhật thống kê "Bài đã học" và "Tiến độ hoàn thành"
+      const pct = Math.round(completed / 10 * 100);
+      const numEl = document.getElementById('lessonsDoneNum');
+      if (numEl) numEl.textContent = completed + '/10';
+      const pctEl = document.getElementById('progressPct');
+      if (pctEl) pctEl.textContent = pct + '%';
+      const fillEl = document.getElementById('progressFill');
+      if (fillEl) fillEl.style.width = pct + '%';
+    } catch (err) {
+      console.warn('Không đồng bộ được tiến độ bài học:', err);
+      // Lỗi → giữ nguyên trạng thái demo đã hard-code
+    }
+  })();
+</script>
+</body>
+</html>

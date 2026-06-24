@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài 7: Nhận biết hình vuông, hình tròn, hình tam giác, hình chữ nhật - TOÁN VUI KẾT NỐI</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4F8CFF; --yellow: #FFD93D; --green: #6BCB77; --orange: #FF9F43;
+    --pink: #FF6B9D; --purple: #9B72FF; --white: #FFFFFF; --bg-soft: #F4F8FF;
+    --text-dark: #2D3748; --text-soft: #6B7280;
+    --shadow: 0 8px 24px rgba(79, 140, 255, 0.15);
+    --shadow-lg: 0 16px 40px rgba(79, 140, 255, 0.22);
+    --theme: #6BCB77; --theme-soft: #D4F4DD;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Fredoka','Baloo 2',system-ui,sans-serif; background: var(--bg-soft); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+  a { text-decoration: none; color: inherit; }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; height: 64px; background: var(--white); box-shadow: 0 4px 20px rgba(79,140,255,.08); display: flex; align-items: center; padding: 0 22px; gap: 16px; }
+  .back-btn { display: inline-flex; align-items: center; gap: 7px; padding: 8px 15px; border-radius: 12px; background: var(--bg-soft); font-weight: 700; font-size: 14px; transition: all .2s; }
+  .back-btn:hover { background: var(--theme); color: var(--white); }
+  .header-title { font-family: 'Baloo 2',sans-serif; font-weight: 700; font-size: 16px; text-align: center; flex: 1; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .xp-pill { display: flex; align-items: center; gap: 6px; padding: 7px 13px; background: linear-gradient(135deg,var(--yellow),var(--orange)); color: var(--white); border-radius: 12px; font-weight: 700; font-size: 14px; }
+  .avatar { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg,var(--green),var(--blue)); display: flex; align-items: center; justify-content: center; font-size: 20px; border: 3px solid var(--white); box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 22px 60px; }
+
+  /* BANNER BÀI HỌC */
+  .lesson-banner { margin-top: 26px; background: linear-gradient(135deg,var(--theme-soft),#EAFBEF); border-radius: 26px; padding: 32px 36px; display: flex; align-items: center; gap: 26px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+  .lesson-banner-text { flex: 1; z-index: 1; }
+  .lesson-banner h1 { font-family: 'Baloo 2',sans-serif; font-size: clamp(24px,4vw,34px); font-weight: 800; line-height: 1.15; margin-bottom: 8px; }
+  .lesson-banner p { color: var(--text-soft); font-size: 16px; }
+  .lesson-banner .mascot { width: 120px; height: 120px; flex-shrink: 0; background: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 70px; box-shadow: 0 14px 34px rgba(107,203,119,.3); animation: bounce 3s ease-in-out infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+  /* THANH TIẾN ĐỘ BÀI HỌC */
+  .steps { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 28px 0; flex-wrap: wrap; }
+  .step { display: flex; align-items: center; gap: 8px; }
+  .step-dot { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; background: var(--white); color: var(--text-soft); box-shadow: var(--shadow); border: 3px solid transparent; }
+  .step.done .step-dot { background: var(--green); color: var(--white); }
+  .step.current .step-dot { background: var(--blue); color: var(--white); border-color: rgba(79,140,255,.3); transform: scale(1.08); }
+  .step-label { font-size: 13px; font-weight: 600; color: var(--text-soft); }
+  .step.current .step-label, .step.done .step-label { color: var(--text-dark); }
+  .step-line { width: 28px; height: 3px; background: #E2E5EA; border-radius: 2px; }
+
+  /* KHỐI */
+  .block { background: var(--white); border-radius: 24px; padding: 30px; box-shadow: var(--shadow); margin-bottom: 22px; }
+  .block-title { font-family: 'Baloo 2',sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+  .block-sub { color: var(--text-soft); font-size: 15px; margin-bottom: 18px; }
+
+  .block.warmup { background: linear-gradient(135deg,#FFF8E1,#FFFDF5); }
+
+  /* HÌNH MINH HỌA */
+  .objects { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; font-size: 48px; padding: 18px; background: var(--bg-soft); border-radius: 18px; margin-bottom: 18px; }
+
+  /* ĐÁP ÁN */
+  .options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .opt { padding: 18px; border-radius: 16px; background: var(--white); border: 2px solid #E8ECF4; font-family: 'Baloo 2',sans-serif; font-size: 24px; font-weight: 800; cursor: pointer; transition: all .2s; text-align: center; }
+  .opt:hover { border-color: var(--blue); transform: translateY(-3px); }
+  .opt.correct { background: var(--green); color: var(--white); border-color: var(--green); }
+  .opt.wrong { background: #FFE5E5; border-color: var(--pink); }
+  .feedback { margin-top: 16px; padding: 14px 18px; border-radius: 14px; font-weight: 600; display: none; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--theme-soft); color: #2F8F3E; }
+  .feedback.no { background: #FFF0E6; color: #C76A1E; }
+
+  /* HÌNH VẼ BẰNG CSS */
+  .shape-square { width: 70px; height: 70px; background: linear-gradient(135deg,var(--blue),#6FA8FF); border-radius: 8px; }
+  .shape-circle { width: 70px; height: 70px; background: linear-gradient(135deg,var(--orange),var(--yellow)); border-radius: 50%; }
+  .shape-triangle { width: 0; height: 0; border-left: 40px solid transparent; border-right: 40px solid transparent; border-bottom: 70px solid var(--green); }
+  .shape-rect { width: 100px; height: 60px; background: linear-gradient(135deg,var(--purple),var(--pink)); border-radius: 8px; }
+
+  /* KHÁM PHÁ: thẻ hình */
+  .shape-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+  .shape-card { background: var(--bg-soft); border: 2px solid #E8ECF4; border-radius: 18px; padding: 18px 10px; display: flex; flex-direction: column; align-items: center; gap: 12px; cursor: pointer; transition: all .2s; min-height: 150px; justify-content: center; }
+  .shape-card:hover { transform: translateY(-4px); border-color: var(--blue); box-shadow: var(--shadow); }
+  .shape-card.active { border-color: var(--green); background: var(--theme-soft); }
+  .shape-card .sc-name { font-family: 'Baloo 2',sans-serif; font-weight: 800; font-size: 15px; }
+  .shape-stage { display: flex; align-items: center; height: 80px; }
+  .shape-detail { margin-top: 18px; padding: 18px; background: var(--bg-soft); border-radius: 16px; min-height: 70px; display: flex; align-items: center; justify-content: center; gap: 14px; font-size: 17px; font-weight: 600; text-align: center; }
+
+  /* PHÂN LOẠI KÉO-THẢ */
+  .sort-pool { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; padding: 16px; background: var(--bg-soft); border-radius: 16px; margin-bottom: 18px; min-height: 90px; }
+  .sort-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 14px; background: var(--white); border: 2px solid #E8ECF4; border-radius: 14px; cursor: grab; transition: all .2s; font-size: 13px; font-weight: 600; }
+  .sort-item:hover { border-color: var(--blue); transform: translateY(-3px); }
+  .sort-item.dragging { opacity: .4; }
+  .sort-item .si-emoji { font-size: 34px; }
+  .sort-item.selected { border-color: var(--orange); background: #FFF6E8; transform: scale(1.05); }
+  .sort-boxes { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+  .sort-box { border: 3px dashed #C9D4E8; border-radius: 18px; padding: 12px 8px; min-height: 150px; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: all .2s; }
+  .sort-box.over { border-color: var(--blue); background: #EAF1FF; }
+  .sort-box .sb-head { display: flex; flex-direction: column; align-items: center; gap: 6px; font-family: 'Baloo 2',sans-serif; font-weight: 800; font-size: 13px; }
+  .sort-box .mini { transform: scale(.5); margin: -16px 0; }
+  .sort-box .sb-drop { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .sort-item.locked { border-color: var(--green); background: var(--theme-soft); cursor: default; pointer-events: none; }
+
+  /* ĐẾM HÌNH */
+  .count-pic { position: relative; height: 240px; background: linear-gradient(135deg,#EAF6FF,#F4F8FF); border-radius: 18px; margin-bottom: 18px; overflow: hidden; }
+  .cp { position: absolute; }
+  .count-rows { display: grid; gap: 12px; }
+  .count-q { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; background: var(--bg-soft); padding: 12px 16px; border-radius: 14px; }
+  .count-q .cq-label { flex: 1; font-weight: 600; min-width: 160px; display: flex; align-items: center; gap: 10px; }
+  .count-q input { width: 70px; padding: 10px; border: 2px solid #E8ECF4; border-radius: 12px; font-family: 'Baloo 2',sans-serif; font-size: 20px; font-weight: 800; text-align: center; outline: none; }
+  .count-q input:focus { border-color: var(--blue); }
+  .count-q input.ok { border-color: var(--green); background: var(--theme-soft); }
+  .count-q input.no { border-color: var(--pink); background: #FFE5E5; }
+
+  /* MẢNH GHÉP */
+  .puzzle-stage { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 20px; background: var(--bg-soft); border-radius: 16px; margin-bottom: 18px; }
+  .puzzle-hole { position: relative; width: 140px; height: 140px; }
+  .opt-shape { display: flex; align-items: center; justify-content: center; min-height: 90px; }
+
+  .mini-square { width: 36px; height: 36px; background: linear-gradient(135deg,var(--blue),#6FA8FF); border-radius: 4px; }
+  .mini-circle { width: 36px; height: 36px; background: linear-gradient(135deg,var(--orange),var(--yellow)); border-radius: 50%; }
+  .mini-triangle { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-bottom: 36px solid var(--green); }
+  .mini-rect { width: 52px; height: 32px; background: linear-gradient(135deg,var(--purple),var(--pink)); border-radius: 4px; }
+
+  /* AI HỖ TRỢ */
+  .block.ai { background: linear-gradient(135deg,var(--blue),var(--purple)); color: var(--white); }
+  .block.ai .block-sub { color: rgba(255,255,255,.9); }
+  .ai-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .ai-bunny { width: 56px; height: 56px; background: rgba(255,255,255,.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; }
+  .ai-input { display: flex; gap: 8px; background: rgba(255,255,255,.95); padding: 7px; border-radius: 16px; }
+  .ai-input input { flex: 1; border: none; background: transparent; padding: 12px 14px; font-family: inherit; font-size: 15px; outline: none; color: var(--text-dark); }
+  .ai-send { background: linear-gradient(135deg,var(--orange),var(--pink)); color: var(--white); border: none; padding: 12px 22px; border-radius: 12px; font-family: inherit; font-weight: 700; cursor: pointer; transition: transform .2s; }
+  .ai-send:hover { transform: scale(1.05); }
+  .ai-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .ai-chip { background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.3); color: var(--white); padding: 7px 14px; border-radius: 999px; font-size: 13px; cursor: pointer; transition: all .2s; }
+  .ai-chip:hover { background: rgba(255,255,255,.35); }
+
+  /* NÚT */
+  .btn { display: inline-flex; align-items: center; gap: 9px; padding: 14px 28px; border-radius: 16px; font-family: inherit; font-weight: 700; font-size: 16px; border: none; cursor: pointer; transition: all .25s cubic-bezier(.34,1.56,.64,1); }
+  .btn-primary { background: linear-gradient(135deg,var(--green),#4DBE5C); color: var(--white); box-shadow: 0 8px 20px rgba(107,203,119,.45); }
+  .btn-primary:hover { transform: translateY(-3px) scale(1.02); }
+  .btn-block { width: 100%; justify-content: center; }
+  .btn-check { background: linear-gradient(135deg,var(--blue),#6FA8FF); color: var(--white); box-shadow: 0 8px 20px rgba(79,140,255,.35); }
+  .btn-check:hover { transform: translateY(-3px) scale(1.02); }
+
+  /* ĐIỀU HƯỚNG */
+  .nav-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; }
+  .nav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 22px; border-radius: 14px; background: var(--white); font-weight: 700; font-size: 15px; box-shadow: var(--shadow); transition: all .2s; cursor: pointer; border: none; font-family: inherit; }
+  .nav-btn:hover { transform: translateY(-2px); }
+  .nav-btn.disabled { opacity: .4; pointer-events: none; }
+  .nav-btn.next { background: var(--blue); color: var(--white); }
+
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 9999; border-radius: 2px; }
+
+  @media (max-width: 560px) {
+    .header-title { display: none; }
+    .wrap { padding: 0 14px 50px; }
+    .lesson-banner { flex-direction: column; text-align: center; padding: 26px; }
+    .options { grid-template-columns: repeat(2, 1fr); }
+    .shape-cards { grid-template-columns: repeat(2,1fr); }
+    .sort-boxes { grid-template-columns: repeat(2,1fr); }
+    .step-label { display: none; }
+    .step-line { width: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <a href="trang-lop.html" class="back-btn">← Quay lại Lớp 1</a>
+  <div class="header-title">Bài 7: Hình vuông, hình tròn, hình tam giác, hình chữ nhật</div>
+  <div class="header-right">
+    <div class="xp-pill">🪙 <span>520</span></div>
+    <div class="avatar">👧</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- BANNER -->
+  <div class="lesson-banner">
+    <div class="lesson-banner-text">
+      <h1>Bài 7: Nhận biết hình phẳng</h1>
+      <p>Hôm nay chúng ta cùng làm quen với hình vuông, hình tròn, hình tam giác và hình chữ nhật nhé!</p>
+    </div>
+    <div class="mascot">🔷</div>
+  </div>
+
+  <!-- THANH TIẾN ĐỘ BÀI -->
+  <div class="steps" id="steps">
+    <div class="step current"><div class="step-dot">1</div><span class="step-label">Khám phá</span></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-dot">2</div><span class="step-label">Phân loại</span></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-dot">3</div><span class="step-label">Đếm hình</span></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-dot">4</div><span class="step-label">Luyện tập</span></div>
+  </div>
+
+  <!-- KHỐI 1: KHÁM PHÁ -->
+  <div class="block">
+    <h2 class="block-title">🔍 Khám phá các hình</h2>
+    <p class="block-sub">Bấm vào từng hình để nghe tên gọi và xem các đồ vật quanh em có hình đó nhé!</p>
+    <div class="shape-cards" id="shapeCards">
+      <div class="shape-card" data-shape="square">
+        <div class="shape-stage"><div class="shape-square"></div></div>
+        <div class="sc-name">Hình vuông ⏹️</div>
+      </div>
+      <div class="shape-card" data-shape="circle">
+        <div class="shape-stage"><div class="shape-circle"></div></div>
+        <div class="sc-name">Hình tròn ⭕</div>
+      </div>
+      <div class="shape-card" data-shape="triangle">
+        <div class="shape-stage"><div class="shape-triangle"></div></div>
+        <div class="sc-name">Hình tam giác 🔺</div>
+      </div>
+      <div class="shape-card" data-shape="rect">
+        <div class="shape-stage"><div class="shape-rect"></div></div>
+        <div class="sc-name">Hình chữ nhật ▬</div>
+      </div>
+    </div>
+    <div class="shape-detail" id="shapeDetail">👆 Bấm vào một hình phía trên để khám phá nhé!</div>
+  </div>
+
+  <!-- KHỐI 2: PHÂN LOẠI KÉO-THẢ -->
+  <div class="block">
+    <h2 class="block-title">🧺 Phân loại đồ vật theo hình</h2>
+    <p class="block-sub">Kéo (hoặc chạm chọn rồi bấm vào hộp) mỗi đồ vật vào đúng hộp hình của nó nhé!</p>
+    <div class="sort-pool" id="sortPool"></div>
+    <div class="sort-boxes" id="sortBoxes">
+      <div class="sort-box" data-shape="square">
+        <div class="sb-head"><div class="shape-square mini"></div><span>Hình vuông</span></div>
+        <div class="sb-drop"></div>
+      </div>
+      <div class="sort-box" data-shape="circle">
+        <div class="sb-head"><div class="shape-circle mini"></div><span>Hình tròn</span></div>
+        <div class="sb-drop"></div>
+      </div>
+      <div class="sort-box" data-shape="triangle">
+        <div class="sb-head"><div class="shape-triangle mini"></div><span>Hình tam giác</span></div>
+        <div class="sb-drop"></div>
+      </div>
+      <div class="sort-box" data-shape="rect">
+        <div class="sb-head"><div class="shape-rect mini"></div><span>Hình chữ nhật</span></div>
+        <div class="sb-drop"></div>
+      </div>
+    </div>
+    <div class="feedback" id="sortFb"></div>
+  </div>
+
+  <!-- KHỐI 3: ĐẾM HÌNH -->
+  <div class="block">
+    <h2 class="block-title">🔢 Đếm hình trong bức tranh</h2>
+    <p class="block-sub">Quan sát bức tranh được ghép từ nhiều hình, rồi điền số lượng mỗi loại hình nhé!</p>
+    <div class="count-pic" id="countPic"></div>
+    <div class="count-rows">
+      <div class="count-q">
+        <span class="cq-label"><span class="mini-circle"></span> Có bao nhiêu <b>hình tròn</b>?</span>
+        <input type="number" min="0" data-ans="3" id="cqCircle">
+      </div>
+      <div class="count-q">
+        <span class="cq-label"><span class="mini-square"></span> Có bao nhiêu <b>hình vuông</b>?</span>
+        <input type="number" min="0" data-ans="2" id="cqSquare">
+      </div>
+      <div class="count-q">
+        <span class="cq-label"><span class="mini-triangle"></span> Có bao nhiêu <b>hình tam giác</b>?</span>
+        <input type="number" min="0" data-ans="4" id="cqTriangle">
+      </div>
+      <div class="count-q">
+        <span class="cq-label"><span class="mini-rect"></span> Có bao nhiêu <b>hình chữ nhật</b>?</span>
+        <input type="number" min="0" data-ans="2" id="cqRect">
+      </div>
+    </div>
+    <button class="btn btn-check btn-block" style="margin-top:16px" onclick="checkCount(event)">✅ Kiểm tra</button>
+    <div class="feedback" id="countFb"></div>
+  </div>
+
+  <!-- KHỐI 4: LUYỆN TẬP - TÌM MẢNH GHÉP -->
+  <div class="block">
+    <h2 class="block-title">🧩 Tìm mảnh ghép còn thiếu</h2>
+    <p class="block-sub">Hình bên dưới còn thiếu một mảnh. Em hãy chọn mảnh ghép đúng (A, B, C hay D) để hoàn thành hình nhé!</p>
+    <div class="puzzle-stage">
+      <p style="font-weight:600">Hình cần hoàn thành: một <b>hình vuông</b> bị thiếu một góc.</p>
+      <div class="puzzle-hole" id="puzzleHole">
+        <!-- Hình vuông thiếu góc trên-phải: ghép từ 3 ô vuông nhỏ -->
+        <div style="position:absolute;left:0;top:0;width:65px;height:65px;background:linear-gradient(135deg,var(--blue),#6FA8FF);border-radius:6px"></div>
+        <div style="position:absolute;left:0;top:75px;width:65px;height:65px;background:linear-gradient(135deg,var(--blue),#6FA8FF);border-radius:6px"></div>
+        <div style="position:absolute;left:75px;top:75px;width:65px;height:65px;background:linear-gradient(135deg,var(--blue),#6FA8FF);border-radius:6px"></div>
+        <!-- ô trống còn thiếu (góc trên-phải) -->
+        <div style="position:absolute;left:75px;top:0;width:65px;height:65px;border:3px dashed #B6C3DD;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#B6C3DD">?</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-weight:600;margin-bottom:14px">Mảnh ghép nào vừa khít chỗ trống?</p>
+    <div class="options" id="puzzleOpts">
+      <button class="opt" data-val="A">
+        <div class="opt-shape"><div class="mini-circle"></div></div>
+        <div>A</div>
+      </button>
+      <button class="opt" data-val="B">
+        <div class="opt-shape"><div class="mini-square"></div></div>
+        <div>B</div>
+      </button>
+      <button class="opt" data-val="C">
+        <div class="opt-shape"><div class="mini-triangle"></div></div>
+        <div>C</div>
+      </button>
+      <button class="opt" data-val="D">
+        <div class="opt-shape"><div class="mini-rect"></div></div>
+        <div>D</div>
+      </button>
+    </div>
+    <div class="feedback" id="puzzleFb"></div>
+  </div>
+
+  <!-- KHỐI 5: AI HỖ TRỢ -->
+  <div class="block ai">
+    <div class="ai-head">
+      <div class="ai-bunny">🐰</div>
+      <div>
+        <h2 class="block-title" style="color:#fff;margin:0">Hỏi Thỏ Toán</h2>
+        <p class="block-sub" style="margin:0">Em chưa phân biệt được hình nào? Hỏi Thỏ nhé!</p>
+      </div>
+    </div>
+    <div class="ai-input">
+      <input type="text" id="aiInput" placeholder="Nhập câu hỏi của em...">
+      <button class="ai-send" onclick="celebrate(event)">💬 Hỏi</button>
+    </div>
+    <div class="ai-chips">
+      <span class="ai-chip" onclick="setAi(this)">Hình vuông khác hình chữ nhật thế nào?</span>
+      <span class="ai-chip" onclick="setAi(this)">Hình tam giác có mấy cạnh?</span>
+      <span class="ai-chip" onclick="setAi(this)">Hình tròn có cạnh không?</span>
+    </div>
+  </div>
+
+  <!-- BẮT ĐẦU LUYỆN TẬP -->
+  <div class="block" style="text-align:center;background:linear-gradient(135deg,#FFF8E1,#FFFDF5)">
+    <h2 class="block-title" style="justify-content:center">🎯 Sẵn sàng luyện tập chưa?</h2>
+    <p class="block-sub">Làm 10 câu luyện tập để nhận <b>+30 XP</b> và huy hiệu <b>Bé Yêu Hình Học</b> nhé!</p>
+    <a href="lam-bai-tap.html?lesson=bai-7" class="btn btn-primary btn-block">Bắt đầu luyện tập →</a>
+  </div>
+
+  <!-- ĐIỀU HƯỚNG -->
+  <div class="nav-row">
+    <a href="bai-6.html" class="nav-btn">← Bài trước</a>
+    <a href="trang-lop.html" class="nav-btn">📚 Danh sách bài</a>
+    <a href="bai-8.html" class="nav-btn next">Bài tiếp theo →</a>
+  </div>
+
+</div>
+
+<script>
+  /* ===== Tiến độ bài: đánh dấu bước hoàn thành ===== */
+  const stepEls = document.querySelectorAll('#steps .step');
+  function markStep(idx) {
+    if (idx < 0 || idx >= stepEls.length) return;
+    if (stepEls[idx].classList.contains('done')) return;
+    stepEls[idx].classList.remove('current');
+    stepEls[idx].classList.add('done');
+    stepEls[idx].querySelector('.step-dot').textContent = '✓';
+    if (idx + 1 < stepEls.length && !stepEls[idx+1].classList.contains('done')) {
+      stepEls[idx+1].classList.add('current');
+    }
+  }
+
+  /* ===== KHÁM PHÁ ===== */
+  const shapeInfo = {
+    square:   { name: 'Hình vuông',   color: 'var(--blue)',   desc: '4 cạnh bằng nhau, 4 góc vuông.', ex: '🕐 đồng hồ treo tường &nbsp; 🖼️ khung tranh vuông' },
+    circle:   { name: 'Hình tròn',    color: 'var(--orange)', desc: 'không có cạnh, không có góc, tròn xoe.', ex: '🍽️ cái đĩa &nbsp; ⏰ mặt đồng hồ tròn' },
+    triangle: { name: 'Hình tam giác',color: 'var(--green)',  desc: 'có 3 cạnh và 3 góc.', ex: '🚸 biển báo giao thông &nbsp; 📐 thước ê-ke' },
+    rect:     { name: 'Hình chữ nhật',color: 'var(--purple)', desc: 'có 4 góc vuông, cạnh dài và cạnh ngắn.', ex: '📕 bìa sách &nbsp; 🏞️ bức tranh phong cảnh' }
+  };
+  document.querySelectorAll('#shapeCards .shape-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('#shapeCards .shape-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      const s = shapeInfo[card.dataset.shape];
+      document.getElementById('shapeDetail').innerHTML =
+        `<span><b style="font-size:20px;color:${s.color}">${s.name}</b> &mdash; ${s.desc}<br><span style="font-size:15px">Ví dụ: ${s.ex}</span></span>`;
+      markStep(0);
+    });
+  });
+
+  /* ===== PHÂN LOẠI KÉO-THẢ ===== */
+  const sortItems = [
+    { id:'i1', emoji:'🍽️', label:'Cái đĩa',     shape:'circle' },
+    { id:'i2', emoji:'🖼️', label:'Khung tranh', shape:'square' },
+    { id:'i3', emoji:'🚸', label:'Biển báo',    shape:'triangle' },
+    { id:'i4', emoji:'📕', label:'Bìa sách',    shape:'rect' },
+    { id:'i5', emoji:'⏰', label:'Đồng hồ tròn',shape:'circle' },
+    { id:'i6', emoji:'📐', label:'Ê-ke',        shape:'triangle' },
+    { id:'i7', emoji:'🪟', label:'Cửa sổ vuông',shape:'square' },
+    { id:'i8', emoji:'📺', label:'Màn hình TV', shape:'rect' }
+  ];
+  const sortPool = document.getElementById('sortPool');
+  let selectedItem = null;
+  let placedCount = 0;
+
+  function makeItem(it) {
+    const el = document.createElement('div');
+    el.className = 'sort-item';
+    el.draggable = true;
+    el.dataset.id = it.id;
+    el.dataset.shape = it.shape;
+    el.innerHTML = `<span class="si-emoji">${it.emoji}</span><span>${it.label}</span>`;
+    // Kéo-thả HTML5
+    el.addEventListener('dragstart', e => {
+      if (el.classList.contains('locked')) return;
+      el.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', it.id);
+      e.dataTransfer.setData('shape', it.shape);
+    });
+    el.addEventListener('dragend', () => el.classList.remove('dragging'));
+    // Chạm chọn (mobile / click)
+    el.addEventListener('click', () => {
+      if (el.classList.contains('locked')) return;
+      if (selectedItem === el) { el.classList.remove('selected'); selectedItem = null; return; }
+      document.querySelectorAll('.sort-item.selected').forEach(s => s.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedItem = el;
+    });
+    return el;
+  }
+  // Xáo trộn rồi đưa vào pool
+  sortItems.slice().sort(() => Math.random() - 0.5).forEach(it => sortPool.appendChild(makeItem(it)));
+
+  function tryPlace(itemEl, box) {
+    const correct = itemEl.dataset.shape === box.dataset.shape;
+    const fb = document.getElementById('sortFb');
+    if (correct) {
+      box.querySelector('.sb-drop').appendChild(itemEl);
+      itemEl.classList.remove('selected','dragging');
+      itemEl.classList.add('locked');
+      itemEl.draggable = false;
+      selectedItem = null;
+      placedCount++;
+      fb.className = 'feedback ok show';
+      fb.innerHTML = `👍 Đúng rồi! Đã xếp đúng <b>${placedCount}/${sortItems.length}</b> đồ vật.`;
+      celebrate();
+      if (placedCount === sortItems.length) {
+        fb.innerHTML = '🎉 Tuyệt vời! Em đã phân loại đúng tất cả đồ vật! <b>+10 XP</b>';
+        markStep(1);
+      }
+    } else {
+      itemEl.classList.remove('selected');
+      selectedItem = null;
+      fb.className = 'feedback no show';
+      fb.textContent = '💡 Chưa đúng hộp rồi. Em nhìn kỹ hình của đồ vật và thử lại nhé!';
+    }
+  }
+
+  document.querySelectorAll('.sort-box').forEach(box => {
+    box.addEventListener('dragover', e => { e.preventDefault(); box.classList.add('over'); });
+    box.addEventListener('dragleave', () => box.classList.remove('over'));
+    box.addEventListener('drop', e => {
+      e.preventDefault();
+      box.classList.remove('over');
+      const id = e.dataTransfer.getData('text/plain');
+      const itemEl = document.querySelector(`.sort-item[data-id="${id}"]`);
+      if (itemEl && !itemEl.classList.contains('locked')) tryPlace(itemEl, box);
+    });
+    // Chạm chọn rồi bấm hộp
+    box.addEventListener('click', () => {
+      if (selectedItem) tryPlace(selectedItem, box);
+    });
+  });
+
+  /* ===== ĐẾM HÌNH (vẽ bức tranh bằng CSS) ===== */
+  const countPic = document.getElementById('countPic');
+  // 3 tròn, 2 vuông, 4 tam giác, 2 chữ nhật
+  const pics = [
+    {cls:'circle',   l:'6%',  t:'12%'}, {cls:'circle', l:'40%', t:'58%'}, {cls:'circle', l:'78%', t:'15%'},
+    {cls:'square',   l:'24%', t:'62%'}, {cls:'square', l:'70%', t:'62%'},
+    {cls:'triangle', l:'18%', t:'10%'}, {cls:'triangle', l:'52%', t:'14%'}, {cls:'triangle', l:'5%', t:'58%'}, {cls:'triangle', l:'88%', t:'58%'},
+    {cls:'rect',     l:'40%', t:'8%'},  {cls:'rect',   l:'55%', t:'66%'}
+  ];
+  pics.forEach(p => {
+    const d = document.createElement('div');
+    d.className = 'cp';
+    d.style.left = p.l; d.style.top = p.t;
+    let inner = '';
+    if (p.cls==='circle')   inner = '<div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--yellow))"></div>';
+    if (p.cls==='square')   inner = '<div style="width:48px;height:48px;border-radius:6px;background:linear-gradient(135deg,var(--blue),#6FA8FF)"></div>';
+    if (p.cls==='triangle') inner = '<div style="width:0;height:0;border-left:26px solid transparent;border-right:26px solid transparent;border-bottom:46px solid var(--green)"></div>';
+    if (p.cls==='rect')     inner = '<div style="width:70px;height:40px;border-radius:6px;background:linear-gradient(135deg,var(--purple),var(--pink))"></div>';
+    d.innerHTML = inner;
+    countPic.appendChild(d);
+  });
+
+  function checkCount(e) {
+    const inputs = document.querySelectorAll('.count-q input');
+    let allOk = true, answered = 0;
+    inputs.forEach(inp => {
+      inp.classList.remove('ok','no');
+      if (inp.value === '') { allOk = false; return; }
+      answered++;
+      if (+inp.value === +inp.dataset.ans) { inp.classList.add('ok'); }
+      else { inp.classList.add('no'); allOk = false; }
+    });
+    const fb = document.getElementById('countFb');
+    if (allOk) {
+      fb.className = 'feedback ok show';
+      fb.innerHTML = '🎉 Chính xác! Em đếm hình rất giỏi! <b>+10 XP</b>';
+      celebrate(e);
+      markStep(2);
+    } else {
+      fb.className = 'feedback no show';
+      fb.textContent = answered < inputs.length
+        ? '💡 Em hãy điền số cho tất cả các loại hình rồi kiểm tra nhé!'
+        : '💡 Một vài ô chưa đúng (ô đỏ). Em đếm lại từng loại hình trong tranh nhé!';
+    }
+  }
+
+  /* ===== MẢNH GHÉP CÒN THIẾU ===== */
+  const puzzleCorrect = 'B'; // chỗ trống là một ô vuông -> hình vuông nhỏ
+  let puzzleDone = false;
+  document.querySelectorAll('#puzzleOpts .opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      if (puzzleDone) return;
+      const fb = document.getElementById('puzzleFb');
+      document.querySelectorAll('#puzzleOpts .opt').forEach(o => o.classList.remove('wrong'));
+      if (opt.dataset.val === puzzleCorrect) {
+        opt.classList.add('correct');
+        fb.className = 'feedback ok show';
+        fb.innerHTML = '🎉 Chính xác! Mảnh <b>B</b> (hình vuông) vừa khít chỗ trống! <b>+10 XP</b>';
+        puzzleDone = true;
+        // điền ô trống
+        const hole = document.querySelector('#puzzleHole div:last-child');
+        hole.style.border = 'none';
+        hole.style.background = 'linear-gradient(135deg,var(--blue),#6FA8FF)';
+        hole.textContent = '';
+        celebrate();
+        markStep(3);
+      } else {
+        opt.classList.add('wrong');
+        fb.className = 'feedback no show';
+        fb.textContent = '💡 Chưa đúng rồi. Chỗ trống là một ô vuông, em chọn mảnh có hình vuông nhé!';
+      }
+    });
+  });
+
+  /* ===== AI chip ===== */
+  function setAi(el) { const i = document.getElementById('aiInput'); i.value = el.textContent; i.focus(); }
+
+  /* ===== Confetti ===== */
+  function celebrate(e) {
+    if (e) e.preventDefault();
+    const colors = ['#4F8CFF','#FFD93D','#6BCB77','#FF9F43','#FF6B9D','#9B72FF'];
+    const x = e && e.clientX ? e.clientX : window.innerWidth/2;
+    const y = e && e.clientY ? e.clientY : 200;
+    for (let i = 0; i < 26; i++) {
+      const c = document.createElement('div'); c.className = 'confetti';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.left = x+'px'; c.style.top = y+'px';
+      document.body.appendChild(c);
+      const a = Math.random()*Math.PI*2, v = 100+Math.random()*200;
+      c.animate([{transform:'translate(0,0)',opacity:1},{transform:`translate(${Math.cos(a)*v}px,${Math.sin(a)*v+300}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:1400,easing:'cubic-bezier(.25,.46,.45,.94)'}).onfinish=()=>c.remove();
+    }
+  }
+</script>
+<!-- Chặn đăng nhập + đồng bộ tên/avatar người học (Supabase) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+  if (window.TVKN) { window.tvknLogout = function(){ TVKN.signOut(); }; TVKN.guardPage(); }
+</script>
+</body>
+</html>

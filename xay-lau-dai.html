@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏰 Xây lâu đài Toán học - TOÁN VUI KẾT NỐI</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4F8CFF;
+    --yellow: #FFD93D;
+    --green: #6BCB77;
+    --orange: #FF9F43;
+    --pink: #FF6B9D;
+    --purple: #9B72FF;
+    --white: #FFFFFF;
+    --bg-soft: #F4F8FF;
+    --text-dark: #2D3748;
+    --text-soft: #6B7280;
+    --shadow: 0 8px 24px rgba(79, 140, 255, 0.15);
+    --shadow-lg: 0 16px 40px rgba(79, 140, 255, 0.22);
+    --theme: var(--orange);
+    --theme-soft: #FFE9CF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Fredoka', 'Baloo 2', system-ui, sans-serif;
+    background: var(--bg-soft);
+    color: var(--text-dark);
+    overflow-x: hidden;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  a { text-decoration: none; color: inherit; }
+
+  /* ============== HEADER ============== */
+  .header {
+    position: sticky; top: 0; z-index: 100; height: 68px;
+    background: var(--white);
+    box-shadow: 0 4px 20px rgba(79, 140, 255, 0.08);
+    display: flex; align-items: center; padding: 0 24px; gap: 18px;
+  }
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 16px; border-radius: 12px;
+    background: var(--bg-soft); font-weight: 700; font-size: 14px;
+    color: var(--text-dark); transition: all .2s;
+  }
+  .back-btn:hover { background: var(--theme); color: var(--white); transform: translateX(-2px); }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--orange), var(--pink));
+    border-radius: 13px; display: flex; align-items: center; justify-content: center;
+    font-size: 22px; box-shadow: 0 6px 16px rgba(255, 159, 67, 0.35);
+  }
+  .logo-name {
+    font-weight: 800; font-size: 16px;
+    background: linear-gradient(90deg, var(--orange), var(--pink));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .header-right { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+  .xp-pill {
+    display: flex; align-items: center; gap: 6px; padding: 8px 13px;
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    color: var(--white); border-radius: 13px; font-weight: 700; font-size: 14px;
+    box-shadow: 0 4px 12px rgba(255, 159, 67, 0.35);
+  }
+  .avatar {
+    width: 42px; height: 42px; border-radius: 13px;
+    background: linear-gradient(135deg, var(--green), var(--blue));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 21px; border: 3px solid var(--white);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12); cursor: pointer;
+  }
+
+  /* ============== STAGE ============== */
+  .stage { max-width: 760px; margin: 0 auto; padding: 28px 20px 60px; }
+  .screen { display: none; animation: fadeUp .45s ease; }
+  .screen.active { display: block; }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(18px);} to {opacity:1; transform:none;} }
+
+  .card {
+    background: var(--white); border-radius: 30px;
+    padding: 38px 34px; box-shadow: var(--shadow); text-align: center;
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 14px 30px; border-radius: 16px;
+    font-family: inherit; font-weight: 700; font-size: 16px;
+    border: none; cursor: pointer; transition: all .25s cubic-bezier(.34,1.56,.64,1);
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--orange), var(--pink));
+    color: var(--white); box-shadow: 0 8px 20px rgba(255, 159, 67, 0.45);
+  }
+  .btn-primary:hover { transform: translateY(-4px) scale(1.03); }
+  .btn-ghost { background: var(--bg-soft); color: var(--text-dark); box-shadow: 0 6px 16px rgba(0,0,0,0.06); }
+  .btn-ghost:hover { transform: translateY(-4px); }
+
+  /* ============== INTRO ============== */
+  .intro-mascot {
+    width: 150px; height: 150px; margin: 0 auto 18px;
+    background: linear-gradient(135deg, var(--theme-soft), #FFF6EC);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 90px; box-shadow: 0 16px 40px rgba(255,159,67,0.3);
+    animation: bounce 3s ease-in-out infinite;
+  }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+  .intro-tag {
+    display: inline-block; padding: 6px 16px; background: var(--theme-soft);
+    color: #C9701B; border-radius: 999px; font-weight: 700; font-size: 13px; margin-bottom: 14px;
+  }
+  .intro h1 {
+    font-family: 'Baloo 2', sans-serif; font-size: clamp(26px, 5vw, 38px);
+    font-weight: 800; margin-bottom: 12px;
+  }
+  .intro p { color: var(--text-soft); font-size: 17px; max-width: 460px; margin: 0 auto 14px; }
+  .xp-reward {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    color: var(--white); padding: 10px 22px; border-radius: 999px;
+    font-weight: 800; font-size: 16px; margin: 6px 0 26px;
+    box-shadow: 0 6px 16px rgba(255,159,67,0.4);
+  }
+
+  /* ============== PLAY ============== */
+  .play-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
+  }
+  .play-title { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 20px; }
+  .play-stats { display: flex; gap: 10px; }
+  .chip {
+    background: var(--white); border-radius: 12px; padding: 7px 14px;
+    font-weight: 700; font-size: 14px; box-shadow: var(--shadow);
+  }
+  .chip.good { color: var(--green); }
+
+  /* Castle scene */
+  .castle-scene {
+    background: linear-gradient(180deg, #BFE3FF 0%, #DFF4FF 55%, #F4E3C0 55%, #E8D29C 100%);
+    border-radius: 24px; height: 250px; position: relative;
+    overflow: hidden; box-shadow: var(--shadow); margin-bottom: 8px;
+  }
+  .sun { position: absolute; top: 18px; right: 26px; font-size: 40px; animation: bounce 4s ease-in-out infinite; }
+  .cloud { position: absolute; top: 30px; left: 24px; font-size: 30px; opacity: .9; }
+  .castle {
+    position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%);
+    width: 240px; height: 180px;
+  }
+  .piece {
+    position: absolute; opacity: 0; transform: translateY(20px) scale(.6);
+    transition: opacity .5s ease, transform .55s cubic-bezier(.34,1.56,.64,1);
+  }
+  .piece.show { opacity: 1; transform: translateY(0) scale(1); }
+
+  /* walls */
+  .wall {
+    bottom: 0; left: 40px; width: 160px; height: 90px;
+    background: linear-gradient(180deg, #F0C27B, #D99A4E);
+    border-radius: 6px 6px 0 0;
+    box-shadow: inset 0 -10px 0 rgba(0,0,0,.06);
+  }
+  .wall::before, .wall::after {
+    content:''; position:absolute; top:-14px; width: 22px; height: 16px;
+    background: #E0A95C;
+  }
+  .wall::before { left: 8px; box-shadow: 40px 0 #E0A95C, 80px 0 #E0A95C, 120px 0 #E0A95C; }
+  .wall::after { right: 8px; }
+  /* door */
+  .door {
+    bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 48px; height: 60px;
+    background: linear-gradient(180deg, #8B5A2B, #6B4220);
+    border-radius: 24px 24px 0 0;
+    box-shadow: inset 0 0 0 4px rgba(255,255,255,.15);
+  }
+  .door.show { transform: translateX(-50%) translateY(0) scale(1); }
+  .door .knob { position:absolute; right:9px; top:28px; width:7px; height:7px; background: var(--yellow); border-radius:50%; }
+  /* towers */
+  .tower { bottom: 0; width: 46px; height: 150px; }
+  .tower .body { position:absolute; bottom:0; width:46px; height:130px; background: linear-gradient(180deg, #F0C27B, #CE8E45); border-radius:4px; }
+  .tower .roof { position:absolute; top:0; left:50%; transform:translateX(-50%); width:0;height:0; border-left:28px solid transparent; border-right:28px solid transparent; border-bottom:34px solid var(--pink); }
+  .tower-l { left: 8px; }
+  .tower-r { right: 8px; }
+  /* flag */
+  .flag { top: -4px; left: 50%; transform: translateX(-50%); font-size: 40px; }
+  .flag.show { transform: translateX(-50%) translateY(0) scale(1); }
+  .ground-deco { position:absolute; bottom:4px; left:14px; font-size:22px; }
+  .ground-deco.r { left:auto; right:14px; }
+
+  .empty-hint {
+    position:absolute; bottom: 60px; left:0; right:0; text-align:center;
+    color:#9a7b4a; font-weight:700; font-size:15px;
+  }
+
+  .build-progress { display:flex; justify-content:center; gap:10px; margin: 10px 0 20px; flex-wrap:wrap; }
+  .build-step {
+    display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:999px;
+    background: var(--white); font-size:13px; font-weight:700; color: var(--text-soft);
+    box-shadow: 0 3px 8px rgba(0,0,0,.06); transition: all .3s;
+  }
+  .build-step.done { background: var(--green); color: var(--white); }
+
+  /* Question */
+  .qbox {
+    background: var(--white); border-radius: 24px; padding: 24px 22px;
+    box-shadow: var(--shadow);
+  }
+  .qcount { font-size: 13px; color: var(--text-soft); font-weight: 700; margin-bottom: 8px; }
+  .question {
+    font-family: 'Baloo 2', sans-serif; font-size: clamp(30px, 7vw, 44px);
+    font-weight: 800; text-align: center; margin-bottom: 18px;
+  }
+  .options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .opt {
+    padding: 18px; border-radius: 16px; border: 3px solid var(--bg-soft);
+    background: var(--bg-soft); font-family: 'Baloo 2', sans-serif;
+    font-weight: 800; font-size: 26px; color: var(--text-dark);
+    cursor: pointer; transition: all .2s;
+  }
+  .opt:hover:not(:disabled) { border-color: var(--orange); transform: translateY(-3px); }
+  .opt:disabled { cursor: default; }
+  .opt.correct { background: var(--green); border-color: var(--green); color: var(--white); animation: pop .35s; }
+  .opt.wrong { background: var(--pink); border-color: var(--pink); color: var(--white); animation: shake .4s; }
+  @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.12)} 100%{transform:scale(1)} }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-7px)} 75%{transform:translateX(7px)} }
+  .feedback {
+    margin-top: 16px; min-height: 26px; font-weight: 700; font-size: 16px;
+  }
+  .feedback.ok { color: var(--green); }
+  .feedback.no { color: var(--pink); }
+
+  /* ============== RESULT ============== */
+  .result-castle { font-size: 100px; margin-bottom: 8px; animation: bounce 2.5s ease-in-out infinite; }
+  .result-stats { display:flex; justify-content:center; gap:14px; margin: 18px 0 26px; flex-wrap:wrap; }
+  .rstat {
+    background: var(--bg-soft); border-radius: 18px; padding: 16px 22px; min-width: 110px;
+  }
+  .rstat .num { font-family:'Baloo 2',sans-serif; font-size: 28px; font-weight: 800; }
+  .rstat .lab { font-size: 13px; color: var(--text-soft); }
+
+  /* ============== REWARD ============== */
+  .badge-big {
+    width: 160px; height: 160px; margin: 0 auto 18px;
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    border-radius: 50%; display:flex; align-items:center; justify-content:center;
+    font-size: 86px; box-shadow: 0 16px 40px rgba(255,159,67,.45);
+    animation: pop .6s, bounce 3s ease-in-out infinite .6s;
+  }
+  .reward-line {
+    display:inline-flex; align-items:center; gap:10px; margin: 8px 0;
+    background: var(--bg-soft); padding: 12px 22px; border-radius: 16px;
+    font-weight: 700; font-size: 16px;
+  }
+  .reward-buttons { display:flex; gap:14px; justify-content:center; margin-top: 26px; flex-wrap: wrap; }
+
+  /* ============== CONFETTI ============== */
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 9999; border-radius: 2px; }
+
+  @media (max-width: 560px) {
+    .header { padding: 0 14px; gap: 10px; }
+    .logo-name { display:none; }
+    .stage { padding: 18px 14px 50px; }
+    .card { padding: 28px 20px; }
+    .options { grid-template-columns: 1fr; }
+    .castle { transform: translateX(-50%) scale(.85); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="header">
+  <a href="tro-choi.html" class="back-btn">← Trung tâm trò chơi</a>
+  <a href="tro-choi.html" class="logo">
+    <div class="logo-icon">🏰</div>
+    <span class="logo-name">TOÁN VUI KẾT NỐI</span>
+  </a>
+  <div class="header-right">
+    <div class="xp-pill">🪙 <span id="xpPill">450 XP</span></div>
+    <div class="avatar" title="Bé học Toán">👧</div>
+  </div>
+</header>
+
+<div class="stage">
+
+  <!-- ===== SCREEN 1: INTRO ===== -->
+  <section class="screen active" id="screenIntro">
+    <div class="card intro">
+      <div class="intro-mascot">🏰</div>
+      <span class="intro-tag">🎮 Trò chơi Toán học</span>
+      <h1>🏰 Xây lâu đài Toán học</h1>
+      <p>Mỗi câu đúng xây thêm một phần lâu đài. Trả lời đúng để dựng nên lâu đài thật hoành tráng nhé!</p>
+      <div class="xp-reward">⭐ +80 XP</div>
+      <div>
+        <button class="btn btn-primary" onclick="startGame()">▶️ Bắt đầu</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 2: PLAY ===== -->
+  <section class="screen" id="screenPlay">
+    <div class="play-head">
+      <div class="play-title">🏰 Xây lâu đài</div>
+      <div class="play-stats">
+        <div class="chip">Câu <span id="qNow">1</span>/<span id="qTotal">6</span></div>
+        <div class="chip good">✅ <span id="scoreNow">0</span></div>
+      </div>
+    </div>
+
+    <div class="castle-scene">
+      <div class="sun">☀️</div>
+      <div class="cloud">☁️</div>
+      <div class="empty-hint" id="emptyHint">🟫 Nền đất trống — hãy trả lời đúng để xây lâu đài!</div>
+      <div class="castle">
+        <div class="piece wall" id="pWall"></div>
+        <div class="piece tower tower-l" id="pTowerL"><div class="body"></div><div class="roof"></div></div>
+        <div class="piece tower tower-r" id="pTowerR"><div class="body"></div><div class="roof"></div></div>
+        <div class="piece door" id="pDoor"><span class="knob"></span></div>
+        <div class="piece flag" id="pFlag">🚩</div>
+        <div class="ground-deco">🌳</div>
+        <div class="ground-deco r">🌳</div>
+      </div>
+    </div>
+
+    <div class="build-progress">
+      <div class="build-step" id="sWall">🧱 Tường</div>
+      <div class="build-step" id="sDoor">🚪 Cửa</div>
+      <div class="build-step" id="sTower">🗼 Tháp</div>
+      <div class="build-step" id="sFlag">🚩 Cờ</div>
+    </div>
+
+    <div class="qbox">
+      <div class="qcount" id="qLabel">Câu hỏi 1</div>
+      <div class="question" id="questionText">2 + 3 = ?</div>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 3: RESULT ===== -->
+  <section class="screen" id="screenResult">
+    <div class="card">
+      <div class="result-castle">🏰</div>
+      <h1 style="font-family:'Baloo 2',sans-serif;font-size:30px;margin-bottom:6px;">🎉 Lâu đài hoàn thành!</h1>
+      <p style="color:var(--text-soft);font-size:16px;">Tuyệt vời! Em đã xây xong lâu đài Toán học của mình.</p>
+      <div class="result-stats">
+        <div class="rstat"><div class="num" id="rScore">0/6</div><div class="lab">Câu đúng</div></div>
+        <div class="rstat"><div class="num" id="rXP">+80</div><div class="lab">Điểm XP</div></div>
+        <div class="rstat"><div class="num">🏰</div><div class="lab">Lâu đài</div></div>
+      </div>
+      <button class="btn btn-primary" onclick="goReward(event)">🎁 Nhận thưởng</button>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 4: REWARD ===== -->
+  <section class="screen" id="screenReward">
+    <div class="card">
+      <div class="badge-big">👑</div>
+      <h1 style="font-family:'Baloo 2',sans-serif;font-size:28px;margin-bottom:14px;">🎁 Phần thưởng của em</h1>
+      <div><span class="reward-line">⭐ +80 XP</span></div>
+      <div><span class="reward-line">👑 Huy hiệu: Kiến trúc sư nhí</span></div>
+      <div class="reward-buttons">
+        <button class="btn btn-primary" onclick="restartGame()">🔄 Chơi lại</button>
+        <a href="tro-choi.html" class="btn btn-ghost">← Về Trung tâm trò chơi</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // ====== STATE ======
+  var TOTAL = 6;
+  var questions = [];
+  var current = 0;
+  var score = 0;
+  var built = 0; // số phần lâu đài đã xây
+  var baseXP = 450;
+
+  // 4 phần lâu đài: tường -> cửa -> tháp -> cờ, ánh xạ theo mốc tiến độ
+  var pieces = [
+    { ids: ['pWall'], step: 'sWall', name: 'tường' },
+    { ids: ['pDoor'], step: 'sDoor', name: 'cửa' },
+    { ids: ['pTowerL','pTowerR'], step: 'sTower', name: 'tháp' },
+    { ids: ['pFlag'], step: 'sFlag', name: 'cờ' }
+  ];
+
+  function rint(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+  // Tạo bộ câu hỏi cộng/trừ trong phạm vi 20
+  function makeQuestions(){
+    var list = [];
+    for (var i=0;i<TOTAL;i++){
+      var op = Math.random() < 0.5 ? '+' : '-';
+      var a, b, ans, text;
+      if (op === '+'){
+        a = rint(1, 15); b = rint(1, 20 - a); ans = a + b;
+        text = a + ' + ' + b + ' = ?';
+      } else {
+        a = rint(2, 20); b = rint(1, a); ans = a - b;
+        text = a + ' − ' + b + ' = ?';
+      }
+      // tạo 3 đáp án sai gần đúng, không trùng
+      var opts = [ans];
+      var guard = 0;
+      while (opts.length < 4 && guard < 50){
+        guard++;
+        var d = ans + rint(-3, 3);
+        if (d >= 0 && opts.indexOf(d) === -1) opts.push(d);
+      }
+      // dự phòng nếu thiếu
+      var fill = 0;
+      while (opts.length < 4){ if (opts.indexOf(fill) === -1) opts.push(fill); fill++; }
+      // xáo trộn
+      for (var j=opts.length-1;j>0;j--){ var k=rint(0,j); var t=opts[j]; opts[j]=opts[k]; opts[k]=t; }
+      list.push({ text: text, answer: ans, options: opts });
+    }
+    return list;
+  }
+
+  function showScreen(id){
+    var screens = document.querySelectorAll('.screen');
+    for (var i=0;i<screens.length;i++) screens[i].classList.remove('active');
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function startGame(){
+    questions = makeQuestions();
+    current = 0; score = 0; built = 0;
+    // reset visuals
+    document.getElementById('emptyHint').style.display = 'block';
+    var allPieces = ['pWall','pDoor','pTowerL','pTowerR','pFlag'];
+    for (var i=0;i<allPieces.length;i++) document.getElementById(allPieces[i]).classList.remove('show');
+    var steps = ['sWall','sDoor','sTower','sFlag'];
+    for (var s=0;s<steps.length;s++) document.getElementById(steps[s]).classList.remove('done');
+    document.getElementById('scoreNow').textContent = '0';
+    document.getElementById('qTotal').textContent = TOTAL;
+    showScreen('screenPlay');
+    renderQuestion();
+  }
+
+  function renderQuestion(){
+    var q = questions[current];
+    document.getElementById('qNow').textContent = (current + 1);
+    document.getElementById('qLabel').textContent = 'Câu hỏi ' + (current + 1);
+    document.getElementById('questionText').textContent = q.text;
+    document.getElementById('feedback').textContent = '';
+    document.getElementById('feedback').className = 'feedback';
+    var box = document.getElementById('options');
+    box.innerHTML = '';
+    for (var i=0;i<q.options.length;i++){
+      (function(val){
+        var btn = document.createElement('button');
+        btn.className = 'opt';
+        btn.textContent = val;
+        btn.onclick = function(e){ answer(val, btn, e); };
+        box.appendChild(btn);
+      })(q.options[i]);
+    }
+  }
+
+  function buildNextPiece(){
+    // xây phần lâu đài tiếp theo theo thứ tự
+    if (built >= pieces.length) return;
+    document.getElementById('emptyHint').style.display = 'none';
+    var p = pieces[built];
+    for (var i=0;i<p.ids.length;i++) document.getElementById(p.ids[i]).classList.add('show');
+    document.getElementById(p.step).classList.add('done');
+    built++;
+  }
+
+  function answer(val, btn, e){
+    var q = questions[current];
+    var opts = document.querySelectorAll('#options .opt');
+    var fb = document.getElementById('feedback');
+
+    if (val === q.answer){
+      // đúng
+      for (var i=0;i<opts.length;i++) opts[i].disabled = true;
+      btn.classList.add('correct');
+      score++;
+      document.getElementById('scoreNow').textContent = score;
+      buildNextPiece();
+      var msg = built <= pieces.length ? ('Chính xác! Em vừa xây thêm ' + (pieces[built-1] ? pieces[built-1].name : 'một phần') + ' 🎉') : 'Chính xác! 🎉';
+      fb.textContent = '✅ ' + msg;
+      fb.className = 'feedback ok';
+      celebrate(e);
+      setTimeout(nextQuestion, 1100);
+    } else {
+      // sai - cho thử lại, không xây thêm
+      btn.classList.add('wrong');
+      btn.disabled = true;
+      fb.textContent = '🤔 Chưa đúng rồi, thử lại nhé!';
+      fb.className = 'feedback no';
+    }
+  }
+
+  function nextQuestion(){
+    current++;
+    if (current < TOTAL){
+      renderQuestion();
+    } else {
+      finishGame();
+    }
+  }
+
+  function finishGame(){
+    document.getElementById('rScore').textContent = score + '/' + TOTAL;
+    showScreen('screenResult');
+    if (window.TVKN && TVKN.configured) { TVKN.recordGameWin('Xây lâu đài Toán học', 80, 15).catch(function(){}); }
+  }
+
+  function goReward(e){
+    // cộng XP hiển thị
+    baseXP += 80;
+    document.getElementById('xpPill').textContent = baseXP + ' XP';
+    showScreen('screenReward');
+    celebrate(e);
+    // bắn thêm confetti giữa màn hình
+    setTimeout(function(){ celebrate(); }, 300);
+    setTimeout(function(){ celebrate(); }, 700);
+  }
+
+  function restartGame(){
+    startGame();
+  }
+
+  // ====== CONFETTI ======
+  function celebrate(e) {
+    if (e) e.preventDefault();
+    var colors = ['#4F8CFF', '#FFD93D', '#6BCB77', '#FF9F43', '#FF6B9D', '#9B72FF'];
+    var x = e ? e.clientX : window.innerWidth / 2;
+    var y = e ? e.clientY : window.innerHeight / 2;
+    for (var i = 0; i < 28; i++) {
+      var c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.left = x + 'px'; c.style.top = y + 'px';
+      document.body.appendChild(c);
+      var angle = Math.random() * Math.PI * 2;
+      var v = 100 + Math.random() * 200;
+      var vx = Math.cos(angle) * v, vy = Math.sin(angle) * v - 150;
+      (function(node, vx, vy){
+        node.animate([
+          { transform: 'translate(0,0) rotate(0)', opacity: 1 },
+          { transform: 'translate(' + vx + 'px, ' + (vy + 300) + 'px) rotate(' + (Math.random() * 720) + 'deg)', opacity: 0 }
+        ], { duration: 1400, easing: 'cubic-bezier(.25,.46,.45,.94)' }).onfinish = function(){ node.remove(); };
+      })(c, vx, vy);
+    }
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+</body>
+</html>
