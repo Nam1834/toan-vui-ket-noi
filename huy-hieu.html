@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Bộ sưu tập Huy hiệu - TOÁN VUI KẾT NỐI</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -404,9 +405,9 @@
   </a>
   <span class="header-center">🏅 BỘ SƯU TẬP HUY HIỆU</span>
   <div class="header-right">
-    <div class="xp-pill">⭐ <span>4250 XP</span></div>
-    <div class="streak-pill">🔥 <span>12 ngày</span></div>
-    <div class="avatar"><span class="ava-face">👧</span><span class="ava-name">Minh Anh</span></div>
+    <div class="xp-pill">⭐ <span><span data-bind="xp">0</span> XP</span></div>
+    <div class="streak-pill">🔥 <span><span data-bind="streak">0</span> ngày</span></div>
+    <div class="avatar"><span class="ava-face" data-bind="avatar">👧</span><span class="ava-name" data-bind="name">Học sinh</span></div>
   </div>
 </header>
 
@@ -426,37 +427,18 @@
   <!-- ============ THỐNG KÊ ============ -->
   <div class="progress-section">
     <div class="stat-grid">
-      <div class="stat-card"><div class="stat-icon">🏅</div><div class="stat-num">15/50</div><div class="stat-label">Đã mở khóa</div></div>
-      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num">1250</div><div class="stat-label">Điểm huy hiệu</div></div>
-      <div class="stat-card"><div class="stat-icon">👑</div><div class="stat-num">2</div><div class="stat-label">Huy hiệu hiếm</div></div>
-      <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-num">3</div><div class="stat-label">Gần hoàn thành</div></div>
+      <div class="stat-card"><div class="stat-icon">🏅</div><div class="stat-num" id="statUnlocked">0/0</div><div class="stat-label">Đã mở khóa</div></div>
+      <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-num" id="statPercent">0%</div><div class="stat-label">Tiến độ sưu tập</div></div>
+      <div class="stat-card"><div class="stat-icon">🔒</div><div class="stat-num" id="statLocked">0</div><div class="stat-label">Chưa đạt</div></div>
+      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num" data-bind="xp">0</div><div class="stat-label">Tổng XP</div></div>
     </div>
   </div>
 
   <!-- ============ HUY HIỆU NỔI BẬT ============ -->
-  <section class="block">
+  <section class="block" id="featuredSection" style="display:none;">
     <h2 class="section-title">🌟 Huy hiệu nổi bật nhất</h2>
     <p class="section-sub">Những thành tích đáng tự hào nhất của em!</p>
-    <div class="featured-grid">
-      <div class="featured-card f1" onclick="celebrate(event)">
-        <div class="featured-medal">👑</div>
-        <div class="featured-name">Nhà Toán Học Nhí</div>
-        <div class="featured-desc">Hoàn thành 100 bài học.</div>
-        <span class="featured-date">📅 Đạt ngày 23/06/2026</span>
-      </div>
-      <div class="featured-card f2" onclick="celebrate(event)">
-        <div class="featured-medal">🔥</div>
-        <div class="featured-name">Chăm Chỉ 30 Ngày</div>
-        <div class="featured-desc">Học liên tục 30 ngày.</div>
-        <span class="featured-date">📅 Đạt ngày 20/06/2026</span>
-      </div>
-      <div class="featured-card f3" onclick="celebrate(event)">
-        <div class="featured-medal">🏆</div>
-        <div class="featured-name">Nhà Vô Địch Tuần</div>
-        <div class="featured-desc">Top 1 XP trong tuần.</div>
-        <span class="featured-date">📅 Đạt ngày 22/06/2026</span>
-      </div>
-    </div>
+    <div class="featured-grid" id="featuredGrid"></div>
   </section>
 
   <!-- ============ BỘ SƯU TẬP HUY HIỆU ============ -->
@@ -475,281 +457,27 @@
       <button class="filter-btn active" data-group="all">Tất cả</button>
       <button class="filter-btn" data-group="learning">📚 Học tập</button>
       <button class="filter-btn" data-group="challenge">🔥 Thử thách</button>
+      <button class="filter-btn" data-group="xp">⭐ XP</button>
       <button class="filter-btn" data-group="game">🎮 Trò chơi</button>
-      <button class="filter-btn" data-group="rank">🏆 Bảng xếp hạng</button>
-      <button class="filter-btn" data-group="ai">🤖 AI Gia sư</button>
-      <button class="filter-btn" data-group="special">💎 Đặc biệt</button>
     </div>
 
-    <div class="badge-grid" id="badgeGrid">
-
-      <!-- ===== HỌC TẬP ===== -->
-      <div class="badge-card unlocked common" data-status="unlocked" data-group="learning" onclick="celebrate(event)">
-        <span class="rarity-tag">Common</span>
-        <div class="badge-medal">📚</div>
-        <div class="badge-name">Bé Đếm Số</div>
-        <div class="badge-desc">Hoàn thành bài "Làm quen với các số đến 10".</div>
-        <span class="badge-date">✓ 23/06/2026</span>
-      </div>
-
-      <div class="badge-card locked rare" data-status="locked" data-group="learning">
-        <span class="rarity-tag">Rare</span>
-        <div class="badge-medal">🔒</div>
-        <div class="badge-name">Vua Cộng Trừ</div>
-        <div class="badge-desc">Hoàn thành 100 câu cộng trừ.</div>
-        <div class="badge-progress"><div style="width:65%"></div></div>
-        <div class="badge-prog-text">65/100</div>
-      </div>
-
-      <div class="badge-card unlocked rare" data-status="unlocked" data-group="learning" onclick="celebrate(event)">
-        <span class="rarity-tag">Rare</span>
-        <div class="badge-medal">➕</div>
-        <div class="badge-name">Chuyên Gia Cộng Trừ</div>
-        <div class="badge-desc">Thành thạo phép cộng trừ trong phạm vi 100.</div>
-        <span class="badge-date">✓ 18/06/2026</span>
-      </div>
-
-      <div class="badge-card locked epic" data-status="locked" data-group="learning">
-        <span class="rarity-tag">Epic</span>
-        <div class="badge-medal">🔒</div>
-        <div class="badge-name">Nhà Hình Học Nhí</div>
-        <div class="badge-desc">Hoàn thành 50 câu hình học.</div>
-        <div class="badge-progress"><div style="width:40%"></div></div>
-        <div class="badge-prog-text">20/50</div>
-      </div>
-
-      <div class="badge-card locked epic" data-status="locked" data-group="learning">
-        <span class="rarity-tag">Epic</span>
-        <div class="badge-medal">🔒</div>
-        <div class="badge-name">Cao Thủ Phân Số</div>
-        <div class="badge-desc">Hoàn thành tất cả bài phân số.</div>
-        <div class="badge-progress"><div style="width:25%"></div></div>
-        <div class="badge-prog-text">3/12</div>
-      </div>
-
-      <!-- ===== THỬ THÁCH ===== -->
-      <div class="badge-card unlocked common" data-status="unlocked" data-group="challenge" onclick="celebrate(event)">
-        <span class="rarity-tag">Common</span>
-        <div class="badge-medal">🔥</div>
-        <div class="badge-name">Chăm Chỉ 7 Ngày</div>
-        <div class="badge-desc">Học liên tục 7 ngày.</div>
-        <span class="badge-date">✓ 12/06/2026</span>
-      </div>
-
-      <div class="badge-card locked rare" data-status="locked" data-group="challenge">
-        <span class="rarity-tag">Rare</span>
-        <div class="badge-medal">🔒</div>
-        <div class="badge-name">Chăm Chỉ 14 Ngày</div>
-        <div class="badge-desc">Học liên tục 14 ngày.</div>
-        <div class="badge-progress"><div style="width:85%"></div></div>
-        <div class="badge-prog-text">12/14</div>
-      </div>
-
-      <div class="badge-card unlocked epic" data-status="unlocked" data-group="challenge" onclick="celebrate(event)">
-        <span class="rarity-tag">Epic</span>
-        <div class="badge-medal">🔥</div>
-        <div class="badge-name">Chăm Chỉ 30 Ngày</div>
-        <div class="badge-desc">Học liên tục 30 ngày.</div>
-        <span class="badge-date">✓ 20/06/2026</span>
-      </div>
-
-      <div class="badge-card locked legendary" data-status="locked" data-group="challenge">
-        <span class="rarity-tag">Legendary</span>
-        <div class="badge-medal">🔒</div>
-        <div class="badge-name">Huyền Thoại 100 Ngày</div>
-        <div class="badge-desc">Học liên tục 100 ngày.</div>
-        <div class="badge-progress"><div style="width:30%"></div></div>
-        <div class="badge-prog-text">30/100</div>
-      </div>
-
-      <!-- ===== TRÒ CHƠI ===== -->
-      <div class="badge-card unlocked rare" data-status="unlocked" data-group="game" onclick="celebrate(event)">
-        <span class="rarity-tag">Rare</span>
-        <div class="badge-medal">🏎️</div>
-        <div class="badge-name">Tay Đua Siêu Tốc</div>
-        <div class="badge-desc">Chơi Đua xe Toán học 20 lần.</div>
-        <span class="badge-date">✓ 15/06/2026</span>
-      </div>
-
-      <div class="badge-card unlocked epic" data-status="unlocked" data-group="game" onclick="celebrate(event)">
-        <span class="rarity-tag">Epic</span>
-        <div class="badge-medal">🎯</div>
-        <div class="badge-name">Xạ Thủ Toán Học</div>
-        <div class="badge-desc">Bắn trúng 500 mục tiêu.</div>
-        <span class="badge-date">✓ 17/06/2026</span>
-      </div>
-
-      <div class="badge-card locked rare" data-status="locked" data-group="game">
-        <span class="rarity-tag">Rare</span>
-        <div class="badge-medal">🔒</div>
-        <div class="badge-name">Thợ Săn Kho Báu</div>
-        <div class="badge-desc">Mở 100 rương kho báu.</div>
-        <div class="badge-progress"><div style="width:58%"></div></div>
-        <div class="badge-prog-text">58/100</div>
-      </div>
-
-      <div class="badge-card unlocked epic" data-status="unlocked" data-group="game" onclick="celebrate(event)">
-        <span class="rarity-tag">Epic</span>
-        <div class="badge-medal">🏰</div>
-        <div class="badge-name">Kiến Trúc Sư Nhí</div>
-        <div class="badge-desc">Xây 20 lâu đài toán học.</div>
-        <span class="badge-date">✓ 19/06/2026</span>
-      </div>
-
-      <!-- ===== AI GIA SƯ ===== -->
-      <div class="badge-card unlocked common" data-status="unlocked" data-group="ai" onclick="celebrate(event)">
-        <span class="rarity-tag">Common</span>
-        <div class="badge-medal">🤖</div>
-        <div class="badge-name">Bạn Của Thỏ Toán</div>
-        <div class="badge-desc">Đặt 10 câu hỏi cho AI Gia sư.</div>
-        <span class="badge-date">✓ 14/06/2026</span>
-      </div>
-
-      <div class="badge-card locked rare" data-status="locked" data-group="ai">
-        <span class="rarity-tag">Rare</span>
-        <div class="badge-medal">🔒</div>
-        <div class="badge-name">Nhà Tư Duy</div>
-        <div class="badge-desc">Tự giải thành công 20 bài toán.</div>
-        <div class="badge-progress"><div style="width:45%"></div></div>
-        <div class="badge-prog-text">9/20</div>
-      </div>
-
-      <div class="badge-card locked epic" data-status="locked" data-group="ai">
-        <span class="rarity-tag">Epic</span>
-        <div class="badge-medal">🔒</div>
-        <div class="badge-name">Ham Học Hỏi</div>
-        <div class="badge-desc">Đặt 100 câu hỏi cho AI Gia sư.</div>
-        <div class="badge-progress"><div style="width:32%"></div></div>
-        <div class="badge-prog-text">32/100</div>
-      </div>
-
-      <!-- ===== BẢNG XẾP HẠNG ===== -->
-      <div class="badge-card unlocked common" data-status="unlocked" data-group="rank" onclick="celebrate(event)">
-        <span class="rarity-tag">Common</span>
-        <div class="badge-medal">🥉</div>
-        <div class="badge-name">Top 100</div>
-        <div class="badge-desc">Lọt vào Top 100 bảng xếp hạng.</div>
-        <span class="badge-date">✓ 10/06/2026</span>
-      </div>
-
-      <div class="badge-card unlocked rare" data-status="unlocked" data-group="rank" onclick="celebrate(event)">
-        <span class="rarity-tag">Rare</span>
-        <div class="badge-medal">🥈</div>
-        <div class="badge-name">Top 10</div>
-        <div class="badge-desc">Lọt vào Top 10 bảng xếp hạng.</div>
-        <span class="badge-date">✓ 16/06/2026</span>
-      </div>
-
-      <div class="badge-card unlocked legendary" data-status="unlocked" data-group="rank" onclick="celebrate(event)">
-        <span class="rarity-tag">Legendary</span>
-        <div class="badge-medal">🥇</div>
-        <div class="badge-name">Top 1 Tuần</div>
-        <div class="badge-desc">Đứng đầu bảng xếp hạng tuần.</div>
-        <span class="badge-date">✓ 22/06/2026</span>
-      </div>
-
-      <div class="badge-card locked legendary" data-status="locked" data-group="rank">
-        <span class="rarity-tag">Legendary</span>
-        <div class="badge-medal">🔒</div>
-        <div class="badge-name">Nhà Vô Địch Tháng</div>
-        <div class="badge-desc">Đứng đầu bảng xếp hạng tháng.</div>
-        <div class="badge-progress"><div style="width:70%"></div></div>
-        <div class="badge-prog-text">21/30 ngày</div>
-      </div>
-
-      <!-- ===== ĐẶC BIỆT ===== -->
-      <div class="badge-card unlocked epic" data-status="unlocked" data-group="special" onclick="celebrate(event)">
-        <span class="rarity-tag">Epic</span>
-        <div class="badge-medal">👑</div>
-        <div class="badge-name">Nhà Toán Học Nhí</div>
-        <div class="badge-desc">Hoàn thành 100 bài học.</div>
-        <span class="badge-date">✓ 23/06/2026</span>
-      </div>
-
-      <div class="badge-card locked legendary" data-status="locked" data-group="special">
-        <span class="rarity-tag">Legendary</span>
-        <div class="badge-medal">🔒</div>
-        <div class="badge-name">Huyền Thoại Toán Học</div>
-        <div class="badge-desc">Hoàn thành toàn bộ chương trình.</div>
-        <div class="badge-progress"><div style="width:15%"></div></div>
-        <div class="badge-prog-text">Bí mật</div>
-      </div>
-
-      <div class="badge-card unlocked rare" data-status="unlocked" data-group="special" onclick="celebrate(event)">
-        <span class="rarity-tag">Rare</span>
-        <div class="badge-medal">🎉</div>
-        <div class="badge-name">Người Mở Đầu</div>
-        <div class="badge-desc">Đăng nhập trong ngày ra mắt.</div>
-        <span class="badge-date">✓ 01/06/2026</span>
-      </div>
-
-    </div>
+    <div class="badge-grid" id="badgeGrid"></div>
     <p class="section-sub" id="emptyMsg" style="display:none; text-align:center; margin-top:24px;">😅 Không có huy hiệu nào phù hợp bộ lọc này.</p>
   </section>
 
   <!-- ============ SẮP MỞ KHÓA ============ -->
-  <section class="block">
-    <h2 class="section-title">🎯 Sắp đạt được</h2>
-    <p class="section-sub">Cố lên! Em chỉ còn một chút nữa là mở khóa được những huy hiệu này.</p>
-    <div class="soon-grid">
-      <div class="soon-card">
-        <div class="soon-medal">🏅</div>
-        <div class="soon-body">
-          <div class="soon-name">Vua Cộng Trừ</div>
-          <div class="soon-note">⚡ Còn 5 câu nữa!</div>
-          <div class="soon-bar"><div style="width:95%"></div></div>
-          <div class="soon-prog">95/100 câu cộng trừ</div>
-        </div>
-      </div>
-      <div class="soon-card">
-        <div class="soon-medal">🔥</div>
-        <div class="soon-body">
-          <div class="soon-name">Chăm Chỉ 14 Ngày</div>
-          <div class="soon-note">⚡ Còn 2 ngày nữa!</div>
-          <div class="soon-bar"><div style="width:85%"></div></div>
-          <div class="soon-prog">12/14 ngày liên tục</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ HUY HIỆU HIẾM ============ -->
-  <section class="block">
-    <h2 class="section-title">💎 Huy hiệu hiếm</h2>
-    <p class="section-sub">Chỉ rất ít bạn nhỏ đạt được những huy hiệu siêu hiếm này!</p>
-    <div class="rare-grid">
-      <div class="rare-card r1" onclick="celebrate(event)">
-        <div class="rare-medal">👑</div>
-        <div class="rare-body">
-          <div class="rare-name">Nhà Vô Địch Tháng</div>
-          <div class="rare-desc">Đứng đầu bảng xếp hạng cả tháng.</div>
-          <span class="rare-rate">💎 Chỉ 0.5% bạn đạt được</span>
-        </div>
-      </div>
-      <div class="rare-card r2" onclick="celebrate(event)">
-        <div class="rare-medal">👑</div>
-        <div class="rare-body">
-          <div class="rare-name">Huyền Thoại Toán Học</div>
-          <div class="rare-desc">Hoàn thành toàn bộ chương trình học.</div>
-          <span class="rare-rate">💎 Chỉ 0.1% bạn đạt được</span>
-        </div>
-      </div>
-    </div>
+  <section class="block" id="soonSection" style="display:none;">
+    <h2 class="section-title">🎯 Huy hiệu cần chinh phục</h2>
+    <p class="section-sub">Cố lên! Hãy mở khóa những huy hiệu em chưa đạt được nhé.</p>
+    <div class="soon-grid" id="soonGrid"></div>
   </section>
 
   <!-- ============ TỦ TRƯNG BÀY ============ -->
-  <section class="block">
+  <section class="block" id="caseSection" style="display:none;">
     <h2 class="section-title">🏆 Tủ thành tích của em</h2>
-    <p class="section-sub">6 huy hiệu đẹp nhất được trưng bày trong tủ kính danh dự!</p>
+    <p class="section-sub">Những huy hiệu em đã sưu tầm được, trưng bày trong tủ kính danh dự!</p>
     <div class="case">
-      <div class="case-shelf">
-        <div class="case-slot" onclick="celebrate(event)"><div class="case-medal">👑</div><div class="case-name">Nhà Toán Học Nhí</div></div>
-        <div class="case-slot" onclick="celebrate(event)"><div class="case-medal">🔥</div><div class="case-name">Chăm Chỉ 30 Ngày</div></div>
-        <div class="case-slot" onclick="celebrate(event)"><div class="case-medal">🏆</div><div class="case-name">Nhà Vô Địch Tuần</div></div>
-        <div class="case-slot" onclick="celebrate(event)"><div class="case-medal">🎯</div><div class="case-name">Xạ Thủ Toán Học</div></div>
-        <div class="case-slot" onclick="celebrate(event)"><div class="case-medal">🏰</div><div class="case-name">Kiến Trúc Sư Nhí</div></div>
-        <div class="case-slot" onclick="celebrate(event)"><div class="case-medal">🤖</div><div class="case-name">Bạn Của Thỏ Toán</div></div>
-      </div>
+      <div class="case-shelf" id="caseShelf"></div>
     </div>
   </section>
 
@@ -770,11 +498,12 @@
   let activeGroup = 'all';
   const statusBtns = document.querySelectorAll('.filter-btn[data-status]');
   const groupBtns = document.querySelectorAll('.filter-btn[data-group]');
-  const badgeCards = document.querySelectorAll('#badgeGrid .badge-card');
   const emptyMsg = document.getElementById('emptyMsg');
 
   function applyFilters() {
     let visible = 0;
+    // Lấy lại danh sách card mỗi lần (grid được dựng động từ dữ liệu thật)
+    const badgeCards = document.querySelectorAll('#badgeGrid .badge-card');
     badgeCards.forEach(c => {
       const okStatus = (activeStatus === 'all' || c.dataset.status === activeStatus);
       const okGroup = (activeGroup === 'all' || c.dataset.group === activeGroup);
@@ -829,122 +558,168 @@
   TVKN.guardPage();
 </script>
 <script>
-  /* ===== Đồng bộ huy hiệu THẬT từ Supabase =====
-     - Khớp tên huy hiệu trên trang với danh mục TVKN.badges -> gán data-badge=id
-     - Lấy danh sách huy hiệu đã đạt (TVKN.getBadges) -> bật/tắt trạng thái earned/locked
-     - Huy hiệu KHÔNG có trong danh mục: giữ nguyên (tĩnh) */
-  (async function syncRealBadges() {
+  /* ===== Dựng toàn bộ huy hiệu THẬT từ Supabase =====
+     - Render TẤT CẢ huy hiệu từ danh mục TVKN.badges
+     - Đánh dấu "đã đạt" theo TVKN.getBadges() (kèm ngày unlocked_at thật, vi-VN)
+     - Chưa đạt -> hiện mờ/locked, KHÔNG kèm ngày
+     - Mọi thống kê tính từ dữ liệu thật. Mặc định tĩnh = 0. */
+  (async function renderRealBadges() {
+    const grid = document.getElementById('badgeGrid');
+    if (!grid) return;
     if (!window.TVKN || !TVKN.configured) return;
-    try {
-      // 1) Bản đồ tên -> id từ danh mục
-      const catalog = TVKN.badges || [];
-      const nameToId = {};
-      const idToBadge = {};
-      const norm = function (s) { return (s || '').trim().toLowerCase(); };
-      catalog.forEach(function (b) {
-        nameToId[norm(b.name)] = b.id;
-        idToBadge[b.id] = b;
-      });
 
-      // 2) Gán data-badge cho card có tên khớp danh mục
-      const cards = document.querySelectorAll('#badgeGrid .badge-card');
-      const catalogCards = [];
-      cards.forEach(function (card) {
-        const nameEl = card.querySelector('.badge-name');
-        if (!nameEl) return;
-        const id = nameToId[norm(nameEl.textContent)];
-        if (!id) return; // không thuộc danh mục -> để tĩnh
-        card.setAttribute('data-badge', id);
-        catalogCards.push(card);
-      });
+    // Suy ra nhóm từ id huy hiệu (danh mục không có sẵn trường group)
+    function groupOf(id) {
+      if (id.indexOf('cham-chi') === 0) return 'challenge';
+      if (id.indexOf('game') >= 0) return 'game';
+      if (id.indexOf('xp') >= 0 || id === 'cao-thu-toan') return 'xp';
+      return 'learning';
+    }
 
-      // 3) Tập huy hiệu đã đạt
-      const earned = await TVKN.getBadges();
-      const earnedSet = new Set((earned || []).map(function (b) { return b.badge_id; }));
-      const earnedMeta = {};
-      (earned || []).forEach(function (b) { earnedMeta[b.badge_id] = b; });
-
-      // Định dạng ngày dd/mm/yyyy
-      const fmtDate = function (iso) {
-        if (!iso) return '';
-        const d = new Date(iso);
-        if (isNaN(d)) return '';
+    // Định dạng ngày vi-VN (dd/mm/yyyy)
+    function fmtDate(iso) {
+      if (!iso) return '';
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return '';
+      try { return d.toLocaleDateString('vi-VN'); }
+      catch (e) {
         const p = function (n) { return (n < 10 ? '0' : '') + n; };
         return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear();
-      };
-
-      // Chuyển card sang trạng thái ĐÃ ĐẠT (mirror style "unlocked" của trang)
-      const setEarned = function (card, id) {
-        const badge = idToBadge[id];
-        card.classList.remove('locked');
-        card.classList.add('unlocked');
-        card.dataset.status = 'unlocked';
-        card.setAttribute('onclick', 'celebrate(event)');
-        // medal -> icon thật thay vì 🔒
-        const medal = card.querySelector('.badge-medal');
-        if (medal && badge && badge.icon) medal.textContent = badge.icon;
-        // bỏ thanh tiến độ của trạng thái khóa
-        const prog = card.querySelector('.badge-progress');
-        if (prog) prog.remove();
-        const progText = card.querySelector('.badge-prog-text');
-        if (progText) progText.remove();
-        // thêm/đảm bảo có badge-date
-        let dateEl = card.querySelector('.badge-date');
-        if (!dateEl) {
-          dateEl = document.createElement('span');
-          dateEl.className = 'badge-date';
-          card.appendChild(dateEl);
-        }
-        const meta = earnedMeta[id];
-        const ds = meta ? fmtDate(meta.unlocked_at) : '';
-        dateEl.textContent = '✓ ' + (ds || 'Đã đạt');
-      };
-
-      // Chuyển card sang trạng thái CHƯA ĐẠT (mirror style "locked" của trang)
-      const setLocked = function (card) {
-        card.classList.remove('unlocked');
-        card.classList.add('locked');
-        card.dataset.status = 'locked';
-        card.removeAttribute('onclick');
-        const medal = card.querySelector('.badge-medal');
-        if (medal) medal.textContent = '🔒';
-        const dateEl = card.querySelector('.badge-date');
-        if (dateEl) dateEl.remove();
-        // nếu chưa có thanh tiến độ thì thêm "Chưa đạt"
-        if (!card.querySelector('.badge-prog-text')) {
-          const t = document.createElement('div');
-          t.className = 'badge-prog-text';
-          t.textContent = 'Chưa đạt';
-          card.appendChild(t);
-        }
-      };
-
-      // 4) Áp trạng thái cho các card thuộc danh mục
-      catalogCards.forEach(function (card) {
-        const id = card.getAttribute('data-badge');
-        if (earnedSet.has(id)) setEarned(card, id);
-        else setLocked(card);
-      });
-
-      // 5) Cập nhật thống kê "Đã mở khóa X/Y" (theo danh mục thật)
-      const earnedCatalogCount = catalog.filter(function (b) {
-        return earnedSet.has(b.id);
-      }).length;
-      const statCards = document.querySelectorAll('.stat-card');
-      statCards.forEach(function (sc) {
-        const label = sc.querySelector('.stat-label');
-        const num = sc.querySelector('.stat-num');
-        if (label && num && norm(label.textContent) === norm('Đã mở khóa')) {
-          num.textContent = earnedCatalogCount + '/' + catalog.length;
-        }
-      });
-
-      // 6) Cập nhật lại bộ lọc (data-status đã thay đổi)
-      if (typeof applyFilters === 'function') applyFilters();
-    } catch (err) {
-      /* Lỗi -> giữ nguyên trang như cũ */
-      console.warn('syncRealBadges:', err);
+      }
     }
+
+    const catalog = (TVKN.badges || []).slice();
+    const total = catalog.length;
+
+    // Lấy huy hiệu đã đạt (mảng rỗng -> tất cả locked, 0 huy hiệu)
+    let earned = [];
+    try { earned = await TVKN.getBadges(); } catch (e) { earned = []; }
+    earned = earned || [];
+    const earnedMeta = {};
+    earned.forEach(function (b) { earnedMeta[b.badge_id] = b; });
+    const earnedCount = catalog.filter(function (b) { return earnedMeta[b.id]; }).length;
+
+    // ----- Dựng lưới tất cả huy hiệu -----
+    grid.innerHTML = '';
+    catalog.forEach(function (b) {
+      const meta = earnedMeta[b.id];
+      const isEarned = !!meta;
+      const group = groupOf(b.id);
+      const card = document.createElement('div');
+      card.className = 'badge-card ' + (isEarned ? 'unlocked common' : 'locked common');
+      card.setAttribute('data-status', isEarned ? 'unlocked' : 'locked');
+      card.setAttribute('data-group', group);
+      card.setAttribute('data-badge', b.id);
+
+      const tag = document.createElement('span');
+      tag.className = 'rarity-tag';
+      tag.textContent = isEarned ? 'Đã đạt' : 'Chưa đạt';
+      card.appendChild(tag);
+
+      const medal = document.createElement('div');
+      medal.className = 'badge-medal';
+      medal.textContent = isEarned ? (b.icon || '🏅') : '🔒';
+      card.appendChild(medal);
+
+      const name = document.createElement('div');
+      name.className = 'badge-name';
+      name.textContent = b.name;
+      card.appendChild(name);
+
+      const desc = document.createElement('div');
+      desc.className = 'badge-desc';
+      desc.textContent = b.desc || '';
+      card.appendChild(desc);
+
+      if (isEarned) {
+        card.setAttribute('onclick', 'celebrate(event)');
+        const date = document.createElement('span');
+        date.className = 'badge-date';
+        const ds = fmtDate(meta.unlocked_at);
+        date.textContent = '✓ ' + (ds || 'Đã đạt');
+        card.appendChild(date);
+      } else {
+        const t = document.createElement('div');
+        t.className = 'badge-prog-text';
+        t.textContent = 'Chưa đạt';
+        card.appendChild(t);
+      }
+      grid.appendChild(card);
+    });
+
+    // ----- Thống kê thật -----
+    const elUnlocked = document.getElementById('statUnlocked');
+    const elPercent = document.getElementById('statPercent');
+    const elLocked = document.getElementById('statLocked');
+    if (elUnlocked) elUnlocked.textContent = earnedCount + '/' + total;
+    if (elPercent) elPercent.textContent = (total ? Math.round(earnedCount / total * 100) : 0) + '%';
+    if (elLocked) elLocked.textContent = (total - earnedCount);
+
+    // ----- Huy hiệu nổi bật: tối đa 3 huy hiệu đã đạt gần nhất -----
+    const featuredSection = document.getElementById('featuredSection');
+    const featuredGrid = document.getElementById('featuredGrid');
+    const earnedBadges = catalog
+      .filter(function (b) { return earnedMeta[b.id]; })
+      .sort(function (a, c) {
+        const ta = new Date(earnedMeta[a.id].unlocked_at || 0).getTime();
+        const tc = new Date(earnedMeta[c.id].unlocked_at || 0).getTime();
+        return tc - ta;
+      });
+    if (featuredGrid && earnedBadges.length) {
+      const fcls = ['f1', 'f2', 'f3'];
+      earnedBadges.slice(0, 3).forEach(function (b, i) {
+        const meta = earnedMeta[b.id];
+        const card = document.createElement('div');
+        card.className = 'featured-card ' + fcls[i % 3];
+        card.setAttribute('onclick', 'celebrate(event)');
+        const ds = fmtDate(meta.unlocked_at);
+        card.innerHTML =
+          '<div class="featured-medal">' + (b.icon || '🏅') + '</div>' +
+          '<div class="featured-name"></div>' +
+          '<div class="featured-desc"></div>' +
+          (ds ? '<span class="featured-date">📅 Đạt ngày ' + ds + '</span>' : '');
+        card.querySelector('.featured-name').textContent = b.name;
+        card.querySelector('.featured-desc').textContent = b.desc || '';
+        featuredGrid.appendChild(card);
+      });
+      if (featuredSection) featuredSection.style.display = '';
+    }
+
+    // ----- Tủ trưng bày: huy hiệu đã đạt -----
+    const caseSection = document.getElementById('caseSection');
+    const caseShelf = document.getElementById('caseShelf');
+    if (caseShelf && earnedBadges.length) {
+      earnedBadges.slice(0, 12).forEach(function (b) {
+        const slot = document.createElement('div');
+        slot.className = 'case-slot';
+        slot.setAttribute('onclick', 'celebrate(event)');
+        slot.innerHTML = '<div class="case-medal">' + (b.icon || '🏅') + '</div><div class="case-name"></div>';
+        slot.querySelector('.case-name').textContent = b.name;
+        caseShelf.appendChild(slot);
+      });
+      if (caseSection) caseSection.style.display = '';
+    }
+
+    // ----- Sắp đạt / cần chinh phục: huy hiệu chưa đạt -----
+    const soonSection = document.getElementById('soonSection');
+    const soonGrid = document.getElementById('soonGrid');
+    const lockedBadges = catalog.filter(function (b) { return !earnedMeta[b.id]; });
+    if (soonGrid && lockedBadges.length) {
+      lockedBadges.slice(0, 4).forEach(function (b) {
+        const card = document.createElement('div');
+        card.className = 'soon-card';
+        card.innerHTML =
+          '<div class="soon-medal">' + (b.icon || '🏅') + '</div>' +
+          '<div class="soon-body"><div class="soon-name"></div><div class="soon-prog"></div></div>';
+        card.querySelector('.soon-name').textContent = b.name;
+        card.querySelector('.soon-prog').textContent = b.desc || '';
+        soonGrid.appendChild(card);
+      });
+      if (soonSection) soonSection.style.display = '';
+    }
+
+    // Áp bộ lọc sau khi dựng lưới
+    if (typeof applyFilters === 'function') applyFilters();
   })();
 </script>
 </body>

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Kết quả luyện tập - TOÁN VUI KẾT NỐI</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -217,7 +218,7 @@
   document.getElementById('stCorrect').textContent = `${data.correct}/${data.total}`;
   document.getElementById('stPercent').textContent = data.percent + '%';
   document.getElementById('rwXp').textContent = '+' + data.xp;
-  document.getElementById('hdrXp').textContent = 450 + data.xp;
+  document.getElementById('hdrXp').textContent = data.xp;   // số thật sẽ được getProgress() ghi đè bên dưới
 
   // Nội dung theo mức kết quả
   const p = data.percent;
@@ -249,20 +250,23 @@
   if (p < 60) sb.href = 'lam-bai-tap.html';
   else if (p < 80) sb.href = 'lam-bai-tap.html';
 
-  // Huy hiệu: mở khóa nếu đạt từ 80% trở lên, ngược lại hiển thị "còn thiếu"
-  const badgeThreshold = 80;
+  // Huy hiệu: hiện huy hiệu THẬT vừa mở khóa (lam-bai-tap lưu vào sessionStorage 'newBadges')
   const badgeEl = document.getElementById('rwBadge');
-  if (p >= badgeThreshold) {
+  let newBadges = [];
+  try { newBadges = JSON.parse(sessionStorage.getItem('newBadges') || '[]'); } catch (e) {}
+  if (newBadges && newBadges.length) {
+    const b = newBadges[0];
     badgeEl.classList.remove('locked');
-    document.getElementById('rwBadgeEm').textContent = '🏅';
-    document.getElementById('rwBadgeVal').textContent = 'Bé Đếm Số';
-    document.getElementById('rwBadgeLbl').textContent = 'Huy hiệu mới';
+    document.getElementById('rwBadgeEm').textContent = b.icon || '🏅';
+    document.getElementById('rwBadgeVal').textContent = b.name || 'Huy hiệu mới';
+    document.getElementById('rwBadgeLbl').textContent =
+      newBadges.length > 1 ? ('+' + newBadges.length + ' huy hiệu mới') : 'Huy hiệu mới';
+    try { sessionStorage.removeItem('newBadges'); } catch (e) {}   // tránh hiện lại ở lần sau
   } else {
     badgeEl.classList.add('locked');
-    const needed = Math.max(1, Math.ceil(data.total * badgeThreshold / 100) - data.correct);
     document.getElementById('rwBadgeEm').textContent = '🔒';
-    document.getElementById('rwBadgeVal').textContent = 'Em còn thiếu ' + needed + ' câu';
-    document.getElementById('rwBadgeLbl').textContent = 'để nhận huy hiệu';
+    document.getElementById('rwBadgeVal').textContent = 'Chưa có huy hiệu mới';
+    document.getElementById('rwBadgeLbl').textContent = 'Cố gắng thêm nhé!';
   }
 
   // Ẩn khối câu sai nếu đúng hết

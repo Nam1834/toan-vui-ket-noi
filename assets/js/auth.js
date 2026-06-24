@@ -80,7 +80,7 @@ window.TVKN = (function () {
       });
     } catch (e) {}
     if (profile.avatar) {
-      document.querySelectorAll('.avatar,.student-avatar,.profile-avatar,.pf-avatar,.profile-pic,.user-avatar')
+      document.querySelectorAll('.avatar,.student-avatar,.profile-avatar,.pf-avatar,.profile-pic,.user-avatar,.hdr-avatar')
         .forEach(function (el) {
           const t = (el.textContent || '').trim();
           if (t.length <= 4 && t !== '') el.textContent = profile.avatar;
@@ -88,9 +88,14 @@ window.TVKN = (function () {
     }
   }
 
+  const TOTAL_LESSONS = 10;   // tổng số bài học (bai-1..bai-10)
+
   // ---------- Đổ dữ liệu thật vào các phần tử [data-bind] ----------
-  // Hỗ trợ key: name, avatar, grade, xp, level, streak, coins
-  function bindCommon(profile, progress) {
+  // Khóa hỗ trợ: name, avatar, grade, xp, level, streak, coins,
+  //              badges (số huy hiệu), completed (bài đã xong), total (tổng bài),
+  //              percent (% tiến độ, kèm dấu %), nextxp (XP còn thiếu để lên cấp)
+  function bindCommon(profile, progress, extra) {
+    extra = extra || {};
     const map = {
       name:   profile ? profile.name : '',
       avatar: profile ? profile.avatar : '👧',
@@ -98,7 +103,12 @@ window.TVKN = (function () {
       xp:     progress ? progress.xp : 0,
       level:  progress ? progress.level : 1,
       streak: progress ? progress.streak_days : 0,
-      coins:  progress ? progress.coins : 0
+      coins:  progress ? progress.coins : 0,
+      badges:    extra.badgeCount,
+      completed: extra.completed,
+      total:     extra.total,
+      percent:   (extra.percent != null ? extra.percent + '%' : null),
+      nextxp:    extra.nextXp
     };
     document.querySelectorAll('[data-bind]').forEach(function (el) {
       const k = el.getAttribute('data-bind');
@@ -106,31 +116,45 @@ window.TVKN = (function () {
     });
   }
 
+  // ---------- Dựng toàn bộ hồ sơ + chỉ số thật, đổ lên giao diện ----------
+  // Trả về { profile, progress, lessons, badges, stats }.
+  async function renderProfile(profile) {
+    applyToDOM(profile);
+    let progress = null, lessons = [], badges = [];
+    try { progress = await getProgress(); } catch (e) {}
+    try { lessons  = await getLessons();  } catch (e) {}
+    try { badges   = await getBadges();   } catch (e) {}
+    const completed = (lessons || []).filter(function (l) { return l.status === 'completed'; }).length;
+    const xp = progress ? (progress.xp || 0) : 0;
+    const level = progress ? (progress.level || 1) : 1;
+    const stats = {
+      badgeCount: (badges || []).length,
+      completed:  completed,
+      total:      TOTAL_LESSONS,
+      percent:    Math.min(100, Math.round(completed / TOTAL_LESSONS * 100)),
+      nextXp:     Math.max(0, level * 1000 - xp)   // XP còn thiếu để lên cấp tiếp theo
+    };
+    bindCommon(profile, progress, stats);
+    return { profile: profile, progress: progress, lessons: lessons, badges: badges, stats: stats };
+  }
+
   // ---------- TRANG HỌC: BẮT BUỘC đăng nhập ----------
-  // Chưa đăng nhập → tự chuyển về trang đăng nhập. Đã login → áp tên/avatar/tiến độ thật.
+  // Chưa đăng nhập → tự chuyển về trang đăng nhập. Đã login → áp dữ liệu thật.
   async function guardPage() {
     const profile = await requireAuth();   // requireAuth tự chuyển về dang-nhap.html nếu chưa login
     if (!profile) return null;
-    applyToDOM(profile);
-    let progress = null;
-    try { progress = await getProgress(); } catch (e) {}
-    bindCommon(profile, progress);
-    return { profile: profile, progress: progress };
+    return await renderProfile(profile);
   }
 
   // ---------- TRANG CÔNG KHAI (trang chủ): KHÔNG bắt buộc đăng nhập ----------
-  // Đã login → áp tên/avatar/tiến độ thật và trả về { profile, progress }.
+  // Đã login → áp dữ liệu thật và trả về { profile, ... }.
   // Khách     → trả về null và KHÔNG chuyển trang (để trang tự hiện giao diện khách).
   async function applyProfile() {
     if (!sb) return null;
     const { data: { session } } = await sb.auth.getSession();
     if (!session) return null;
     const profile = await getProfile();
-    applyToDOM(profile);
-    let progress = null;
-    try { progress = await getProgress(); } catch (e) {}
-    bindCommon(profile, progress);
-    return { profile: profile, progress: progress };
+    return await renderProfile(profile);
   }
 
   // ---------- Kiểm tra nhanh: đã đăng nhập chưa? (không chuyển trang) ----------
@@ -138,6 +162,27 @@ window.TVKN = (function () {
     if (!sb) return false;
     const { data: { session } } = await sb.auth.getSession();
     return !!session;
+  }
+
+  // ---------- Thanh mời đăng nhập khi đang HỌC THỬ ----------
+  function showTrialBanner() {
+    if (document.getElementById('tvkn-trial')) return;
+    var bar = document.createElement('div');
+    bar.id = 'tvkn-trial';
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:9998;background:linear-gradient(135deg,#FF9F43,#FFD93D);color:#3a2a00;padding:11px 16px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;font-family:inherit;font-weight:600;font-size:14px;box-shadow:0 -6px 20px rgba(0,0,0,.15)';
+    bar.innerHTML = '🎁 Em đang <b>học thử miễn phí</b> — đăng nhập để lưu tiến độ &amp; mở khoá tất cả bài học!' +
+      '<a href="dang-nhap.html" style="background:#fff;color:#FF7A00;padding:7px 16px;border-radius:999px;font-weight:800;text-decoration:none">Đăng nhập</a>' +
+      '<a href="dang-ky.html" style="background:#2D3748;color:#fff;padding:7px 16px;border-radius:999px;font-weight:800;text-decoration:none">Đăng ký miễn phí</a>';
+    document.body.appendChild(bar);
+  }
+
+  // ---------- TRANG HỌC THỬ: khách xem được (không lưu); đăng nhập thì áp dữ liệu thật ----------
+  async function trialPage() {
+    if (!sb) { showTrialBanner(); return null; }
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { showTrialBanner(); return null; }   // khách → chế độ học thử
+    const profile = await getProfile();
+    return await renderProfile(profile);
   }
 
   // ---------- Chặn trang ADMIN: chỉ role='admin' mới vào ----------
@@ -189,7 +234,8 @@ window.TVKN = (function () {
     const user = await getUser();
     if (!user) return 0;
     const prog = await getProgress();
-    const today = new Date().toISOString().slice(0, 10);
+    const _d = new Date();   // mốc "ngày" theo GIỜ ĐỊA PHƯƠNG (tránh lệch múi giờ do UTC)
+    const today = _d.getFullYear() + '-' + String(_d.getMonth() + 1).padStart(2, '0') + '-' + String(_d.getDate()).padStart(2, '0');
     let streak = 1;
     if (prog && prog.last_active) {
       if (prog.last_active === today) return prog.streak_days;       // đã tính hôm nay
@@ -253,7 +299,18 @@ window.TVKN = (function () {
     ensure();
     await bumpStreak();
     await addXp(xpReward || 0, '🎮 ' + gameName + ' — hoàn thành', coinReward || 0);
+    try { await sb.rpc('bump_game_play', { p_game: gameName }); } catch (e) {}   // +1 lượt chơi toàn hệ thống
     return await checkBadges();
+  }
+
+  // ---------- LƯỢT CHƠI MỖI GAME (toàn hệ thống, công khai) ----------
+  // Trả về object { '<tên game>': số_lượt }
+  async function gamePlays() {
+    if (!sb) return {};
+    const { data } = await sb.from('game_plays').select('game, plays');
+    const map = {};
+    (data || []).forEach(function (r) { map[r.game] = r.plays; });
+    return map;
   }
 
   // ---------- LỊCH SỬ HOẠT ĐỘNG ----------
@@ -333,6 +390,94 @@ window.TVKN = (function () {
     return data || [];
   }
 
+  // ---------- CHUÔNG THÔNG BÁO: dropdown hoạt động gần đây (dùng chung mọi trang) ----------
+  function timeAgo(iso) {
+    try {
+      var d = new Date(iso), s = Math.floor((new Date() - d) / 1000);
+      if (s < 60) return 'vừa xong';
+      if (s < 3600) return Math.floor(s / 60) + ' phút trước';
+      if (s < 86400) return Math.floor(s / 3600) + ' giờ trước';
+      if (s < 604800) return Math.floor(s / 86400) + ' ngày trước';
+      return d.toLocaleDateString('vi-VN');
+    } catch (e) { return ''; }
+  }
+
+  function initBell() {
+    var bells = Array.prototype.slice.call(document.querySelectorAll('.icon-btn, .notif, [title="Thông báo"]')).filter(function (b) {
+      return (b.getAttribute('title') || '').indexOf('Thông báo') >= 0 || (b.textContent || '').indexOf('🔔') >= 0;
+    });
+    if (!bells.length || document.getElementById('tvkn-notif')) return;   // không có chuông / đã khởi tạo
+
+    var panel = document.createElement('div');
+    panel.id = 'tvkn-notif';
+    panel.style.cssText = 'position:fixed;z-index:9999;width:300px;max-height:60vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.18);display:none;font-family:inherit;color:#2D3748';
+    document.body.appendChild(panel);
+    var open = false;
+    function hide() { open = false; panel.style.display = 'none'; }
+    function esc(t) { return (t || '').replace(/[<>&]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]; }); }
+    function row(it) {
+      var xp = it.xp_delta ? ('<span style="color:#6BCB77;font-weight:700;white-space:nowrap"> +' + it.xp_delta + ' XP</span>') : '';
+      return '<div style="padding:11px 14px;border-bottom:1px solid #EEF2F9">' +
+             '<div style="font-size:14px;font-weight:600">' + esc(it.text) + xp + '</div>' +
+             '<div style="font-size:12px;color:#9AA3B2;margin-top:3px">' + timeAgo(it.created_at) + '</div></div>';
+    }
+    function head() { return '<div style="padding:13px 14px;font-weight:800;border-bottom:1px solid #EEF2F9">🔔 Thông báo</div>'; }
+    function note(t) { return '<div style="padding:16px 14px;color:#6B7280;font-size:14px">' + t + '</div>'; }
+    async function load() {
+      panel.innerHTML = head() + note('Đang tải…');
+      var body;
+      try {
+        var logged = false;
+        if (sb) { var s = await sb.auth.getSession(); logged = !!s.data.session; }
+        if (!logged) body = note('Hãy đăng nhập để xem thông báo của em nhé!');
+        else {
+          var items = await getActivity(12);
+          body = items.length ? items.map(row).join('') : note('📭 Chưa có hoạt động nào.');
+        }
+      } catch (e) { body = note('Không tải được thông báo.'); }
+      panel.innerHTML = head() + body;
+    }
+    bells.forEach(function (bell) {
+      bell.style.cursor = 'pointer';
+      bell.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (open) { hide(); return; }
+        var r = bell.getBoundingClientRect();
+        panel.style.top = (r.bottom + 8) + 'px';
+        panel.style.right = Math.max(8, window.innerWidth - r.right) + 'px';
+        panel.style.left = 'auto';
+        panel.style.display = 'block';
+        open = true;
+        load();
+      });
+    });
+    document.addEventListener('click', function (e) {
+      if (open && !panel.contains(e.target) && !bells.some(function (b) { return b.contains(e.target); })) hide();
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initBell);
+  else initBell();
+
+  // ---------- THỐNG KÊ LƯỢT CHƠI GAME (đếm thật từ nhật ký 🎮) ----------
+  // Trả về { played: số lượt thắng game, favorite: tên game chơi nhiều nhất }
+  async function getGameStats() {
+    ensure();
+    const user = await getUser();
+    if (!user) return { played: 0, favorite: null };
+    const { data } = await sb.from('activity_log')
+      .select('text').eq('user_id', user.id).like('text', '🎮%');
+    const rows = data || [];
+    const counts = {};
+    rows.forEach(function (r) {
+      // text dạng: '🎮 <Tên game> — hoàn thành'
+      var name = (r.text || '').replace(/^🎮\s*/, '').split(' — ')[0].trim();
+      if (name) counts[name] = (counts[name] || 0) + 1;
+    });
+    var fav = null, max = 0;
+    Object.keys(counts).forEach(function (k) { if (counts[k] > max) { max = counts[k]; fav = k; } });
+    return { played: rows.length, favorite: fav };
+  }
+
   return {
     configured: typeof TVKN_CONFIGURED !== 'undefined' ? TVKN_CONFIGURED : false,
     signUp, signIn, signOut, getUser, getProfile,
@@ -340,6 +485,6 @@ window.TVKN = (function () {
     getProgress, addXp, bumpStreak, setLesson,
     getActivity, getLessons, getBadges, getLeaderboard, getMyRank, getCohortStats,
     adminOverview, adminUsers,
-    checkBadges, recordGameWin, platformStats, badges: BADGES
+    checkBadges, recordGameWin, platformStats, badges: BADGES, initBell, trialPage, getGameStats, gamePlays
   };
 })();

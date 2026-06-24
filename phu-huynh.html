@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Trang Phụ huynh - TOÁN VUI KẾT NỐI</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -410,12 +411,12 @@
     <div class="student-info">
       <h2>Nguyễn Minh Anh</h2>
       <div class="student-meta">
-        <div><div class="m-label">Lớp</div><div class="m-value">Lớp 1</div></div>
-        <div><div class="m-label">Ngày tham gia</div><div class="m-value">01/06/2026</div></div>
+        <div><div class="m-label">Lớp</div><div class="m-value">Lớp <span data-bind="grade">1</span></div></div>
+        <div><div class="m-label">Ngày tham gia</div><div class="m-value" id="join-date">—</div></div>
       </div>
       <div class="student-tags">
-        <span class="chip title-chip">🏅 Bé Đếm Số</span>
-        <span class="chip streak-chip">🔥 12 ngày liên tiếp</span>
+        <span class="chip title-chip">🏅 Học sinh TOÁN VUI</span>
+        <span class="chip streak-chip">🔥 <span data-bind="streak">0</span> ngày liên tiếp</span>
       </div>
     </div>
   </div>
@@ -425,12 +426,12 @@
     <h2 class="section-title">📊 Tổng quan học tập</h2>
     <p class="section-sub">Nhìn nhanh để biết con đang học tới đâu và tích lũy được những gì.</p>
     <div class="stat-grid">
-      <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num">8/10</div><div class="stat-label">Bài học hoàn thành</div></div>
-      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num">4250</div><div class="stat-label">Tổng điểm XP</div></div>
-      <div class="stat-card"><div class="stat-icon">🏅</div><div class="stat-num">15</div><div class="stat-label">Huy hiệu</div></div>
-      <div class="stat-card"><div class="stat-icon">⏱️</div><div class="stat-num">12 giờ</div><div class="stat-label">Thời gian học</div></div>
-      <div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-num">22</div><div class="stat-label">Lần thử thách</div></div>
-      <div class="stat-card"><div class="stat-icon">🎮</div><div class="stat-num">57</div><div class="stat-label">Lượt trò chơi</div></div>
+      <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num"><span data-bind="completed">0</span>/<span data-bind="total">10</span></div><div class="stat-label">Bài học hoàn thành</div></div>
+      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num" data-bind="xp">0</div><div class="stat-label">Tổng điểm XP</div></div>
+      <div class="stat-card"><div class="stat-icon">🏅</div><div class="stat-num" data-bind="badges">0</div><div class="stat-label">Huy hiệu</div></div>
+      <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-num" data-bind="streak">0</div><div class="stat-label">Ngày học liên tiếp</div></div>
+      <div class="stat-card"><div class="stat-icon">🪙</div><div class="stat-num" data-bind="coins">0</div><div class="stat-label">Xu thưởng</div></div>
+      <div class="stat-card"><div class="stat-icon">🎮</div><div class="stat-num" id="game-count">—</div><div class="stat-label">Lượt trò chơi</div></div>
     </div>
   </section>
 
@@ -505,77 +506,8 @@
     <h2 class="section-title">📝 Kết quả gần đây</h2>
     <p class="section-sub">Những hoạt động học tập gần nhất của con.</p>
     <div class="card">
-      <div class="recent-list">
-        <div class="recent-row">
-          <div class="recent-date">23/06/2026</div>
-          <div class="recent-ico">📘</div>
-          <div class="recent-main"><div class="recent-name">Bài 8 - Phép trừ trong phạm vi 20</div><div class="recent-type">Hoàn thành bài học</div></div>
-          <div class="recent-score good">90%</div>
-          <div class="recent-xp">+80</div>
-        </div>
-        <div class="recent-row">
-          <div class="recent-date">23/06/2026</div>
-          <div class="recent-ico">🎯</div>
-          <div class="recent-main"><div class="recent-name">Thử thách hằng ngày</div><div class="recent-type">Hoàn thành thử thách</div></div>
-          <div class="recent-score good">100%</div>
-          <div class="recent-xp">+70</div>
-        </div>
-        <div class="recent-row">
-          <div class="recent-date">22/06/2026</div>
-          <div class="recent-ico">📗</div>
-          <div class="recent-main"><div class="recent-name">Bài 7 - So sánh các số đến 100</div><div class="recent-type">Hoàn thành bài học</div></div>
-          <div class="recent-score good">95%</div>
-          <div class="recent-xp">+80</div>
-        </div>
-        <div class="recent-row">
-          <div class="recent-date">22/06/2026</div>
-          <div class="recent-ico">🎮</div>
-          <div class="recent-main"><div class="recent-name">Trò chơi Đua xe Toán học</div><div class="recent-type">Chơi trò chơi học tập</div></div>
-          <div class="recent-score good">88%</div>
-          <div class="recent-xp">+50</div>
-        </div>
-        <div class="recent-row">
-          <div class="recent-date">21/06/2026</div>
-          <div class="recent-ico">➕</div>
-          <div class="recent-main"><div class="recent-name">Luyện tập - Phép cộng có nhớ</div><div class="recent-type">Luyện tập nhanh</div></div>
-          <div class="recent-score ok">65%</div>
-          <div class="recent-xp">+30</div>
-        </div>
-        <div class="recent-row">
-          <div class="recent-date">20/06/2026</div>
-          <div class="recent-ico">📐</div>
-          <div class="recent-main"><div class="recent-name">Bài 6 - Nhận biết hình học</div><div class="recent-type">Hoàn thành bài học</div></div>
-          <div class="recent-score good">96%</div>
-          <div class="recent-xp">+80</div>
-        </div>
-        <div class="recent-row">
-          <div class="recent-date">19/06/2026</div>
-          <div class="recent-ico">🎯</div>
-          <div class="recent-main"><div class="recent-name">Thử thách hằng ngày</div><div class="recent-type">Hoàn thành thử thách</div></div>
-          <div class="recent-score good">90%</div>
-          <div class="recent-xp">+70</div>
-        </div>
-        <div class="recent-row">
-          <div class="recent-date">18/06/2026</div>
-          <div class="recent-ico">📕</div>
-          <div class="recent-main"><div class="recent-name">Bài 5 - Phép cộng trong phạm vi 10</div><div class="recent-type">Hoàn thành bài học</div></div>
-          <div class="recent-score good">92%</div>
-          <div class="recent-xp">+80</div>
-        </div>
-        <div class="recent-row">
-          <div class="recent-date">17/06/2026</div>
-          <div class="recent-ico">🎮</div>
-          <div class="recent-main"><div class="recent-name">Trò chơi Bắn bóng số học</div><div class="recent-type">Chơi trò chơi học tập</div></div>
-          <div class="recent-score ok">72%</div>
-          <div class="recent-xp">+40</div>
-        </div>
-        <div class="recent-row">
-          <div class="recent-date">16/06/2026</div>
-          <div class="recent-ico">📗</div>
-          <div class="recent-main"><div class="recent-name">Bài 4 - So sánh các số (&gt;, &lt;)</div><div class="recent-type">Hoàn thành bài học</div></div>
-          <div class="recent-score good">88%</div>
-          <div class="recent-xp">+80</div>
-        </div>
+      <div class="recent-list" id="recent-list">
+        <div class="recent-row"><div class="recent-main"><div class="recent-type">Đang tải hoạt động…</div></div></div>
       </div>
     </div>
   </section>
@@ -622,11 +554,11 @@
     <div class="week-card">
       <div class="mini-title">📄 Tổng kết tuần</div>
       <div class="week-stats">
-        <div class="week-stat"><div class="wn">5</div><div class="wl">Bài đã học</div></div>
-        <div class="week-stat"><div class="wn">350</div><div class="wl">Điểm XP</div></div>
-        <div class="week-stat"><div class="wn">1h45</div><div class="wl">Thời gian học</div></div>
-        <div class="week-stat"><div class="wn">2</div><div class="wl">Huy hiệu mới</div></div>
-        <div class="week-stat"><div class="wn">7</div><div class="wl">Ngày chuỗi</div></div>
+        <div class="week-stat"><div class="wn">—</div><div class="wl">Bài đã học</div></div>
+        <div class="week-stat"><div class="wn">—</div><div class="wl">Điểm XP</div></div>
+        <div class="week-stat"><div class="wn">—</div><div class="wl">Thời gian học</div></div>
+        <div class="week-stat"><div class="wn">—</div><div class="wl">Huy hiệu mới</div></div>
+        <div class="week-stat"><div class="wn" data-bind="streak">0</div><div class="wl">Ngày chuỗi</div></div>
       </div>
       <div class="week-btns">
         <button class="btn btn-white" onclick="celebrate(event)">📥 Tải báo cáo PDF</button>
@@ -762,7 +694,61 @@
 <script>
   /* Chặn trang + hiển thị đúng người đăng nhập (Supabase) */
   window.tvknLogout = function(){ TVKN.signOut(); };
-  TVKN.guardPage();
+
+  (async function () {
+    const data = await TVKN.guardPage();   // {profile, progress, lessons, badges, stats}
+    if (!data) return;                      // chưa đăng nhập → guardPage đã tự chuyển trang
+
+    const fmtDate = function (iso) {
+      if (!iso) return '';
+      try { return new Date(iso).toLocaleDateString('vi-VN'); } catch (e) { return ''; }
+    };
+
+    // Ngày tham gia thật (từ hồ sơ)
+    const joinEl = document.getElementById('join-date');
+    const created = data.profile && (data.profile.created_at || data.profile.joined_at);
+    if (joinEl && created) joinEl.textContent = fmtDate(created);
+
+    // Lượt trò chơi thật (đếm hoạt động có dấu 🎮)
+    const gameEl = document.getElementById('game-count');
+    if (gameEl) {
+      try {
+        const all = await TVKN.getActivity(100);
+        const games = (all || []).filter(function (a) {
+          return (a.text || '').indexOf('🎮') >= 0;
+        }).length;
+        gameEl.textContent = games;
+      } catch (e) { gameEl.textContent = 0; }
+    }
+
+    // Hoạt động gần đây thật (5 mục mới nhất)
+    const list = document.getElementById('recent-list');
+    if (list) {
+      try {
+        const acts = await TVKN.getActivity(5);
+        if (!acts || !acts.length) {
+          list.innerHTML = '<div class="recent-row"><div class="recent-main">'
+            + '<div class="recent-type">Chưa có hoạt động</div></div></div>';
+        } else {
+          list.innerHTML = acts.map(function (a) {
+            const text = (a.text || '').replace(/[<>&]/g, function (c) {
+              return c === '<' ? '&lt;' : c === '>' ? '&gt;' : '&amp;';
+            });
+            const xp = (a.xp_delta != null && a.xp_delta !== 0)
+              ? '<div class="recent-xp">' + (a.xp_delta > 0 ? '+' : '') + a.xp_delta + '</div>' : '';
+            return '<div class="recent-row">'
+              + '<div class="recent-date">' + fmtDate(a.created_at) + '</div>'
+              + '<div class="recent-ico">📘</div>'
+              + '<div class="recent-main"><div class="recent-name">' + text + '</div></div>'
+              + xp + '</div>';
+          }).join('');
+        }
+      } catch (e) {
+        list.innerHTML = '<div class="recent-row"><div class="recent-main">'
+          + '<div class="recent-type">Chưa có hoạt động</div></div></div>';
+      }
+    }
+  })();
 </script>
 </body>
 </html>

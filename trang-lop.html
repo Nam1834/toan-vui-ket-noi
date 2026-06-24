@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Hành trình Toán Lớp 1 - TOÁN VUI KẾT NỐI</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -378,8 +379,8 @@
   </a>
   <div class="header-right">
     <button class="icon-btn" title="Thông báo">🔔<span class="badge-dot"></span></button>
-    <div class="xp-pill">🪙 <span><span data-bind="xp">450</span> XP</span></div>
-    <div class="avatar" title="Nguyễn Minh Anh">👧</div>
+    <div class="xp-pill">🪙 <span><span data-bind="xp">0</span> XP</span></div>
+    <div class="avatar" title="Hồ sơ của em">👧</div>
   </div>
 </header>
 
@@ -402,14 +403,14 @@
   <!-- ============ THANH TIẾN ĐỘ ============ -->
   <div class="progress-section">
     <div class="stat-grid">
-      <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num" id="lessonsDoneNum">3/10</div><div class="stat-label">Bài đã học</div></div>
-      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num" data-bind="xp">450</div><div class="stat-label">Điểm XP</div></div>
-      <div class="stat-card"><div class="stat-icon">🏅</div><div class="stat-num">4</div><div class="stat-label">Huy hiệu</div></div>
-      <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-num" data-bind="streak">7</div><div class="stat-label">Ngày liên tiếp</div></div>
+      <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num" id="lessonsDoneNum"><span data-bind="completed">0</span>/<span data-bind="total">10</span></div><div class="stat-label">Bài đã học</div></div>
+      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num" data-bind="xp">0</div><div class="stat-label">Điểm XP</div></div>
+      <div class="stat-card"><div class="stat-icon">🏅</div><div class="stat-num" data-bind="badges">0</div><div class="stat-label">Huy hiệu</div></div>
+      <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-num" data-bind="streak">0</div><div class="stat-label">Ngày liên tiếp</div></div>
     </div>
     <div class="progress-wrap">
-      <div class="progress-label"><span>📈 Tiến độ hoàn thành</span><span id="progressPct">30%</span></div>
-      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-label"><span>📈 Tiến độ hoàn thành</span><span id="progressPct" data-bind="percent">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0"></div></div>
     </div>
   </div>
 
@@ -682,7 +683,7 @@
     try {
       if (!window.TVKN || !TVKN.configured) return; // chưa cấu hình → giữ demo
       const lessons = await TVKN.getLessons();
-      if (!Array.isArray(lessons) || lessons.length === 0) return; // rỗng → giữ demo
+      if (!Array.isArray(lessons)) return;   // lỗi dữ liệu → giữ nguyên (mảng rỗng vẫn xử lý: hiện 0/10)
 
       // 1) Map: lesson_id → { status, best_score }
       const dataMap = {};

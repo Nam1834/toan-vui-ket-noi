@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Thử thách hằng ngày - TOÁN VUI KẾT NỐI</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -427,9 +428,9 @@
   </a>
   <div class="header-title">🎯 THỬ THÁCH HẰNG NGÀY</div>
   <div class="header-right">
-    <div class="xp-pill">⭐ <span>4250 XP</span></div>
-    <div class="streak-pill">🔥 <span>12 ngày</span></div>
-    <div class="avatar" title="Minh Anh"><div class="av-face">👧</div><span>Minh Anh</span></div>
+    <div class="xp-pill">⭐ <span><span data-bind="xp">0</span> XP</span></div>
+    <div class="streak-pill">🔥 <span><span data-bind="streak">0</span> ngày</span></div>
+    <div class="avatar" title="Hồ sơ của em"><div class="av-face">👧</div><span data-bind="name">Bạn</span></div>
   </div>
 </header>
 
@@ -439,7 +440,7 @@
   <div class="banner">
     <div class="banner-text">
       <span class="banner-tag">⏱️ Chỉ mất 5 phút - vẫn nhận thưởng!</span>
-      <h1>🎯 THỬ THÁCH NGÀY 23/06/2026</h1>
+      <h1>🎯 THỬ THÁCH NGÀY <span id="challengeDate">--/--/----</span></h1>
       <p>Hoàn thành thử thách hôm nay để nhận XP và kéo dài chuỗi học tập của em nhé!</p>
       <div class="banner-chips">
         <span class="chip">📚 5 câu hỏi nhanh</span>
@@ -566,7 +567,7 @@
     <p class="section-sub">Tháng 6/2026 - em đang làm rất tốt!</p>
     <div class="stat-grid">
       <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num">22/30</div><div class="stat-label">Ngày hoàn thành</div></div>
-      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num">1250</div><div class="stat-label">XP nhận trong tháng</div></div>
+      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num" id="statTotalXp">0</div><div class="stat-label">Tổng XP</div></div>
       <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-num">18</div><div class="stat-label">Chuỗi dài nhất</div></div>
     </div>
   </section>
@@ -577,20 +578,20 @@
     <p class="section-sub">Cùng thi đua giữ chuỗi học tập với các bạn nhé!</p>
     <div class="card">
       <div class="rank-list" id="challengeRankList">
-        <div class="rank-item me" id="rankRow0">
+        <div class="rank-item" id="rankRow0">
           <div class="rank-medal">🥇</div>
-          <div class="rank-name" id="rankName0">Minh Anh <span style="font-size:12px;color:var(--text-soft)">(em)</span></div>
-          <div class="rank-days" id="rankDays0">🔥 25 ngày liên tiếp</div>
+          <div class="rank-name" id="rankName0">--</div>
+          <div class="rank-days" id="rankDays0">🔥 0 ngày liên tiếp</div>
         </div>
         <div class="rank-item" id="rankRow1">
           <div class="rank-medal">🥈</div>
-          <div class="rank-name" id="rankName1">Gia Bảo</div>
-          <div class="rank-days" id="rankDays1">🔥 22 ngày liên tiếp</div>
+          <div class="rank-name" id="rankName1">--</div>
+          <div class="rank-days" id="rankDays1">🔥 0 ngày liên tiếp</div>
         </div>
         <div class="rank-item" id="rankRow2">
           <div class="rank-medal">🥉</div>
-          <div class="rank-name" id="rankName2">Hải Nam</div>
-          <div class="rank-days" id="rankDays2">🔥 20 ngày liên tiếp</div>
+          <div class="rank-name" id="rankName2">--</div>
+          <div class="rank-days" id="rankDays2">🔥 0 ngày liên tiếp</div>
         </div>
       </div>
       <div class="rank-more">
@@ -874,18 +875,34 @@
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
 <script>
-  /* Chặn trang + hiển thị đúng người đăng nhập (Supabase) */
+  /* Đăng xuất (việc chặn trang do khối dữ liệu bên dưới gọi guardPage một lần) */
   window.tvknLogout = function(){ TVKN.signOut(); };
-  TVKN.guardPage();
 </script>
 <script>
-  /* Đổ dữ liệu thật vào bảng "Top thử thách" (xếp theo chuỗi ngày) */
+  /* Ngày tiêu đề = ngày thật hôm nay */
+  (function () {
+    var el = document.getElementById('challengeDate');
+    if (el) el.textContent = new Date().toLocaleDateString('vi-VN');
+  })();
+</script>
+<script>
+  /* Đổ dữ liệu thật: tổng XP + bảng "Top thử thách" (xếp theo chuỗi ngày) */
   (async function () {
     if (!(window.TVKN && TVKN.configured)) return;
     try {
+      var data = await TVKN.guardPage();          // { profile, progress, ... } thật
+      var profile = data && data.profile ? data.profile : null;
+      var progress = data && data.progress ? data.progress : null;
+      var myName = profile && profile.name ? profile.name : '';
+
+      // Tổng XP thật (mặc định 0)
+      var xpEl = document.getElementById('statTotalXp');
+      if (xpEl) xpEl.textContent = (progress && progress.xp != null) ? progress.xp : 0;
+
+      // Bảng xếp hạng thật
       var list = await TVKN.getLeaderboard(10);
       if (!Array.isArray(list) || !list.length) return;
-      // Bảng thử thách xếp theo chuỗi ngày liên tiếp (streak), lấy top 3
+      // Xếp theo chuỗi ngày liên tiếp (streak), lấy top 3
       var top = list.slice().sort(function (a, b) {
         return (b.streak_days || 0) - (a.streak_days || 0);
       }).slice(0, 3);
@@ -897,14 +914,26 @@
         var u = top[i];
         if (!u) {
           row.style.display = 'none';
+          row.classList.remove('me');
           continue;
         }
         row.style.display = '';
-        nameEl.textContent = u.name || 'Bạn nhỏ';
+        var uName = u.name || 'Bạn nhỏ';
+        var isMe = !!myName && uName === myName;
+        nameEl.textContent = uName;
+        if (isMe) {
+          var tag = document.createElement('span');
+          tag.style.cssText = 'font-size:12px;color:var(--text-soft)';
+          tag.textContent = ' (em)';
+          nameEl.appendChild(tag);
+          row.classList.add('me');
+        } else {
+          row.classList.remove('me');
+        }
         daysEl.textContent = '🔥 ' + (u.streak_days || 0) + ' ngày liên tiếp';
       }
     } catch (e) {
-      /* Lỗi: giữ nguyên dữ liệu mẫu đã có sẵn */
+      /* Lỗi: giữ nguyên dữ liệu trung tính đã có sẵn */
     }
   })();
 </script>

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Trang Quản trị - TOÁN VUI KẾT NỐI</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -301,7 +302,7 @@
         <div class="sb-brand-sub">Trang Quản trị</div>
       </div>
     </div>
-    <div class="sb-role">🛡️ Super Admin</div>
+    <div class="sb-role" id="sbAdminName">🛡️ Quản trị viên</div>
     <nav class="sb-menu">
       <button class="sb-item active" data-tab="dashboard"><span class="ic">🏠</span> Dashboard</button>
       <button class="sb-item" data-tab="lessons"><span class="ic">📚</span> Bài học</button>
@@ -333,8 +334,8 @@
         <div class="account" title="Tài khoản giáo viên">
           <div class="av">👩‍🏫</div>
           <div>
-            <div class="nm" id="adminAccountName">Cô Lan Anh</div>
-            <div class="rl" id="adminAccountRole">Giáo viên</div>
+            <div class="nm" id="adminAccountName">—</div>
+            <div class="rl" id="adminAccountRole">Quản trị viên</div>
           </div>
         </div>
       </div>
@@ -349,12 +350,12 @@
           <p>Chào mừng trở lại! Đây là bức tranh toàn cảnh của TOÁN VUI KẾT NỐI hôm nay.</p>
         </div>
         <div class="stat-grid">
-          <div class="stat-card s1"><div class="stat-ic">👦</div><div><div class="stat-num" id="stat-students">1.250</div><div class="stat-label" id="stat-students-label">Tổng học sinh</div></div></div>
-          <div class="stat-card s2"><div class="stat-ic">📚</div><div><div class="stat-num" id="stat-lessons">250</div><div class="stat-label" id="stat-lessons-label">Tổng bài học</div></div></div>
-          <div class="stat-card s3"><div class="stat-ic">❓</div><div><div class="stat-num" id="stat-questions">12.500</div><div class="stat-label" id="stat-questions-label">Tổng câu hỏi</div></div></div>
-          <div class="stat-card s4"><div class="stat-ic">🎮</div><div><div class="stat-num" id="stat-plays">85.000</div><div class="stat-label" id="stat-plays-label">Tổng lượt chơi</div></div></div>
-          <div class="stat-card s5"><div class="stat-ic">⭐</div><div><div class="stat-num" id="stat-xptoday">150.000</div><div class="stat-label" id="stat-xptoday-label">XP phát sinh hôm nay</div></div></div>
-          <div class="stat-card s6"><div class="stat-ic">🔥</div><div><div class="stat-num" id="stat-active">680</div><div class="stat-label" id="stat-active-label">Học sinh hoạt động hôm nay</div></div></div>
+          <div class="stat-card s1"><div class="stat-ic">👦</div><div><div class="stat-num" id="stat-students">0</div><div class="stat-label" id="stat-students-label">Tổng học sinh</div></div></div>
+          <div class="stat-card s2"><div class="stat-ic">📚</div><div><div class="stat-num" id="stat-lessons">0</div><div class="stat-label" id="stat-lessons-label">Bài đã hoàn thành</div></div></div>
+          <div class="stat-card s3"><div class="stat-ic">⭐</div><div><div class="stat-num" id="stat-questions">0</div><div class="stat-label" id="stat-questions-label">Tổng XP toàn hệ thống</div></div></div>
+          <div class="stat-card s4"><div class="stat-ic">🎲</div><div><div class="stat-num" id="stat-plays">0</div><div class="stat-label" id="stat-plays-label">Tổng hoạt động</div></div></div>
+          <div class="stat-card s5"><div class="stat-ic">✨</div><div><div class="stat-num" id="stat-xptoday">0</div><div class="stat-label" id="stat-xptoday-label">XP phát sinh hôm nay</div></div></div>
+          <div class="stat-card s6"><div class="stat-ic">🔥</div><div><div class="stat-num" id="stat-active">0</div><div class="stat-label" id="stat-active-label">Học sinh hoạt động hôm nay</div></div></div>
         </div>
         <div class="card">
           <div class="card-title">🛡️ Phân quyền hệ thống</div>
@@ -460,15 +461,18 @@
             <button class="btn btn-warn">🔑 Đặt lại mật khẩu</button>
             <button class="btn btn-primary" onclick="celebrate(event)">📤 Xuất báo cáo</button>
           </div>
+          <div class="filters">
+            <select id="userRoleFilter" onchange="renderUsers()">
+              <option value="student" selected>👦 Học sinh</option>
+              <option value="admin">🛡️ Quản trị viên</option>
+              <option value="all">Tất cả vai trò</option>
+            </select>
+          </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Mã HS</th><th>Họ tên</th><th>Lớp</th><th>XP</th><th>Huy hiệu</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+              <thead><tr><th>Email</th><th>Họ tên</th><th>Lớp</th><th>XP</th><th>Vai trò</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
               <tbody id="students-tbody">
-                <tr><td>#HS1001</td><td>Nguyễn Minh Anh</td><td>Lớp 1</td><td>450</td><td>🏅 4</td><td><span class="pill pill-green">Hoạt động</span></td><td><div class="row-actions"><button class="btn btn-soft btn-sm">🔒</button><button class="btn btn-warn btn-sm">🔑</button></div></td></tr>
-                <tr><td>#HS1002</td><td>Trần Gia Bảo</td><td>Lớp 2</td><td>1.220</td><td>🏅 9</td><td><span class="pill pill-green">Hoạt động</span></td><td><div class="row-actions"><button class="btn btn-soft btn-sm">🔒</button><button class="btn btn-warn btn-sm">🔑</button></div></td></tr>
-                <tr><td>#HS1003</td><td>Lê Khánh Chi</td><td>Lớp 3</td><td>2.870</td><td>🏅 15</td><td><span class="pill pill-pink">Bị khóa</span></td><td><div class="row-actions"><button class="btn btn-green btn-sm">🔓</button><button class="btn btn-warn btn-sm">🔑</button></div></td></tr>
-                <tr><td>#HS1004</td><td>Phạm Đức Duy</td><td>Lớp 4</td><td>3.540</td><td>🏅 18</td><td><span class="pill pill-green">Hoạt động</span></td><td><div class="row-actions"><button class="btn btn-soft btn-sm">🔒</button><button class="btn btn-warn btn-sm">🔑</button></div></td></tr>
-                <tr><td>#HS1005</td><td>Vũ Thảo My</td><td>Lớp 5</td><td>5.910</td><td>🏅 23</td><td><span class="pill pill-gray">Ngừng học</span></td><td><div class="row-actions"><button class="btn btn-green btn-sm">🔓</button><button class="btn btn-warn btn-sm">🔑</button></div></td></tr>
+                <tr><td colspan="7" style="text-align:center;color:var(--text-soft)">Chưa có dữ liệu</td></tr>
               </tbody>
             </table>
           </div>
@@ -495,10 +499,7 @@
             <table>
               <thead><tr><th>Tên phụ huynh</th><th>SĐT</th><th>Email</th><th>Con đang học</th></tr></thead>
               <tbody>
-                <tr><td>Nguyễn Văn Hùng</td><td>0901 234 567</td><td>hung.nv@email.com</td><td>Nguyễn Minh Anh (Lớp 1)</td></tr>
-                <tr><td>Trần Thị Hoa</td><td>0912 345 678</td><td>hoa.tt@email.com</td><td>Trần Gia Bảo (Lớp 2)</td></tr>
-                <tr><td>Lê Quang Vinh</td><td>0923 456 789</td><td>vinh.lq@email.com</td><td>Lê Khánh Chi (Lớp 3)</td></tr>
-                <tr><td>Phạm Thị Lan</td><td>0934 567 890</td><td>lan.pt@email.com</td><td>Phạm Đức Duy (Lớp 4)</td></tr>
+                <tr><td colspan="4" style="text-align:center;color:var(--text-soft)">Chưa có dữ liệu (Tính năng đang phát triển)</td></tr>
               </tbody>
             </table>
           </div>
@@ -587,9 +588,7 @@
             <table>
               <thead><tr><th>Ngày</th><th>Lớp</th><th>Số câu</th><th>XP</th><th>Trạng thái</th></tr></thead>
               <tbody>
-                <tr><td>23/06/2026</td><td>Tất cả</td><td>10</td><td>100</td><td><span class="pill pill-green">Đang chạy</span></td></tr>
-                <tr><td>22/06/2026</td><td>Lớp 1-3</td><td>8</td><td>80</td><td><span class="pill pill-gray">Đã kết thúc</span></td></tr>
-                <tr><td>24/06/2026</td><td>Tất cả</td><td>10</td><td>100</td><td><span class="pill pill-orange">Lên lịch</span></td></tr>
+                <tr><td colspan="5" style="text-align:center;color:var(--text-soft)">Chưa có dữ liệu (Tính năng đang phát triển)</td></tr>
               </tbody>
             </table>
           </div>
@@ -620,9 +619,7 @@
         <div class="card">
           <div class="card-title">📜 Nhật ký AI</div>
           <div class="ai-log">
-            <div class="ai-entry"><div class="ai-q">👦 Học sinh: 8 cộng 5 bằng mấy ạ?</div><div class="ai-a">🐰 AI: Em thử đếm tiếp từ 8 nhé: 9, 10, 11, 12, 13. Vậy 8 + 5 = 13!</div><div class="ai-time">🕒 23/06/2026 · 09:14</div></div>
-            <div class="ai-entry"><div class="ai-q">👦 Học sinh: Phân số 1/2 nghĩa là gì?</div><div class="ai-a">🐰 AI: Là khi em chia một chiếc bánh thành 2 phần bằng nhau và lấy 1 phần đó!</div><div class="ai-time">🕒 23/06/2026 · 10:02</div></div>
-            <div class="ai-entry"><div class="ai-q">👦 Học sinh: Hình vuông có mấy cạnh?</div><div class="ai-a">🐰 AI: Hình vuông có 4 cạnh bằng nhau và 4 góc vuông đó em!</div><div class="ai-time">🕒 23/06/2026 · 11:20</div></div>
+            <div style="text-align:center;color:var(--text-soft);padding:12px">Chưa có dữ liệu (Tính năng đang phát triển)</div>
           </div>
         </div>
       </section>
@@ -719,10 +716,7 @@
             <table>
               <thead><tr><th>Nội dung</th><th>Phạm vi</th><th>Người nhận</th><th>Thời gian</th><th>Trạng thái</th></tr></thead>
               <tbody>
-                <tr><td>Ngày mai có thử thách đặc biệt.</td><td><span class="pill pill-blue">Tất cả</span></td><td>1.250</td><td>23/06/2026 · 08:30</td><td><span class="pill pill-green">Đã gửi</span></td></tr>
-                <tr><td>Lớp 3 nhớ hoàn thành bài tập phân số nhé!</td><td><span class="pill pill-purple">Theo lớp</span></td><td>248</td><td>22/06/2026 · 16:10</td><td><span class="pill pill-green">Đã gửi</span></td></tr>
-                <tr><td>Chúc mừng nhóm Chuyên cần đạt mốc 7 ngày!</td><td><span class="pill pill-orange">Theo nhóm</span></td><td>64</td><td>21/06/2026 · 19:45</td><td><span class="pill pill-green">Đã gửi</span></td></tr>
-                <tr><td>Bảo trì hệ thống 22h-23h tối nay.</td><td><span class="pill pill-blue">Tất cả</span></td><td>1.250</td><td>20/06/2026 · 12:00</td><td><span class="pill pill-gray">Đã lên lịch</span></td></tr>
+                <tr><td colspan="5" style="text-align:center;color:var(--text-soft)">Chưa có dữ liệu (Tính năng đang phát triển)</td></tr>
               </tbody>
             </table>
           </div>
@@ -866,12 +860,14 @@
       // hiện tên admin ở topbar nếu có chỗ
       document.querySelectorAll('.admin-name,.account-name').forEach(function(el){ el.textContent = p.name; });
       var _nameEl = document.getElementById('adminAccountName');
-      if (_nameEl && p.name) _nameEl.textContent = p.name;
+      if (_nameEl) _nameEl.textContent = p.name || '—';
       var _roleEl = document.getElementById('adminAccountRole');
       if (_roleEl) _roleEl.textContent = 'Quản trị viên';
+      var _sbEl = document.getElementById('sbAdminName');
+      if (_sbEl) _sbEl.textContent = '🛡️ ' + (p.name || 'Quản trị viên');
       loadAdminData();
     }
-  });
+  }).catch(function(){ /* lỗi mạng/Supabase — requireAdmin đã tự chuyển trang khi cần */ });
 
   // ===== Tải dữ liệu thật từ Supabase =====
   function fmtNum(n) {
@@ -903,6 +899,39 @@
     return '<span class="pill pill-green">Học sinh</span>';
   }
 
+  var _allUsers = [];
+  function userRow(u) {
+    var name = escapeHtml(u.name || u.email || '—');
+    var email = escapeHtml(u.email || '');
+    var grade = (u.grade !== null && u.grade !== undefined && u.grade !== '') ? 'Lớp ' + escapeHtml(u.grade) : '—';
+    var xp = fmtNum(u.xp || 0);
+    return '<tr>' +
+      '<td>' + email + '</td>' +
+      '<td>' + name + '</td>' +
+      '<td>' + grade + '</td>' +
+      '<td>' + xp + '</td>' +
+      '<td>' + rolePill(u.role) + '</td>' +
+      '<td><span class="pill pill-green">Hoạt động</span></td>' +
+      '<td><div class="row-actions"><button class="btn btn-soft btn-sm">🔒</button><button class="btn btn-warn btn-sm">🔑</button></div></td>' +
+      '</tr>';
+  }
+  // Lọc danh sách theo vai trò (student = mọi vai trò KHÔNG phải admin)
+  function renderUsers() {
+    var tbody = document.getElementById('students-tbody');
+    if (!tbody) return;
+    var sel = document.getElementById('userRoleFilter');
+    var f = sel ? sel.value : 'student';
+    var list = _allUsers.filter(function (u) {
+      var r = (u.role || 'student').toLowerCase();
+      if (f === 'admin') return r === 'admin';
+      if (f === 'student') return r !== 'admin';
+      return true;
+    });
+    tbody.innerHTML = list.length
+      ? list.map(userRow).join('')
+      : '<tr><td colspan="7" style="text-align:center;color:var(--text-soft)">Không có người dùng phù hợp</td></tr>';
+  }
+
   async function loadAdminData() {
     // --- Tổng quan (stat cards) ---
     try {
@@ -922,37 +951,17 @@
         setLabel('stat-plays-label', 'Tổng hoạt động');
       }
     } catch (e) {
-      console.warn('adminOverview lỗi, giữ dữ liệu demo:', e);
+      console.warn('adminOverview lỗi, giữ mặc định 0:', e);
     }
 
-    // --- Danh sách học sinh / người dùng ---
+    // --- Danh sách người dùng (lọc Học sinh / Quản trị viên qua dropdown) ---
     try {
-      var users = await TVKN.adminUsers();
-      var tbody = document.getElementById('students-tbody');
-      if (tbody && Array.isArray(users)) {
-        if (users.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-soft)">Chưa có người dùng</td></tr>';
-        } else {
-          tbody.innerHTML = users.map(function (u) {
-            var name = escapeHtml(u.name || u.email || '—');
-            var email = escapeHtml(u.email || '');
-            var grade = (u.grade !== null && u.grade !== undefined && u.grade !== '') ? 'Lớp ' + escapeHtml(u.grade) : '—';
-            var xp = fmtNum(u.xp || 0);
-            return '<tr>' +
-              '<td>' + email + '</td>' +
-              '<td>' + name + '</td>' +
-              '<td>' + grade + '</td>' +
-              '<td>' + xp + '</td>' +
-              '<td>' + rolePill(u.role) + '</td>' +
-              '<td><span class="pill pill-green">Hoạt động</span></td>' +
-              '<td><div class="row-actions"><button class="btn btn-soft btn-sm">🔒</button><button class="btn btn-warn btn-sm">🔑</button></div></td>' +
-              '</tr>';
-          }).join('');
-        }
-      }
+      _allUsers = (await TVKN.adminUsers()) || [];
     } catch (e) {
-      console.warn('adminUsers lỗi, giữ dữ liệu demo:', e);
+      _allUsers = [];
+      console.warn('adminUsers lỗi, hiển thị rỗng:', e);
     }
+    renderUsers();
 
     // --- So sánh cohort (Báo cáo) ---
     try {
@@ -979,7 +988,7 @@
         if (card) card.style.display = 'block';
       }
     } catch (e) {
-      console.warn('getCohortStats lỗi, giữ dữ liệu demo:', e);
+      console.warn('getCohortStats lỗi, ẩn thẻ cohort:', e);
     }
   }
 </script>

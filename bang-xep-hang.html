@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Bảng xếp hạng - TOÁN VUI KẾT NỐI</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -437,10 +438,10 @@
   </a>
   <div class="header-title">🏆 <span class="t-txt">BẢNG XẾP HẠNG</span></div>
   <div class="header-right">
-    <div class="xp-pill">⭐ <span>4250 XP</span></div>
-    <div class="streak-pill">🔥 <span>12 ngày</span></div>
-    <div class="avatar" title="Nguyễn Minh Anh">👧</div>
-    <span class="avatar-name">Minh Anh</span>
+    <div class="xp-pill">⭐ <span data-bind="xp">0</span> XP</div>
+    <div class="streak-pill">🔥 <span data-bind="streak">0</span> ngày</div>
+    <div class="avatar" title="Học sinh">🙂</div>
+    <span class="avatar-name" data-bind="name"></span>
   </div>
 </header>
 
@@ -468,35 +469,35 @@
 
     <div class="podium" id="podium">
       <!-- Hạng 2 -->
-      <div class="podium-item p2">
+      <div class="podium-item p2" style="display:none">
         <div class="podium-card">
           <div class="podium-rankno">2</div>
           <div class="podium-cup">🥈</div>
-          <div class="podium-avatar">👦</div>
-          <div class="podium-name">Gia Bảo</div>
-          <div class="podium-xp">⭐ 6900 XP</div>
+          <div class="podium-avatar">🙂</div>
+          <div class="podium-name">—</div>
+          <div class="podium-xp">⭐ 0 XP</div>
         </div>
         <div class="podium-base">2</div>
       </div>
       <!-- Hạng 1 -->
-      <div class="podium-item p1">
+      <div class="podium-item p1" style="display:none">
         <div class="podium-card">
           <div class="podium-rankno">1</div>
           <div class="podium-cup">🥇</div>
-          <div class="podium-avatar">👧</div>
-          <div class="podium-name">Minh Anh</div>
-          <div class="podium-xp">⭐ 7250 XP</div>
+          <div class="podium-avatar">🙂</div>
+          <div class="podium-name">—</div>
+          <div class="podium-xp">⭐ 0 XP</div>
         </div>
         <div class="podium-base">1</div>
       </div>
       <!-- Hạng 3 -->
-      <div class="podium-item p3">
+      <div class="podium-item p3" style="display:none">
         <div class="podium-card">
           <div class="podium-rankno">3</div>
           <div class="podium-cup">🥉</div>
-          <div class="podium-avatar">🧒</div>
-          <div class="podium-name">Hải Nam</div>
-          <div class="podium-xp">⭐ 6400 XP</div>
+          <div class="podium-avatar">🙂</div>
+          <div class="podium-name">—</div>
+          <div class="podium-xp">⭐ 0 XP</div>
         </div>
         <div class="podium-base">3</div>
       </div>
@@ -547,106 +548,7 @@
     <p class="section-sub">Danh sách các bạn sau Top 3. Tìm tên em và xem mình đang ở đâu nhé!</p>
 
     <div class="rank-list" id="rankList">
-      <div class="rank-row">
-        <div class="rank-no">#4</div>
-        <div class="rank-avatar">👧</div>
-        <div class="rank-info"><div class="rank-name">Ngọc Anh</div><div class="rank-grade">Lớp 1</div></div>
-        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 5800</div>
-        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 18 ngày</div>
-        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 12</div>
-      </div>
-
-      <div class="rank-row">
-        <div class="rank-no">#5</div>
-        <div class="rank-avatar">👦</div>
-        <div class="rank-info"><div class="rank-name">Hoàng Nam</div><div class="rank-grade">Lớp 2</div></div>
-        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 5500</div>
-        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 16 ngày</div>
-        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 11</div>
-      </div>
-
-      <div class="rank-row">
-        <div class="rank-no">#6</div>
-        <div class="rank-avatar">🧒</div>
-        <div class="rank-info"><div class="rank-name">Khánh Vy</div><div class="rank-grade">Lớp 3</div></div>
-        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 5300</div>
-        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 14 ngày</div>
-        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 10</div>
-      </div>
-
-      <div class="rank-row">
-        <div class="rank-no">#7</div>
-        <div class="rank-avatar">👦</div>
-        <div class="rank-info"><div class="rank-name">Đức Minh</div><div class="rank-grade">Lớp 2</div></div>
-        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 5100</div>
-        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 13 ngày</div>
-        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 10</div>
-      </div>
-
-      <div class="rank-row">
-        <div class="rank-no">#8</div>
-        <div class="rank-avatar">👧</div>
-        <div class="rank-info"><div class="rank-name">Bảo Ngọc</div><div class="rank-grade">Lớp 4</div></div>
-        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 4950</div>
-        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 11 ngày</div>
-        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 9</div>
-      </div>
-
-      <div class="rank-row">
-        <div class="rank-no">#9</div>
-        <div class="rank-avatar">🧒</div>
-        <div class="rank-info"><div class="rank-name">Tuấn Kiệt</div><div class="rank-grade">Lớp 3</div></div>
-        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 4700</div>
-        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 10 ngày</div>
-        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 8</div>
-      </div>
-
-      <div class="rank-row">
-        <div class="rank-no">#13</div>
-        <div class="rank-avatar">👧</div>
-        <div class="rank-info"><div class="rank-name">Thuỳ Linh</div><div class="rank-grade">Lớp 1</div></div>
-        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 4500</div>
-        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 13 ngày</div>
-        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 16</div>
-      </div>
-
-      <div class="rank-row">
-        <div class="rank-no">#14</div>
-        <div class="rank-avatar">👦</div>
-        <div class="rank-info"><div class="rank-name">Quang Huy</div><div class="rank-grade">Lớp 2</div></div>
-        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 4400</div>
-        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 9 ngày</div>
-        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 14</div>
-      </div>
-
-      <!-- Dòng của em -->
-      <div class="rank-row is-me">
-        <div class="me-tag">⭐ Đây là em</div>
-        <div class="rank-no">#15</div>
-        <div class="rank-avatar">👧</div>
-        <div class="rank-info"><div class="rank-name">Nguyễn Minh Anh</div><div class="rank-grade">Lớp 1</div></div>
-        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 4250</div>
-        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 12 ngày</div>
-        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 15</div>
-      </div>
-
-      <div class="rank-row">
-        <div class="rank-no">#16</div>
-        <div class="rank-avatar">👦</div>
-        <div class="rank-info"><div class="rank-name">Gia Hân</div><div class="rank-grade">Lớp 3</div></div>
-        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 4100</div>
-        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 8 ngày</div>
-        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 13</div>
-      </div>
-
-      <div class="rank-row">
-        <div class="rank-no">#17</div>
-        <div class="rank-avatar">🧒</div>
-        <div class="rank-info"><div class="rank-name">Minh Khôi</div><div class="rank-grade">Lớp 2</div></div>
-        <div class="rank-stat xp"><span class="rank-stat-lbl">XP</span>⭐ 3950</div>
-        <div class="rank-stat streak"><span class="rank-stat-lbl">Chuỗi</span>🔥 7 ngày</div>
-        <div class="rank-stat badge"><span class="rank-stat-lbl">Huy hiệu</span>🏅 12</div>
-      </div>
+      <p class="section-sub" id="rankEmpty">Đang tải bảng xếp hạng…</p>
     </div>
   </section>
 
@@ -655,13 +557,13 @@
     <div class="my-achieve">
       <h3>⭐ Thành tích của em</h3>
       <div class="my-stat-grid">
-        <div class="my-stat"><div class="my-stat-icon">🏅</div><div class="my-stat-num" id="myRankNum">#15</div><div class="my-stat-lbl">Hạng hiện tại</div></div>
-        <div class="my-stat"><div class="my-stat-icon">⭐</div><div class="my-stat-num" id="myXpNum">4250</div><div class="my-stat-lbl">Điểm XP</div></div>
-        <div class="my-stat"><div class="my-stat-icon">🔥</div><div class="my-stat-num" id="myStreakNum">12</div><div class="my-stat-lbl">Ngày liên tiếp</div></div>
-        <div class="my-stat"><div class="my-stat-icon">🎖️</div><div class="my-stat-num">15</div><div class="my-stat-lbl">Huy hiệu</div></div>
+        <div class="my-stat"><div class="my-stat-icon">🏅</div><div class="my-stat-num" id="myRankNum">—</div><div class="my-stat-lbl">Hạng hiện tại</div></div>
+        <div class="my-stat"><div class="my-stat-icon">⭐</div><div class="my-stat-num" id="myXpNum">0</div><div class="my-stat-lbl">Điểm XP</div></div>
+        <div class="my-stat"><div class="my-stat-icon">🔥</div><div class="my-stat-num" id="myStreakNum">0</div><div class="my-stat-lbl">Ngày liên tiếp</div></div>
+        <div class="my-stat"><div class="my-stat-icon">🎖️</div><div class="my-stat-num" id="myBadgeNum">0</div><div class="my-stat-lbl">Huy hiệu</div></div>
       </div>
-      <div class="my-msg">
-        🎯 Em đang đứng hạng <strong>#15</strong>. Chỉ cần thêm <span class="gap-num">150 XP</span> nữa là vượt bạn phía trên để lên hạng <strong>#14</strong>!
+      <div class="my-msg" id="myMsg">
+        🎯 Học tập chăm chỉ mỗi ngày để leo lên bảng xếp hạng nhé!
       </div>
       <a href="thu-thach.html" class="btn" onclick="celebrate(event)">🎯 Làm thử thách ngay</a>
     </div>
@@ -675,26 +577,26 @@
       <div class="star-card sc1">
         <div class="star-icon">🔥</div>
         <div class="star-title">Chăm chỉ nhất</div>
-        <div class="star-name">Minh Anh</div>
-        <div class="star-value">Chuỗi học 25 ngày</div>
+        <div class="star-name" data-star="streak">—</div>
+        <div class="star-value">Chuỗi học dài nhất</div>
       </div>
       <div class="star-card sc2">
         <div class="star-icon">⭐</div>
         <div class="star-title">Nhiều XP nhất</div>
-        <div class="star-name">Gia Bảo</div>
-        <div class="star-value">850 XP trong tuần</div>
+        <div class="star-name" data-star="xp">—</div>
+        <div class="star-value">Dẫn đầu điểm XP</div>
       </div>
       <div class="star-card sc3">
         <div class="star-icon">🏅</div>
         <div class="star-title">Nhiều huy hiệu nhất</div>
-        <div class="star-name">Hải Nam</div>
-        <div class="star-value">5 huy hiệu mới</div>
+        <div class="star-name" data-star="badge">—</div>
+        <div class="star-value">Sưu tầm huy hiệu</div>
       </div>
       <div class="star-card sc4">
         <div class="star-icon">🚀</div>
         <div class="star-title">Tiến bộ nhất</div>
-        <div class="star-name">Khánh Vy</div>
-        <div class="star-value">Tăng 12 bậc</div>
+        <div class="star-name" data-star="progress">—</div>
+        <div class="star-value">Tăng hạng nhanh</div>
       </div>
     </div>
   </section>
@@ -790,7 +692,12 @@
   /* ============ ĐỔ DỮ LIỆU THẬT TỪ SUPABASE VÀO BẢNG XẾP HẠNG ============ */
   (async function loadRealLeaderboard() {
     try {
-      if (!window.TVKN || !TVKN.configured) return; // chưa cấu hình → giữ nội dung demo
+      if (!window.TVKN || !TVKN.configured) {
+        // chưa cấu hình → KHÔNG hiển thị dữ liệu giả: để trống/trung tính
+        const empty = document.getElementById('rankEmpty');
+        if (empty) empty.textContent = 'Chưa có dữ liệu xếp hạng.';
+        return;
+      }
 
       const esc = (s) => String(s == null ? '' : s)
         .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -805,7 +712,25 @@
 
       // Lấy bảng xếp hạng thật (đã sắp theo xp desc, kèm rank)
       const rows = await TVKN.getLeaderboard(20);
+
+      if (!Array.isArray(rows) || !rows.length) {
+        // KHÔNG có ai → để trống trung tính, không rơi về demo
+        const empty = document.getElementById('rankEmpty');
+        if (empty) empty.textContent = 'Chưa có học sinh nào trên bảng xếp hạng. Hãy là người đầu tiên!';
+      }
+
       if (Array.isArray(rows) && rows.length) {
+
+        /* ---- NGÔI SAO TUẦN: lấy từ dữ liệu thật ---- */
+        const maxBy = (arr, key) => arr.reduce((best, u) =>
+          (best == null || Number(u[key] || 0) > Number(best[key] || 0)) ? u : best, null);
+        const setStar = (sel, u) => {
+          const el = document.querySelector('.star-name[data-star="' + sel + '"]');
+          if (el) el.textContent = (u && u.name) ? u.name : '—';
+        };
+        setStar('xp', rows[0]);                       // nhiều XP nhất = hạng 1
+        setStar('streak', maxBy(rows, 'streak_days')); // chuỗi học dài nhất
+        // không có dữ liệu huy hiệu/tiến bộ trong leaderboard → giữ "—"
 
         /* ---- TOP 3 PODIUM ---- */
         // Thứ tự hiển thị: hạng 2 (trái) - hạng 1 (giữa) - hạng 3 (phải)
@@ -853,28 +778,59 @@
               '</div>'
             );
           }).join('');
-          list.innerHTML = html; // chỉ chứa các dòng thật, không còn dòng demo
+          // Ít hơn 4 bạn → không có dòng nào sau Top 3: hiện thông báo trung tính.
+          list.innerHTML = html || '<p class="section-sub">Chưa có học sinh nào ngoài Top 3.</p>';
         }
       }
 
-      /* ---- THÀNH TÍCH CỦA EM ---- */
+      /* ---- THÀNH TÍCH CỦA EM (số liệu THẬT) ---- */
+      let myRank = null, myXp = 0;
       try {
-        const myRank = await TVKN.getMyRank();
+        myRank = await TVKN.getMyRank();
         const elRank = document.getElementById('myRankNum');
         if (elRank && myRank != null) elRank.textContent = '#' + myRank;
       } catch (e) {}
       try {
         const prog = await TVKN.getProgress();
         if (prog) {
+          myXp = Number(prog.xp || 0);
           const elXp = document.getElementById('myXpNum');
           const elStreak = document.getElementById('myStreakNum');
-          if (elXp && prog.xp != null) elXp.textContent = Number(prog.xp || 0).toLocaleString('vi-VN');
+          if (elXp && prog.xp != null) elXp.textContent = myXp.toLocaleString('vi-VN');
           if (elStreak && prog.streak_days != null) elStreak.textContent = prog.streak_days;
+        }
+      } catch (e) {}
+      try {
+        const badges = await TVKN.getBadges();
+        const elBadge = document.getElementById('myBadgeNum');
+        if (elBadge) elBadge.textContent = Array.isArray(badges) ? badges.length : 0;
+      } catch (e) {}
+
+      /* ---- LỜI NHẮN: tính khoảng cách XP tới bạn ngay phía trên (THẬT) ---- */
+      try {
+        const elMsg = document.getElementById('myMsg');
+        if (elMsg && Array.isArray(rows) && rows.length && myRank != null) {
+          if (myRank <= 1) {
+            elMsg.innerHTML = '🏆 Em đang đứng <strong>#1</strong>! Tiếp tục giữ vững ngôi đầu nhé!';
+          } else {
+            // người ngay trên = hạng (myRank-1) trong bảng (nếu nằm trong danh sách đã tải)
+            const above = rows.find((u) => Number(u.rank) === myRank - 1);
+            if (above) {
+              const gap = Math.max(0, Number(above.xp || 0) - myXp);
+              elMsg.innerHTML = '🎯 Em đang đứng hạng <strong>#' + myRank + '</strong>. Chỉ cần thêm '
+                + '<span class="gap-num">' + gap.toLocaleString('vi-VN') + ' XP</span> nữa là vượt bạn phía trên để lên hạng '
+                + '<strong>#' + (myRank - 1) + '</strong>!';
+            } else {
+              elMsg.innerHTML = '🎯 Em đang đứng hạng <strong>#' + myRank + '</strong>. Cố gắng học mỗi ngày để leo cao hơn nhé!';
+            }
+          }
         }
       } catch (e) {}
 
     } catch (err) {
-      // Có lỗi → giữ nguyên nội dung demo, không làm trắng trang
+      // Có lỗi → hiển thị trạng thái trung tính (KHÔNG dữ liệu giả), không làm trắng trang
+      const empty = document.getElementById('rankEmpty');
+      if (empty) empty.textContent = 'Không tải được bảng xếp hạng. Vui lòng thử lại sau.';
       console.warn('Không tải được bảng xếp hạng thật:', err);
     }
   })();

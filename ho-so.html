@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Hồ sơ học tập của em - TOÁN VUI KẾT NỐI</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -393,8 +394,8 @@
   <span class="header-title">Hồ sơ học tập của em</span>
   <div class="header-right">
     <button class="icon-btn" title="Thông báo">🔔<span class="badge-dot"></span></button>
-    <div class="xp-pill">🪙 <span>850 XP</span></div>
-    <div class="avatar" title="Nguyễn Minh Anh">👧</div>
+    <div class="xp-pill">🪙 <span><span data-bind="xp">0</span> XP</span></div>
+    <div class="avatar" title="Hồ sơ của em">🙂</div>
   </div>
 </header>
 
@@ -402,14 +403,13 @@
 
   <!-- ============ KHỐI THÔNG TIN CÁ NHÂN ============ -->
   <div class="profile-card">
-    <div class="profile-avatar">👧</div>
+    <div class="profile-avatar">🙂</div>
     <div class="profile-info">
-      <h1>Nguyễn Minh Anh</h1>
+      <h1 data-bind="name">Bạn</h1>
       <div class="profile-tags">
-        <span class="profile-tag">🎒 Lớp <span data-bind="grade">1</span></span>
-        <span class="profile-tag">⭐ Cấp độ <span data-bind="level">5</span></span>
-        <span class="profile-tag title-tag">🏅 Bé Đếm Số</span>
-        <span class="profile-tag streak-tag">🔥 <span data-bind="streak">7</span> ngày liên tiếp</span>
+        <span class="profile-tag">🎒 Lớp <span data-bind="grade">—</span></span>
+        <span class="profile-tag">⭐ Cấp độ <span data-bind="level">0</span></span>
+        <span class="profile-tag streak-tag">🔥 <span data-bind="streak">0</span> ngày liên tiếp</span>
       </div>
       <div class="profile-buttons">
         <button class="btn btn-primary" onclick="celebrate(event)">🎨 Đổi avatar</button>
@@ -422,10 +422,10 @@
   <!-- ============ THỐNG KÊ TỔNG QUAN ============ -->
   <div class="stats-section">
     <div class="stat-grid">
-      <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num">8/10</div><div class="stat-label">Bài học đã hoàn thành</div></div>
-      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num"><span data-bind="xp">850</span> XP</div><div class="stat-label">Điểm kinh nghiệm</div></div>
-      <div class="stat-card"><div class="stat-icon">🏅</div><div class="stat-num">5</div><div class="stat-label">Huy hiệu đã mở khóa</div></div>
-      <div class="stat-card"><div class="stat-icon">⏱️</div><div class="stat-num">3g 25p</div><div class="stat-label">Tổng thời gian học</div></div>
+      <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num"><span data-bind="completed">0</span>/<span data-bind="total">10</span></div><div class="stat-label">Bài học đã hoàn thành</div></div>
+      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num"><span data-bind="xp">0</span> XP</div><div class="stat-label">Điểm kinh nghiệm</div></div>
+      <div class="stat-card"><div class="stat-icon">🏅</div><div class="stat-num"><span data-bind="badges">0</span></div><div class="stat-label">Huy hiệu đã mở khóa</div></div>
+      <div class="stat-card"><div class="stat-icon">⏱️</div><div class="stat-num">—</div><div class="stat-label">Tổng thời gian học</div></div>
     </div>
 
     <!-- Thanh cấp độ và XP -->
@@ -433,13 +433,13 @@
       <div class="level-head">
         <div class="level-badge">⭐</div>
         <div>
-          <div class="level-title">Level <span data-bind="level">5</span>: Bé Đếm Số</div>
+          <div class="level-title">Level <span data-bind="level">0</span></div>
           <div class="level-sub">Cấp độ học tập của em</div>
         </div>
-        <div class="level-xp"><span data-bind="xp">850</span>/1000 XP</div>
+        <div class="level-xp"><span data-bind="xp">0</span> XP</div>
       </div>
-      <div class="progress-bar"><div class="progress-fill"></div></div>
-      <div class="level-note">📈 Còn <strong>150 XP</strong> nữa là em lên Level 6! Cố lên nào!</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+      <div class="level-note">📈 Còn <strong><span data-bind="nextxp">0</span> XP</strong> nữa là em lên cấp tiếp theo! Cố lên nào!</div>
     </div>
   </div>
 
@@ -576,35 +576,7 @@
     <h2 class="section-title">🏅 Bộ sưu tập huy hiệu</h2>
     <p class="section-sub">Mỗi huy hiệu là một thành tích đáng tự hào của em!</p>
 
-    <div class="badge-grid">
-      <div class="badge-card earned">
-        <div class="badge-icon-big">🔢</div>
-        <div class="badge-name">Bé Đếm Số</div>
-        <div class="badge-cond">Hoàn thành bài Làm quen với các số đến 10</div>
-        <span class="badge-date">📅 23/06/2026</span>
-      </div>
-
-      <div class="badge-card earned">
-        <div class="badge-icon-big">🔥</div>
-        <div class="badge-name">Chăm Chỉ 7 Ngày</div>
-        <div class="badge-cond">Học liên tiếp 7 ngày không nghỉ</div>
-        <span class="badge-date">📅 23/06/2026</span>
-      </div>
-
-      <div class="badge-card earned">
-        <div class="badge-icon-big">⭐</div>
-        <div class="badge-name">Ngôi Sao Sáng</div>
-        <div class="badge-cond">Đạt 90% ở một bài học bất kỳ</div>
-        <span class="badge-date">📅 23/06/2026</span>
-      </div>
-
-      <div class="badge-card locked">
-        <div class="badge-icon-big">🔒</div>
-        <div class="badge-name">Vua Cộng Trừ</div>
-        <div class="badge-cond">Cần hoàn thành 100 câu cộng trừ</div>
-        <span class="badge-lock">🔒 Chưa mở khóa</span>
-      </div>
-    </div>
+    <div class="badge-grid"></div>
   </section>
 
   <!-- ============ LỊCH SỬ HỌC TẬP GẦN ĐÂY ============ -->
@@ -614,29 +586,9 @@
 
     <div class="activity-list">
       <div class="activity-row">
-        <div class="activity-icon">✅</div>
-        <div class="activity-text">Hoàn thành Bài 1: Làm quen với các số đến 10, nhận <span class="xp-up">+80 XP</span>.</div>
-        <div class="activity-date">Hôm nay</div>
-      </div>
-      <div class="activity-row">
-        <div class="activity-icon">🏅</div>
-        <div class="activity-text">Nhận huy hiệu <strong>Bé Đếm Số</strong>.</div>
-        <div class="activity-date">Hôm nay</div>
-      </div>
-      <div class="activity-row">
-        <div class="activity-icon">🎯</div>
-        <div class="activity-text">Làm thử thách hằng ngày, trả lời đúng <strong>4/5 câu</strong>.</div>
-        <div class="activity-date">Hôm qua</div>
-      </div>
-      <div class="activity-row">
-        <div class="activity-icon">🎈</div>
-        <div class="activity-text">Chơi game Bắn bóng số học, nhận <span class="xp-up">+50 XP</span>.</div>
-        <div class="activity-date">21/06/2026</div>
-      </div>
-      <div class="activity-row">
-        <div class="activity-icon">📖</div>
-        <div class="activity-text">Học Bài 2: So sánh các số trong phạm vi 10 trong <strong>12 phút</strong>.</div>
-        <div class="activity-date">20/06/2026</div>
+        <div class="activity-icon">📭</div>
+        <div class="activity-text">Chưa có hoạt động nào</div>
+        <div class="activity-date">—</div>
       </div>
     </div>
   </section>
@@ -646,9 +598,9 @@
     <div class="suggest-icon">🎯</div>
     <div class="suggest-text">
       <h3>Gợi ý cho em hôm nay</h3>
-      <p>Em đang học Bài 2: So sánh các số trong phạm vi 10. Hãy học tiếp để nhận thêm 30 XP nhé!</p>
+      <p>Hãy tiếp tục học để mở khóa thêm bài mới, nhận XP và huy hiệu nhé!</p>
     </div>
-    <a href="bai-hoc.html" class="btn btn-primary" onclick="celebrate(event)">Học tiếp →</a>
+    <a href="trang-lop.html" class="btn btn-primary" onclick="celebrate(event)">Học tiếp →</a>
   </div>
 
 </div>
@@ -792,13 +744,10 @@
       function norm(s){ return (s || '').replace(/\s+/g, ' ').trim().toLowerCase(); }
 
       // ===== 1) BỘ SƯU TẬP HUY HIỆU =====
+      // Dựng toàn bộ lưới từ danh mục TVKN.badges + huy hiệu đã mở khoá thật.
       try {
         var earned = await TVKN.getBadges();          // [{ badge_id, unlocked_at }]
         var catalog = TVKN.badges || [];              // [{ id, name, icon, desc }]
-
-        // Tra cứu: tên huy hiệu (chuẩn hoá) -> id catalog
-        var nameToId = {};
-        catalog.forEach(function(b){ nameToId[norm(b.name)] = b.id; });
 
         // Tra cứu: id -> bản ghi đã mở khoá (để lấy ngày)
         var earnedById = {};
@@ -814,47 +763,46 @@
           return dd + '/' + mm + '/' + yy;
         }
 
-        var cards = document.querySelectorAll('.badge-grid .badge-card');
-        cards.forEach(function(card){
-          var nameEl = card.querySelector('.badge-name');
-          if (!nameEl) return;
-          var id = nameToId[norm(nameEl.textContent)];
-          if (!id) return;                            // không có trong catalog -> giữ nguyên tĩnh
+        var grid = document.querySelector('.badge-grid');
+        if (grid) {
+          grid.innerHTML = '';
+          catalog.forEach(function(cat){
+            var rec = earnedById[cat.id];
+            var card = document.createElement('div');
+            card.className = 'badge-card ' + (rec ? 'earned' : 'locked');
 
-          var rec = earnedById[id];
-          var iconEl = card.querySelector('.badge-icon-big');
-          var dateEl = card.querySelector('.badge-date');
-          var lockEl = card.querySelector('.badge-lock');
-          var cat = catalog.find(function(b){ return b.id === id; });
+            var icon = document.createElement('div');
+            icon.className = 'badge-icon-big';
+            icon.textContent = rec ? (cat.icon || '🏅') : '🔒';
+            card.appendChild(icon);
 
-          if (rec) {
-            // ĐÃ MỞ KHOÁ
-            card.classList.add('earned');
-            card.classList.remove('locked');
-            if (iconEl && cat) iconEl.textContent = cat.icon;
-            // bảo đảm có nhãn ngày, bỏ nhãn khoá
-            if (lockEl) lockEl.remove();
-            if (!dateEl) {
-              dateEl = document.createElement('span');
+            var name = document.createElement('div');
+            name.className = 'badge-name';
+            name.textContent = cat.name || '';
+            card.appendChild(name);
+
+            var cond = document.createElement('div');
+            cond.className = 'badge-cond';
+            cond.textContent = cat.desc || '';
+            card.appendChild(cond);
+
+            if (rec) {
+              // ĐÃ MỞ KHOÁ -> hiện ngày thật (nếu có)
+              var d = fmtBadgeDate(rec.unlocked_at);
+              var dateEl = document.createElement('span');
               dateEl.className = 'badge-date';
+              dateEl.textContent = d ? ('📅 ' + d) : '✓ Đã mở khóa';
               card.appendChild(dateEl);
-            }
-            var d = fmtBadgeDate(rec.unlocked_at);
-            dateEl.textContent = d ? ('📅 ' + d) : '✓ Đã mở khóa';
-          } else {
-            // CHƯA MỞ KHOÁ
-            card.classList.add('locked');
-            card.classList.remove('earned');
-            if (iconEl) iconEl.textContent = '🔒';
-            if (dateEl) dateEl.remove();
-            if (!lockEl) {
-              lockEl = document.createElement('span');
+            } else {
+              // CHƯA MỞ KHOÁ -> KHÔNG kèm ngày
+              var lockEl = document.createElement('span');
               lockEl.className = 'badge-lock';
+              lockEl.textContent = '🔒 Chưa mở khóa';
               card.appendChild(lockEl);
             }
-            lockEl.textContent = '🔒 Chưa mở khóa';
-          }
-        });
+            grid.appendChild(card);
+          });
+        }
       } catch (err) { console.error('badge grid', err); }
 
       // ===== 2) TIẾN ĐỘ BÀI HỌC =====

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Bài 1: Các số 0, 1, 2, 3, 4, 5 - TOÁN VUI KẾT NỐI</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -142,7 +143,7 @@
   <a href="trang-lop.html" class="back-btn">← Danh sách bài</a>
   <div class="header-title">Bài 1: Các số 0, 1, 2, 3, 4, 5</div>
   <div class="header-right">
-    <div class="xp-pill">🪙 <span id="xpVal">450</span></div>
+    <div class="xp-pill">🪙 <span id="xpVal" data-bind="xp">0</span></div>
     <div class="avatar">👧</div>
   </div>
 </header>
@@ -482,7 +483,19 @@
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
 <script>
-  if (window.TVKN) { window.tvknLogout = function(){ TVKN.signOut(); }; TVKN.guardPage(); }
+  if (window.TVKN) {
+    window.tvknLogout = function(){ TVKN.signOut(); };
+    TVKN.trialPage().then(function (data) {
+      // Khách (học thử) chưa đăng nhập → nút quay lại về TRANG CHỦ (vì Danh sách bài cần đăng nhập);
+      // đã đăng nhập → giữ về DANH SÁCH BÀI.
+      if (!data) {
+        document.querySelectorAll('a[href="trang-lop.html"]').forEach(function (a) {
+          a.setAttribute('href', 'index.html');
+          a.textContent = a.textContent.replace('Danh sách bài', 'Trang chủ');
+        });
+      }
+    }).catch(function () {});
+  }
 </script>
 </body>
 </html>

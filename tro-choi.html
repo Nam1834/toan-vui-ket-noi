@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Trung tâm Trò chơi Toán học - TOÁN VUI KẾT NỐI</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -350,11 +351,11 @@
   </a>
   <div class="header-title">🎮 TRUNG TÂM TRÒ CHƠI TOÁN HỌC</div>
   <div class="header-right">
-    <div class="xp-pill xp">⭐ <span>4250 XP</span></div>
-    <div class="xp-pill coin">🪙 <span>350 Xu</span></div>
-    <div class="xp-pill badge">🏅 <span>15 Huy hiệu</span></div>
+    <div class="xp-pill xp">⭐ <span><span data-bind="xp">0</span> XP</span></div>
+    <div class="xp-pill coin">🪙 <span><span data-bind="coins">0</span> Xu</span></div>
+    <div class="xp-pill badge">🏅 <span><span data-bind="badges">0</span> Huy hiệu</span></div>
     <button class="icon-btn" title="Thông báo">🔔<span class="badge-dot"></span></button>
-    <div class="avatar" title="Nguyễn Minh Anh">👧</div>
+    <div class="avatar" title="Hồ sơ của em">👧</div>
   </div>
 </header>
 
@@ -560,17 +561,17 @@
     <div class="achieve-grid">
       <div class="achieve-card a1">
         <div class="achieve-icon">🎮</div>
-        <div class="achieve-num">57</div>
+        <div class="achieve-num" id="achGamesPlayed">0</div>
         <div class="achieve-label">Game đã chơi</div>
       </div>
       <div class="achieve-card a2">
         <div class="achieve-icon">⭐</div>
-        <div class="achieve-num">2350</div>
+        <div class="achieve-num" id="achXp">0</div>
         <div class="achieve-label">XP nhận từ game</div>
       </div>
       <div class="achieve-card a3">
         <div class="achieve-icon">💖</div>
-        <div class="achieve-num" style="font-size:22px;">🚗 Đua xe Toán học</div>
+        <div class="achieve-num" id="achFavGame" style="font-size:22px;">Chưa có dữ liệu</div>
         <div class="achieve-label">Game yêu thích</div>
       </div>
     </div>
@@ -581,32 +582,12 @@
     <h2 class="section-title">🥇 Bảng xếp hạng game</h2>
     <p class="section-sub">Top những bạn chơi giỏi nhất tuần này!</p>
     <div class="rank-wrap">
-      <div class="rank-row r1">
-        <div class="rank-medal">🥇</div>
-        <div class="rank-avatar">👧</div>
-        <div class="rank-info">
-          <div class="rank-name">Minh Anh</div>
-          <div class="rank-sub">🎮 32 game đã chơi tuần này</div>
+      <div id="rankList">
+        <div class="rank-row r1">
+          <div class="rank-info">
+            <div class="rank-name">Chưa có dữ liệu</div>
+          </div>
         </div>
-        <div class="rank-xp">⭐ 1840 XP</div>
-      </div>
-      <div class="rank-row r2">
-        <div class="rank-medal">🥈</div>
-        <div class="rank-avatar">👦</div>
-        <div class="rank-info">
-          <div class="rank-name">Gia Bảo</div>
-          <div class="rank-sub">🎮 28 game đã chơi tuần này</div>
-        </div>
-        <div class="rank-xp">⭐ 1620 XP</div>
-      </div>
-      <div class="rank-row r3">
-        <div class="rank-medal">🥉</div>
-        <div class="rank-avatar">🧒</div>
-        <div class="rank-info">
-          <div class="rank-name">Hoàng Nam</div>
-          <div class="rank-sub">🎮 25 game đã chơi tuần này</div>
-        </div>
-        <div class="rank-xp">⭐ 1455 XP</div>
       </div>
       <div class="rank-footer">
         <button class="rank-all-btn" onclick="celebrate(event)">Xem tất cả →</button>
@@ -718,7 +699,61 @@
 <script>
   /* Chặn trang + hiển thị đúng người đăng nhập (Supabase) */
   window.tvknLogout = function(){ TVKN.signOut(); };
-  TVKN.guardPage();
+
+  function escHtml(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  // Render mini bảng xếp hạng từ dữ liệu THẬT (top 3)
+  async function renderLeaderboard(){
+    const box = document.getElementById('rankList');
+    if (!box) return;
+    const medals = ['🥇','🥈','🥉'];
+    try {
+      const rows = await TVKN.getLeaderboard(3);
+      if (!rows || !rows.length){
+        box.innerHTML = '<div class="rank-row r1"><div class="rank-info"><div class="rank-name">Chưa có dữ liệu</div></div></div>';
+        return;
+      }
+      box.innerHTML = rows.map(function(r, i){
+        var medal = medals[i] || ('#' + (r.rank || (i+1)));
+        var avatar = escHtml(r.avatar || '👧');
+        var name = escHtml(r.name || 'Bạn học');
+        var grade = r.grade ? ('Lớp ' + escHtml(r.grade)) : '';
+        var streak = (r.streak_days != null) ? ('🔥 ' + escHtml(r.streak_days) + ' ngày') : '';
+        var sub = [grade, streak].filter(Boolean).join(' · ');
+        var xp = (r.xp != null ? r.xp : 0);
+        return '<div class="rank-row r' + (i+1) + '">' +
+                 '<div class="rank-medal">' + medal + '</div>' +
+                 '<div class="rank-avatar">' + avatar + '</div>' +
+                 '<div class="rank-info">' +
+                   '<div class="rank-name">' + name + '</div>' +
+                   '<div class="rank-sub">' + sub + '</div>' +
+                 '</div>' +
+                 '<div class="rank-xp">⭐ ' + xp + ' XP</div>' +
+               '</div>';
+      }).join('');
+    } catch (e){
+      box.innerHTML = '<div class="rank-row r1"><div class="rank-info"><div class="rank-name">Chưa có dữ liệu</div></div></div>';
+    }
+  }
+
+  (async function(){
+    const data = await TVKN.guardPage();
+    // Thành tích: dùng XP thật từ progress, các số chưa có nguồn để mặc định trung tính
+    if (data && data.progress){
+      const xpEl = document.getElementById('achXp');
+      if (xpEl) xpEl.textContent = (data.progress.xp || 0);
+    }
+    // Số lượt chơi + game yêu thích THẬT (đếm từ nhật ký hoạt động)
+    TVKN.getGameStats().then(function (gs) {
+      const g = document.getElementById('achGamesPlayed'); if (g) g.textContent = gs.played;
+      const f = document.getElementById('achFavGame'); if (f) f.textContent = gs.favorite || 'Chưa có dữ liệu';
+    }).catch(function(){});
+    renderLeaderboard();
+  })();
 </script>
 </body>
 </html>

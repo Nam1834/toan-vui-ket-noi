@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Luyện tập: Làm quen với các số đến 10 - TOÁN VUI KẾT NỐI</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -152,7 +153,7 @@
 <header class="header">
   <a href="bai-hoc.html" class="back-btn">← Quay lại bài học</a>
   <div class="header-title">Luyện tập: Làm quen với các số đến 10</div>
-  <div class="xp-pill">🪙 <span id="hdrXp">450</span></div>
+  <div class="xp-pill">🪙 <span id="hdrXp">0</span></div>
   <div class="hdr-avatar" title="Học sinh">👧</div>
   <a href="trang-lop.html" class="exit-btn" title="Thoát">✕ Thoát</a>
 </header>
@@ -218,7 +219,7 @@
   let matchedPairs = 0;            // số cặp đã nối đúng
   let correctCount = 0, xp = 0, streak = 0, doneCount = 0;
   const answered = new Array(questions.length).fill(false);
-  const baseXp = 450;
+  let baseXp = 0;   // XP nền — gán = XP thật của người học sau khi đăng nhập
 
   function render() {
     const Q = questions[idx];
@@ -467,5 +468,17 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
+<script>
+  /* Luyện tập là trang HỌC → bắt buộc đăng nhập; lấy XP nền thật cho thanh điểm */
+  (async function () {
+    if (!window.TVKN) return;
+    const data = await TVKN.guardPage();   // chưa đăng nhập → tự chuyển về trang đăng nhập
+    if (data && data.progress) {
+      baseXp = data.progress.xp || 0;
+      const h = document.getElementById('hdrXp');
+      if (h) h.textContent = baseXp;
+    }
+  })();
+</script>
 </body>
 </html>

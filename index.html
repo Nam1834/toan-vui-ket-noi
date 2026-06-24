@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>TOÁN VUI KẾT NỐI - Mỗi ngày 15 phút, Giỏi Toán tự nhiên</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -1140,9 +1141,9 @@
       <span class="badge-dot"></span>
     </button>
     <div class="xp-pill">
-      🪙 <span><span data-bind="xp">4.250</span> XP</span>
+      🪙 <span><span data-bind="xp">0</span> XP</span>
     </div>
-    <a href="ho-so.html" class="avatar" title="Hồ sơ của Nguyễn Minh Anh">👧</a>
+    <a href="ho-so.html" class="avatar" title="Hồ sơ của em">👧</a>
   </div>
 </header>
 
@@ -1167,7 +1168,7 @@
     </p>
     <div class="hero-buttons">
       <a href="trang-lop.html" class="btn btn-primary">🎯 Bắt đầu học ngay</a>
-      <a href="trang-lop.html" class="btn btn-secondary">🎁 Học thử miễn phí</a>
+      <a href="bai-1.html" class="btn btn-secondary">🎁 Học thử miễn phí</a>
     </div>
     <div class="hero-stats">
       <div class="stat">
@@ -1243,30 +1244,30 @@
       <div class="profile-avatar">👧</div>
       <div>
         <div class="profile-greeting">Xin chào,</div>
-        <div class="profile-name">Nguyễn Minh Anh</div>
-        <span class="profile-level">⭐ Cấp độ <span data-bind="level">15</span> · Lớp <span data-bind="grade">4</span></span>
+        <div class="profile-name" data-bind="name">Bạn</div>
+        <span class="profile-level">⭐ Cấp độ <span data-bind="level">1</span> · Lớp <span data-bind="grade">1</span></span>
       </div>
     </div>
 
     <div class="profile-stats">
       <div class="pstat">
         <div class="pstat-icon">🏆</div>
-        <div class="pstat-num">15</div>
+        <div class="pstat-num" data-bind="badges">0</div>
         <div class="pstat-label">Huy hiệu</div>
       </div>
       <div class="pstat">
         <div class="pstat-icon">🔥</div>
-        <div class="pstat-num" data-bind="streak">12</div>
+        <div class="pstat-num" data-bind="streak">0</div>
         <div class="pstat-label">Ngày liên tiếp</div>
       </div>
       <div class="pstat">
         <div class="pstat-icon">⭐</div>
-        <div class="pstat-num" data-bind="xp">4.250</div>
+        <div class="pstat-num" data-bind="xp">0</div>
         <div class="pstat-label">Tổng XP</div>
       </div>
       <div class="pstat">
         <div class="pstat-icon">📈</div>
-        <div class="pstat-num">78%</div>
+        <div class="pstat-num" data-bind="percent">0%</div>
         <div class="pstat-label">Tiến độ</div>
       </div>
     </div>
@@ -1275,7 +1276,7 @@
   <div class="progress-wrap">
     <div class="progress-label">
       <span>📈 Tiến độ học tập của em</span>
-      <span>78 / 100 bài</span>
+      <span><span data-bind="completed">0</span> / <span data-bind="total">10</span> bài</span>
     </div>
     <div class="progress-bar">
       <div class="progress-fill"></div>
@@ -1318,7 +1319,7 @@
       <div class="game-body">
         <div class="game-title">Đua xe Toán học</div>
         <div class="game-meta">
-          <span>🎮 12.5K lượt chơi</span>
+          <span class="game-plays" data-game="Đua xe Toán học">🎮 0 lượt chơi</span>
           <span class="new-tag">HOT</span>
         </div>
       </div>
@@ -1328,7 +1329,7 @@
       <div class="game-body">
         <div class="game-title">Kho báu phép tính</div>
         <div class="game-meta">
-          <span>🎮 8.2K lượt chơi</span>
+          <span class="game-plays" data-game="Kho báu phép tính">🎮 0 lượt chơi</span>
           <span class="new-tag">MỚI</span>
         </div>
       </div>
@@ -1338,7 +1339,7 @@
       <div class="game-body">
         <div class="game-title">Bắn bóng số học</div>
         <div class="game-meta">
-          <span>🎮 15.8K lượt chơi</span>
+          <span class="game-plays" data-game="Bắn bóng số học">🎮 0 lượt chơi</span>
         </div>
       </div>
     </div>
@@ -1347,7 +1348,7 @@
       <div class="game-body">
         <div class="game-title">Rung chuông vàng</div>
         <div class="game-meta">
-          <span>🎮 22.1K lượt chơi</span>
+          <span class="game-plays" data-game="Rung chuông vàng">🎮 0 lượt chơi</span>
           <span class="new-tag">HOT</span>
         </div>
       </div>
@@ -1357,7 +1358,7 @@
       <div class="game-body">
         <div class="game-title">Xây lâu đài Toán học</div>
         <div class="game-meta">
-          <span>🎮 9.4K lượt chơi</span>
+          <span class="game-plays" data-game="Xây lâu đài Toán học">🎮 0 lượt chơi</span>
           <span class="new-tag">MỚI</span>
         </div>
       </div>
@@ -1395,51 +1396,11 @@
         <h3 class="panel-title">🏆 Bảng xếp hạng tuần</h3>
         <a href="bang-xep-hang.html" class="panel-link">Xem tất cả →</a>
       </div>
-      <div class="rank-list">
-        <div class="rank-row gold">
-          <div class="rank-num">🥇</div>
-          <div class="rank-avatar">👦</div>
-          <div class="rank-info">
-            <div class="rank-name">Trần Gia Bảo</div>
-            <div class="rank-class">Lớp 5A · 15 huy hiệu</div>
-          </div>
-          <div class="rank-xp">6.850 XP</div>
-        </div>
-        <div class="rank-row silver">
-          <div class="rank-num">🥈</div>
-          <div class="rank-avatar">👧</div>
-          <div class="rank-info">
-            <div class="rank-name">Lê Thuỳ Linh</div>
-            <div class="rank-class">Lớp 4B · 12 huy hiệu</div>
-          </div>
-          <div class="rank-xp">4.250 XP</div>
-        </div>
-        <div class="rank-row bronze">
-          <div class="rank-num">🥉</div>
-          <div class="rank-avatar">🧑</div>
-          <div class="rank-info">
-            <div class="rank-name">Lê Huy Hoàng</div>
-            <div class="rank-class">Lớp 5A · 10 huy hiệu</div>
-          </div>
-          <div class="rank-xp">3.920 XP</div>
-        </div>
+      <div class="rank-list" id="home-rank-list">
         <div class="rank-row">
-          <div class="rank-num">4</div>
-          <div class="rank-avatar">👦</div>
           <div class="rank-info">
-            <div class="rank-name">Phạm Quốc Khánh</div>
-            <div class="rank-class">Lớp 3C · 8 huy hiệu</div>
+            <div class="rank-name" style="color:var(--text-light,#888)">Đang tải bảng xếp hạng…</div>
           </div>
-          <div class="rank-xp">3.450 XP</div>
-        </div>
-        <div class="rank-row">
-          <div class="rank-num">5</div>
-          <div class="rank-avatar">👧</div>
-          <div class="rank-info">
-            <div class="rank-name">Đỗ Bảo Châu</div>
-            <div class="rank-class">Lớp 4A · 7 huy hiệu</div>
-          </div>
-          <div class="rank-xp">2.980 XP</div>
         </div>
       </div>
     </div>
@@ -1601,6 +1562,9 @@
       // ----- ĐÃ ĐĂNG NHẬP -----
       var av = document.querySelector('.header-right .avatar');
       if (av) av.title = 'Hồ sơ của ' + data.profile.name;
+      // thanh tiến độ theo % thật
+      var fill = document.querySelector('.progress-fill');
+      if (fill && data.stats) fill.style.width = data.stats.percent + '%';
     } else {
       // ----- KHÁCH (chưa đăng nhập) -----
       var hr = document.querySelector('.header-right');
@@ -1612,10 +1576,56 @@
       // Ẩn khối hồ sơ cá nhân (lời chào, XP, huy hiệu... của tài khoản)
       var ps = document.querySelector('.profile-section');
       if (ps) ps.style.display = 'none';
-      // Nút học → mời đăng nhập trước (trang học vốn cũng bắt buộc đăng nhập)
-      document.querySelectorAll('.hero-buttons a').forEach(function (a) {
-        a.setAttribute('href', 'dang-nhap.html');
-      });
+      // Khách: "Bắt đầu học ngay" → mời đăng nhập; còn "Học thử miễn phí" giữ nguyên → bai-1.html
+      var primaryBtn = document.querySelector('.hero-buttons .btn-primary');
+      if (primaryBtn) primaryBtn.setAttribute('href', 'dang-nhap.html');
+    }
+  })();
+</script>
+<script>
+  /* Bảng xếp hạng thật (top 5) — dùng được cả khi chưa đăng nhập (view cấp quyền cho anon). */
+  (async function initHomeLeaderboard() {
+    var list = document.getElementById('home-rank-list');
+    if (!list) return;
+    function setEmpty() {
+      list.innerHTML =
+        '<div class="rank-row"><div class="rank-info">' +
+        '<div class="rank-name" style="color:var(--text-light,#888)">Chưa có dữ liệu xếp hạng</div>' +
+        '</div></div>';
+    }
+    if (!window.TVKN || !TVKN.configured) { setEmpty(); return; }
+    var nf = new Intl.NumberFormat('vi-VN');
+    var medals = ['🥇', '🥈', '🥉'];
+    var variants = ['gold', 'silver', 'bronze'];
+    function esc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+    try {
+      var rows = await TVKN.getLeaderboard(5);
+      if (!rows || !rows.length) { setEmpty(); return; }
+      list.innerHTML = rows.map(function (r, i) {
+        var variant = i < 3 ? ' ' + variants[i] : '';
+        var num = i < 3 ? medals[i] : String(i + 1);
+        var avatar = r.avatar || '🧑';
+        var name = r.name || 'Ẩn danh';
+        var grade = (r.grade !== null && r.grade !== undefined && r.grade !== '')
+          ? 'Lớp ' + esc(r.grade) : '';
+        var xp = nf.format(Number(r.xp) || 0) + ' XP';
+        return '<div class="rank-row' + variant + '">' +
+          '<div class="rank-num">' + num + '</div>' +
+          '<div class="rank-avatar">' + esc(avatar) + '</div>' +
+          '<div class="rank-info">' +
+          '<div class="rank-name">' + esc(name) + '</div>' +
+          '<div class="rank-class">' + grade + '</div>' +
+          '</div>' +
+          '<div class="rank-xp">' + esc(xp) + '</div>' +
+          '</div>';
+      }).join('');
+    } catch (e) {
+      console.warn('getLeaderboard không khả dụng:', e);
+      setEmpty();
     }
   })();
 </script>
@@ -1641,6 +1651,20 @@
       /* Giữ nguyên số liệu mặc định nếu có lỗi */
       console.warn('platformStats không khả dụng:', e);
     }
+  })();
+</script>
+<script>
+  /* Lượt chơi THẬT mỗi game (bảng game_plays, công khai) */
+  (async function () {
+    if (!(window.TVKN && TVKN.configured)) return;
+    try {
+      var plays = await TVKN.gamePlays();
+      var nf = new Intl.NumberFormat('vi-VN');
+      document.querySelectorAll('.game-plays[data-game]').forEach(function (el) {
+        var n = plays[el.getAttribute('data-game')] || 0;
+        el.textContent = '🎮 ' + nf.format(n) + ' lượt chơi';
+      });
+    } catch (e) { console.warn('gamePlays không khả dụng:', e); }
   })();
 </script>
 </body>

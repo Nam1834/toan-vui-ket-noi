@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Đăng nhập - TOÁN VUI KẾT NỐI</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -63,7 +64,6 @@
     <button class="btn-login" id="btn" onclick="doLogin()">🚀 Đăng nhập</button>
 
     <div class="link">Chưa có tài khoản? <a href="dang-ky.html">Đăng ký ngay</a></div>
-    <div class="note">🔒 Tài khoản & tiến độ của em được lưu an toàn trên hệ thống (Supabase).</div>
   </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -75,7 +75,7 @@
     document.getElementById('btn').disabled = true;
   } else {
     // đã đăng nhập sẵn thì vào thẳng
-    TVKN.getUser().then(function (u) { if (u) window.location.replace('index.html'); }).catch(function () {});
+    TVKN.getProfile().then(function (p) { if (p) window.location.replace(p.role === 'admin' ? 'admin.html' : 'index.html'); }).catch(function () {});
   }
 
   function setMsg(t, ok) { const m = document.getElementById('msg'); m.textContent = t; m.className = 'msg ' + (ok ? 'ok' : 'err'); }

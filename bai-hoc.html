@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Bài 1: Các số 0, 1, 2, 3, 4, 5 - TOÁN VUI KẾT NỐI</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -155,8 +156,8 @@
   <a href="trang-lop.html" class="back-btn">← Quay lại Lớp 1</a>
   <div class="header-title">Bài 1: Các số 0, 1, 2, 3, 4, 5</div>
   <div class="header-right">
-    <div class="xp-pill">🪙 <span>450</span></div>
-    <div class="notif" onclick="celebrate(event)">🔔<span class="notif-dot"></span></div>
+    <div class="xp-pill">🪙 <span data-bind="xp">0</span></div>
+    <div class="notif" title="Thông báo">🔔<span class="notif-dot"></span></div>
     <div class="avatar">👧</div>
   </div>
 </header>
@@ -365,6 +366,13 @@
       c.animate([{transform:'translate(0,0)',opacity:1},{transform:`translate(${Math.cos(a)*v}px,${Math.sin(a)*v+300}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:1400,easing:'cubic-bezier(.25,.46,.45,.94)'}).onfinish=()=>c.remove();
     }
   }
+</script>
+<!-- Chặn đăng nhập + đồng bộ tên/avatar/XP người học (Supabase) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+  if (window.TVKN) { window.tvknLogout = function(){ TVKN.signOut(); }; TVKN.guardPage(); }
 </script>
 </body>
 </html>
