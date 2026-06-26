@@ -190,8 +190,15 @@
   </aside>
 </div>
 
+<script src="assets/js/lessons.js"></script>
+<script src="assets/js/lessons-lop1.js"></script>
+<script src="assets/js/lessons-lop2.js"></script>
+<script src="assets/js/lessons-lop3.js"></script>
+<script src="assets/js/lessons-lop4.js"></script>
+<script src="assets/js/lessons-lop5.js"></script>
 <script>
-  const questions = [
+  // Bộ câu hỏi mặc định (dùng khi bài không khai báo quiz riêng)
+  const FALLBACK_QUESTIONS = [
     { type: 'multiple_choice', label: 'Trắc nghiệm', q: 'Có bao nhiêu quả cam trong hình?', img: '🍊🍊🍊🍊',
       options: [{l:'A',v:2},{l:'B',v:3},{l:'C',v:4},{l:'D',v:5}], correct: 4,
       hint: 'Em hãy đếm từng quả cam từ trái sang phải.' },
@@ -212,6 +219,16 @@
       pairs: [{img:'🐱🐱🐱', val:3}, {img:'🌸🌸🌸🌸🌸', val:5}],
       hint: 'Em hãy đếm số con vật, số bông hoa rồi nối với con số đúng.' },
   ];
+  // Lấy quiz theo bài (?lesson=...) từ dữ liệu chung; không có → dùng mặc định
+  const _lessonId = new URLSearchParams(location.search).get('lesson') || '';
+  const _LDATA = (window.TVKN_LESSONS && TVKN_LESSONS.lessons[_lessonId]) || null;
+  const questions = (_LDATA && Array.isArray(_LDATA.quiz) && _LDATA.quiz.length) ? _LDATA.quiz : FALLBACK_QUESTIONS;
+  if (_LDATA) {
+    const _t = document.querySelector('.header-title');
+    if (_t) _t.textContent = 'Luyện tập: ' + _LDATA.title;
+    const _back = document.querySelector('.back-btn');
+    if (_back) _back.setAttribute('href', 'hoc-bai.html?id=' + encodeURIComponent(_lessonId));
+  }
 
   let idx = 0, selected = null, checked = false;
   let ddTileIdx = null;            // chỉ số ô số đang chọn/kéo (kéo thả)

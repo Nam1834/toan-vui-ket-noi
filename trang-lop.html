@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<title>Hành trình Toán Lớp 1 - TOÁN VUI KẾT NỐI</title>
+<title>Hành trình Toán - TOÁN VUI KẾT NỐI</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -389,27 +389,27 @@
   <!-- ============ BANNER LỚP ============ -->
   <div class="banner">
     <div class="banner-text">
-      <span class="banner-tag">📘 SGK Kết nối tri thức với cuộc sống</span>
-      <h1>🐣 Hành trình Toán Lớp 1</h1>
-      <p>Cùng Gà Con làm quen với các con số nhé! Mỗi ngày một bài, em sẽ giỏi Toán lúc nào không hay.</p>
+      <span class="banner-tag" id="bnTag">📘 SGK Kết nối tri thức với cuộc sống</span>
+      <h1 id="bnTitle">Hành trình Toán</h1>
+      <p id="bnIntro">Mỗi ngày một bài, em sẽ giỏi Toán lúc nào không hay.</p>
       <div class="banner-buttons">
-        <a href="bai-4.html" class="btn btn-primary">▶️ Học tiếp</a>
+        <a href="#lessons" class="btn btn-primary" id="bnLearn">▶️ Học tiếp</a>
         <button class="btn btn-ghost" onclick="document.getElementById('lessons').scrollIntoView({behavior:'smooth'})">📚 Xem tất cả bài</button>
       </div>
     </div>
-    <div class="banner-mascot">🐣</div>
+    <div class="banner-mascot" id="bnMascot">🐣</div>
   </div>
 
   <!-- ============ THANH TIẾN ĐỘ ============ -->
   <div class="progress-section">
     <div class="stat-grid">
-      <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num" id="lessonsDoneNum"><span data-bind="completed">0</span>/<span data-bind="total">10</span></div><div class="stat-label">Bài đã học</div></div>
-      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num" data-bind="xp">0</div><div class="stat-label">Điểm XP</div></div>
-      <div class="stat-card"><div class="stat-icon">🏅</div><div class="stat-num" data-bind="badges">0</div><div class="stat-label">Huy hiệu</div></div>
-      <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-num" data-bind="streak">0</div><div class="stat-label">Ngày liên tiếp</div></div>
+      <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num" id="lessonsDoneNum">…</div><div class="stat-label">Bài đã học</div></div>
+      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num" data-bind="xp">…</div><div class="stat-label">Điểm XP</div></div>
+      <div class="stat-card"><div class="stat-icon">🏅</div><div class="stat-num" data-bind="badges">…</div><div class="stat-label">Huy hiệu</div></div>
+      <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-num" data-bind="streak">…</div><div class="stat-label">Ngày liên tiếp</div></div>
     </div>
     <div class="progress-wrap">
-      <div class="progress-label"><span>📈 Tiến độ hoàn thành</span><span id="progressPct" data-bind="percent">0%</span></div>
+      <div class="progress-label"><span>📈 Tiến độ hoàn thành</span><span id="progressPct">…</span></div>
       <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0"></div></div>
     </div>
   </div>
@@ -427,138 +427,8 @@
       <button class="filter-btn" data-filter="locked">Bị khóa</button>
     </div>
 
-    <!-- Chủ đề 1 -->
-    <h3 class="topic-head">📗 Chủ đề 1: Các số từ 0 đến 10</h3>
-    <div class="lesson-grid" id="lessonGrid">
-      <!-- Bài 1 - Đã hoàn thành -->
-      <div class="lesson-card completed" data-status="completed" data-lesson="bai-1">
-        <span class="badge-status">✓ Đã hoàn thành</span>
-        <div class="lesson-top">
-          <div class="lesson-icon">5️⃣</div>
-          <div><div class="lesson-no">Bài 1</div><div class="lesson-name">Các số 0, 1, 2, 3, 4, 5</div></div>
-        </div>
-        <div class="lesson-desc">Nhận biết, đọc và viết các số từ 0 đến 5.</div>
-        <div class="lesson-meta"><span>📝 10 câu</span><span>⭐ 30 XP</span><span>🏅 95%</span></div>
-        <a href="bai-1.html" class="lesson-btn">Ôn lại</a>
-      </div>
-
-      <!-- Bài 2 - Đã hoàn thành -->
-      <div class="lesson-card completed" data-status="completed" data-lesson="bai-2">
-        <span class="badge-status">✓ Đã hoàn thành</span>
-        <div class="lesson-top">
-          <div class="lesson-icon">🔟</div>
-          <div><div class="lesson-no">Bài 2</div><div class="lesson-name">Các số 6, 7, 8, 9, 10</div></div>
-        </div>
-        <div class="lesson-desc">Nhận biết, đọc và viết các số từ 6 đến 10.</div>
-        <div class="lesson-meta"><span>📝 10 câu</span><span>⭐ 30 XP</span><span>🏅 90%</span></div>
-        <a href="bai-2.html" class="lesson-btn">Ôn lại</a>
-      </div>
-
-      <!-- Bài 3 - Đã hoàn thành -->
-      <div class="lesson-card completed" data-status="completed" data-lesson="bai-3">
-        <span class="badge-status">✓ Đã hoàn thành</span>
-        <div class="lesson-top">
-          <div class="lesson-icon">⚖️</div>
-          <div><div class="lesson-no">Bài 3</div><div class="lesson-name">Nhiều hơn, ít hơn, bằng nhau</div></div>
-        </div>
-        <div class="lesson-desc">So sánh số lượng hai nhóm đồ vật bằng cách ghép đôi.</div>
-        <div class="lesson-meta"><span>📝 10 câu</span><span>⭐ 30 XP</span><span>🏅 88%</span></div>
-        <a href="bai-3.html" class="lesson-btn">Ôn lại</a>
-      </div>
-
-      <!-- Bài 4 - Đang học -->
-      <div class="lesson-card in_progress" data-status="in_progress" data-lesson="bai-4">
-        <span class="badge-status">⏳ Đang học</span>
-        <div class="lesson-top">
-          <div class="lesson-icon">🔣</div>
-          <div><div class="lesson-no">Bài 4</div><div class="lesson-name">So sánh các số (dấu &gt;, &lt;)</div></div>
-        </div>
-        <div class="lesson-desc">Dùng dấu lớn hơn, bé hơn để so sánh hai số.</div>
-        <div class="lesson-meta"><span>📝 10 câu</span><span>⭐ 30 XP</span></div>
-        <div class="lesson-progress"><div style="width:40%"></div></div>
-        <a href="bai-4.html" class="lesson-btn">Học tiếp</a>
-      </div>
-
-      <!-- Bài 5 - Chưa học -->
-      <div class="lesson-card not_started" data-status="not_started" data-lesson="bai-5">
-        <span class="badge-status">● Chưa học</span>
-        <div class="lesson-top">
-          <div class="lesson-icon">🧩</div>
-          <div><div class="lesson-no">Bài 5</div><div class="lesson-name">Mấy và mấy (tách – gộp số)</div></div>
-        </div>
-        <div class="lesson-desc">Một số được tạo từ hai số nhỏ hơn: tách và gộp.</div>
-        <div class="lesson-meta"><span>📝 10 câu</span><span>⭐ 30 XP</span></div>
-        <a href="bai-5.html" class="lesson-btn">Bắt đầu</a>
-      </div>
-
-      <!-- Bài 6 - Chưa học -->
-      <div class="lesson-card not_started" data-status="not_started" data-lesson="bai-6">
-        <span class="badge-status">● Chưa học</span>
-        <div class="lesson-top">
-          <div class="lesson-icon">🎯</div>
-          <div><div class="lesson-no">Bài 6</div><div class="lesson-name">Luyện tập chung</div></div>
-        </div>
-        <div class="lesson-desc">Hệ thống lại toàn bộ các số từ 0 đến 10.</div>
-        <div class="lesson-meta"><span>📝 10 câu</span><span>⭐ 30 XP</span></div>
-        <a href="bai-6.html" class="lesson-btn">Bắt đầu</a>
-      </div>
-    </div>
-
-    <!-- Chủ đề 2 -->
-    <h3 class="topic-head">📐 Chủ đề 2: Làm quen với một số hình phẳng</h3>
-    <div class="lesson-grid" id="lessonGrid2">
-      <!-- Bài 7 - Bị khóa -->
-      <div class="lesson-card locked" data-status="locked" data-lesson="bai-7">
-        <span class="badge-status">🔒 Bị khóa</span>
-        <div class="lesson-top">
-          <div class="lesson-icon">🔷</div>
-          <div><div class="lesson-no">Bài 7</div><div class="lesson-name">Hình vuông, tròn, tam giác, chữ nhật</div></div>
-        </div>
-        <div class="lesson-desc">Nhận biết và gọi tên các hình phẳng cơ bản.</div>
-        <div class="lesson-note">Hoàn thành bài trước để mở khóa</div>
-        <a href="bai-7.html" class="lesson-btn preview">🔒 Xem thử</a>
-      </div>
-
-      <!-- Bài 8 - Bị khóa -->
-      <div class="lesson-card locked" data-status="locked" data-lesson="bai-8">
-        <span class="badge-status">🔒 Bị khóa</span>
-        <div class="lesson-top">
-          <div class="lesson-icon">🧱</div>
-          <div><div class="lesson-no">Bài 8</div><div class="lesson-name">Thực hành lắp ghép, xếp hình</div></div>
-        </div>
-        <div class="lesson-desc">Ghép các mảnh hình thành thuyền, nhà, tên lửa...</div>
-        <div class="lesson-note">Hoàn thành bài trước để mở khóa</div>
-        <a href="bai-8.html" class="lesson-btn preview">🔒 Xem thử</a>
-      </div>
-
-      <!-- Bài 9 - Bị khóa -->
-      <div class="lesson-card locked" data-status="locked" data-lesson="bai-9">
-        <span class="badge-status">🔒 Bị khóa</span>
-        <div class="lesson-top">
-          <div class="lesson-icon">📐</div>
-          <div><div class="lesson-no">Bài 9</div><div class="lesson-name">Luyện tập chung về hình phẳng</div></div>
-        </div>
-        <div class="lesson-desc">Phân loại đồ vật theo hình và xếp hình sáng tạo.</div>
-        <div class="lesson-note">Hoàn thành bài trước để mở khóa</div>
-        <a href="bai-9.html" class="lesson-btn preview">🔒 Xem thử</a>
-      </div>
-    </div>
-
-    <!-- Chủ đề 3 -->
-    <h3 class="topic-head">➕ Chủ đề 3: Phép cộng, phép trừ trong phạm vi 10</h3>
-    <div class="lesson-grid" id="lessonGrid3">
-      <!-- Bài 10 - Bị khóa -->
-      <div class="lesson-card locked" data-status="locked" data-lesson="bai-10">
-        <span class="badge-status">🔒 Bị khóa</span>
-        <div class="lesson-top">
-          <div class="lesson-icon">➕</div>
-          <div><div class="lesson-no">Bài 10</div><div class="lesson-name">Phép cộng trong phạm vi 10</div></div>
-        </div>
-        <div class="lesson-desc">Gộp lại và thêm vào – làm quen phép cộng.</div>
-        <div class="lesson-note">Hoàn thành bài trước để mở khóa</div>
-        <a href="bai-10.html" class="lesson-btn preview">🔒 Xem thử</a>
-      </div>
-    </div>
+    <!-- Danh sách bài render động theo lớp của học sinh (engine) -->
+    <div id="lessonSections"></div>
   </section>
 
   <!-- ============ LUYỆN TẬP NHANH ============ -->
@@ -616,9 +486,9 @@
     <div class="suggest-icon">🎯</div>
     <div class="suggest-text">
       <h3>Gợi ý cho em hôm nay</h3>
-      <p>Em đang học đến Bài 4: So sánh các số (dấu &gt;, &lt;). Hãy tiếp tục để nhận thêm 30 XP nhé!</p>
+      <p id="suggestText">Hãy tiếp tục hành trình học Toán để nhận thêm XP nhé!</p>
     </div>
-    <a href="bai-4.html" class="btn btn-primary">Học tiếp bài này →</a>
+    <a href="#lessons" class="btn btn-primary" id="suggestBtn">Học tiếp bài này →</a>
   </div>
 
 </div>
@@ -633,15 +503,14 @@
 </nav>
 
 <script>
-  // Bộ lọc bài học
+  // Bộ lọc bài học (query thẻ bài trực tiếp lúc bấm vì thẻ được dựng động)
   const filterBtns = document.querySelectorAll('.filter-btn');
-  const cards = document.querySelectorAll('.lesson-card');
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const f = btn.dataset.filter;
-      cards.forEach(c => {
+      document.querySelectorAll('.lesson-card').forEach(c => {
         c.style.display = (f === 'all' || c.dataset.status === f) ? '' : 'none';
       });
     });
@@ -672,102 +541,133 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
+<script src="assets/js/modules.js"></script>
+<script src="assets/js/lessons.js"></script>
+<script src="assets/js/lessons-lop1.js"></script>
+<script src="assets/js/lessons-lop2.js"></script>
+<script src="assets/js/lessons-lop3.js"></script>
+<script src="assets/js/lessons-lop4.js"></script>
+<script src="assets/js/lessons-lop5.js"></script>
 <script>
-  /* Chặn trang + hiển thị đúng người đăng nhập (Supabase) */
-  window.tvknLogout = function(){ TVKN.signOut(); };
-  TVKN.guardPage();
-</script>
-<script>
-  /* Đồng bộ tiến độ bài học thật từ Supabase */
-  (async function syncLessonProgress() {
+  /* Trang danh sách bài — render động theo LỚP của học sinh (data-driven) */
+  window.tvknLogout = function () { TVKN.signOut(); };
+
+  const TL_CACHE_KEY = 'tvkn_trang_lop';
+  const setText = (id, v) => { const el = document.getElementById(id); if (el != null && v != null) el.textContent = v; };
+
+  // VẼ NGAY từ cache (banner + danh sách bài + bộ đếm) trước khi chờ mạng → không nháy
+  (function paintTLCache() {
     try {
-      if (!window.TVKN || !TVKN.configured) return; // chưa cấu hình → giữ demo
-      const lessons = await TVKN.getLessons();
-      if (!Array.isArray(lessons)) return;   // lỗi dữ liệu → giữ nguyên (mảng rỗng vẫn xử lý: hiện 0/10)
+      const c = JSON.parse(localStorage.getItem(TL_CACHE_KEY) || 'null');
+      if (!c) return;
+      if (window.TVKN_UI && c.theme) TVKN_UI.applyTheme(c.theme);
+      setText('bnTag', c.tag); setText('bnTitle', c.title); setText('bnIntro', c.intro); setText('bnMascot', c.mascot);
+      const cont = document.getElementById('lessonSections'); if (cont && c.sections) cont.innerHTML = c.sections;
+      setText('lessonsDoneNum', c.done); setText('progressPct', c.pct);
+      const fill = document.getElementById('progressFill'); if (fill) fill.style.width = (c.pctNum || 0) + '%';
+      if (c.learnHref) { const lb = document.getElementById('bnLearn'); if (lb) lb.href = c.learnHref; const sb2 = document.getElementById('suggestBtn'); if (sb2) sb2.href = c.learnHref; }
+    } catch (e) {}
+  })();
 
-      // 1) Map: lesson_id → { status, best_score }
-      const dataMap = {};
-      lessons.forEach(l => {
-        if (l && l.lesson_id) dataMap[l.lesson_id] = { status: l.status, best_score: l.best_score };
+  (async function renderClassPage() {
+    if (!window.TVKN) return;
+    const U = window.TVKN_UI, DATA = window.TVKN_LESSONS;
+    const data = await TVKN.guardPage();   // chưa đăng nhập → tự chuyển về trang đăng nhập
+    if (!data) return;                      // guardPage đã chuyển trang
+
+    const esc = U ? U.esc : (s => s);
+    const profile = data.profile || {};
+    const grade = profile.grade || 1;
+    const G = (DATA.grades[grade]) || DATA.grades[1];
+    if (U) U.applyTheme(G.theme);
+
+    // ---- Banner ----
+    setText('bnTag', G.tag); setText('bnTitle', G.title); setText('bnIntro', G.intro); setText('bnMascot', G.mascot);
+
+    // ---- Map tiến độ thật ----
+    const lp = {};
+    (data.lessons || []).forEach(l => { if (l && l.lesson_id) lp[l.lesson_id] = l.status; });
+
+    // ---- Thứ tự bài (suy từ grade + no) + quy tắc mở khóa ----
+    const order = Object.keys(DATA.lessons)
+      .filter(k => DATA.lessons[k].grade === grade)
+      .sort((a, b) => (DATA.lessons[a].no || 0) - (DATA.lessons[b].no || 0));
+    const states = {}; let completed = 0;
+    order.forEach((id, i) => {
+      let st = lp[id] || 'not_started';
+      if (st !== 'completed' && st !== 'in_progress') st = 'not_started';
+      if (st === 'not_started' && i > 0 && states[order[i - 1]] !== 'completed') st = 'locked';
+      states[id] = st; if (st === 'completed') completed++;
+    });
+
+    const VIEW = {
+      completed:   { badge: '✓ Đã hoàn thành', btn: 'Ôn lại' },
+      in_progress: { badge: '⏳ Đang học',     btn: 'Học tiếp' },
+      not_started: { badge: '● Chưa học',      btn: 'Bắt đầu' },
+      locked:      { badge: '🔒 Bị khóa',      btn: '🔒 Xem thử' }
+    };
+    const linkOf = id => DATA.lessons[id] ? ('hoc-bai.html?id=' + encodeURIComponent(id)) : (id + '.html');
+
+    // ---- Render danh sách bài ----
+    const cont = document.getElementById('lessonSections');
+    if (!order.length) {
+      cont.innerHTML = '<div class="lesson-card" style="grid-column:1/-1;text-align:center;padding:40px">' +
+        '<div class="lesson-name" style="font-size:20px">🚧 Lớp ' + grade + ' đang được xây dựng</div>' +
+        '<div class="lesson-desc" style="margin-top:8px">Nội dung sắp ra mắt. Em quay lại sau nhé!</div></div>';
+    } else {
+      let html = '';
+      let curTopic = null;
+      order.forEach(id => {
+        const L = DATA.lessons[id]; const st = states[id]; const v = VIEW[st];
+        const locked = st === 'locked';
+        const topic = (L && L.topic) || '📚 Danh sách bài học';
+        if (topic !== curTopic) {
+          if (curTopic !== null) html += '</div>';
+          html += '<h3 class="topic-head">' + esc(topic) + '</h3><div class="lesson-grid">';
+          curTopic = topic;
+        }
+        html += '<div class="lesson-card ' + st + '" data-status="' + st + '" data-lesson="' + id + '">' +
+          '<span class="badge-status">' + v.badge + '</span>' +
+          '<div class="lesson-top"><div class="lesson-icon">' + (L ? L.icon : '📘') + '</div>' +
+          '<div><div class="lesson-no">Bài ' + (L ? L.no : '') + '</div>' +
+          '<div class="lesson-name">' + esc(L ? L.title : id) + '</div></div></div>' +
+          '<div class="lesson-desc">' + esc(L ? L.desc : '') + '</div>' +
+          (locked ? '<div class="lesson-note">Hoàn thành bài trước để mở khóa</div>' : '') +
+          '<a href="' + linkOf(id) + '" class="lesson-btn' + (locked ? ' preview' : '') + '">' + v.btn + '</a>' +
+          '</div>';
       });
-
-      // Cấu hình hiển thị cho từng trạng thái (mirror đúng cách trang đang style)
-      const VIEW = {
-        completed:   { badge: '✓ Đã hoàn thành', btn: 'Ôn lại' },
-        in_progress: { badge: '⏳ Đang học',     btn: 'Học tiếp' },
-        not_started: { badge: '● Chưa học',      btn: 'Bắt đầu' },
-        locked:      { badge: '🔒 Bị khóa',      btn: '🔒 Xem thử' }
-      };
-
-      // Lấy tất cả thẻ bài (theo thứ tự bài 1..10)
-      const allCards = Array.from(document.querySelectorAll('.lesson-card[data-lesson]'));
-      const cardById = {};
-      allCards.forEach(c => { cardById['' + c.getAttribute('data-lesson')] = c; });
-
-      let completed = 0;
-
-      // 2+3) Xác định trạng thái thật cho từng bài, áp dụng quy tắc mở khóa
-      const states = {}; // lesson-id → status cuối cùng
-      for (let n = 1; n <= 10; n++) {
-        const id = 'bai-' + n;
-        const card = cardById[id];
-        if (!card) continue;
-
-        const entry = dataMap[id];
-        let status = (entry && entry.status) || 'not_started';
-
-        // Chuẩn hóa giá trị lạ về not_started
-        if (status !== 'completed' && status !== 'in_progress') status = 'not_started';
-
-        // Quy tắc mở khóa: nếu chưa completed/in_progress và bài trước chưa hoàn thành → khóa.
-        // Bài 1 không bao giờ bị khóa.
-        if (status === 'not_started' && n > 1) {
-          if (states['bai-' + (n - 1)] !== 'completed') status = 'locked';
-        }
-
-        states[id] = status;
-        if (status === 'completed') completed++;
-      }
-
-      // 4) Áp dụng giao diện cho từng thẻ
-      for (let n = 1; n <= 10; n++) {
-        const id = 'bai-' + n;
-        const card = cardById[id];
-        if (!card) continue;
-        const status = states[id];
-        const view = VIEW[status];
-
-        card.classList.remove('completed', 'in_progress', 'not_started', 'locked');
-        card.classList.add(status);
-        card.dataset.status = status;
-
-        const badge = card.querySelector('.badge-status');
-        if (badge && view) badge.textContent = view.badge;
-
-        const btn = card.querySelector('.lesson-btn');
-        if (btn && view) {
-          if (status === 'locked') {
-            // Giữ link click được như trang vốn làm (a.lesson-btn.preview "🔒 Xem thử")
-            btn.classList.add('preview');
-          } else {
-            btn.classList.remove('preview');
-          }
-          btn.textContent = view.btn;
-        }
-      }
-
-      // 5) Cập nhật thống kê "Bài đã học" và "Tiến độ hoàn thành"
-      const pct = Math.round(completed / 10 * 100);
-      const numEl = document.getElementById('lessonsDoneNum');
-      if (numEl) numEl.textContent = completed + '/10';
-      const pctEl = document.getElementById('progressPct');
-      if (pctEl) pctEl.textContent = pct + '%';
-      const fillEl = document.getElementById('progressFill');
-      if (fillEl) fillEl.style.width = pct + '%';
-    } catch (err) {
-      console.warn('Không đồng bộ được tiến độ bài học:', err);
-      // Lỗi → giữ nguyên trạng thái demo đã hard-code
+      if (curTopic !== null) html += '</div>';
+      cont.innerHTML = html;
     }
+
+    // ---- Thống kê tiến độ ----
+    const total = order.length;
+    const pct = total ? Math.round(completed / total * 100) : 0;
+    setText('lessonsDoneNum', completed + '/' + total);
+    setText('progressPct', pct + '%');
+    const fill = document.getElementById('progressFill'); if (fill) fill.style.width = pct + '%';
+
+    // ---- Nút "Học tiếp" + gợi ý ----
+    const nextId = order.find(id => states[id] === 'in_progress')
+                || order.find(id => states[id] === 'not_started')
+                || order[0];
+    if (nextId) {
+      const L = DATA.lessons[nextId];
+      const href = linkOf(nextId);
+      const learn = document.getElementById('bnLearn'); if (learn) learn.href = href;
+      const sBtn = document.getElementById('suggestBtn'); if (sBtn) sBtn.href = href;
+      const sTxt = document.getElementById('suggestText');
+      if (sTxt && L) sTxt.textContent = 'Em đang học đến Bài ' + L.no + ': ' + L.title + '. Hãy tiếp tục để nhận thêm XP nhé!';
+    }
+
+    // ---- Lưu cache để lần sau VẼ NGAY (không nháy) ----
+    try {
+      localStorage.setItem(TL_CACHE_KEY, JSON.stringify({
+        theme: G.theme, tag: G.tag, title: G.title, intro: G.intro, mascot: G.mascot,
+        sections: cont.innerHTML, done: completed + '/' + total, pct: pct + '%', pctNum: pct,
+        learnHref: nextId ? linkOf(nextId) : '#lessons'
+      }));
+    } catch (e) {}
   })();
 </script>
 </body>
