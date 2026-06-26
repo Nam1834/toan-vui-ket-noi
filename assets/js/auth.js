@@ -8,6 +8,40 @@ window.TVKN = (function () {
     if (!sb) { throw new Error('Supabase chưa cấu hình (xem supabase-config.js)'); }
   }
 
+  // ---------- CACHE CHỈ SỐ (xp, huy hiệu, streak...) để VẼ NGAY, tránh nháy 0 ----------
+  // Mọi trang nạp auth.js sẽ tự vẽ giá trị lần trước ngay khi tải, rồi đồng bộ dữ liệu thật sau.
+  const BIND_CACHE_KEY = 'tvkn_bind_cache';
+  function paintCachedBindings() {
+    try {
+      const c = JSON.parse(localStorage.getItem(BIND_CACHE_KEY) || 'null');
+      if (!c) return;
+      document.querySelectorAll('[data-bind]').forEach(function (el) {
+        const k = el.getAttribute('data-bind');
+        if (k in c && c[k] != null) el.textContent = c[k];
+      });
+    } catch (e) {}
+  }
+  // Cache mọi chỉ số hiển thị qua [data-bind] để VẼ NGAY ở mọi trang.
+  // Lưu ý: trang danh sách bài (trang-lop) đã BỎ data-bind cho completed/total/percent
+  // và tự dùng cache grade-aware riêng → ở đây cache cả nhóm này vẫn an toàn,
+  // vì các trang còn lại (ho-so/index/phu-huynh) đều tính cùng một nguồn (renderProfile).
+  const BIND_STABLE = ['name', 'avatar', 'grade', 'xp', 'level', 'streak', 'coins', 'badges', 'completed', 'total', 'percent', 'nextxp'];
+  function saveBindCache(map) {
+    try {
+      const prev = JSON.parse(localStorage.getItem(BIND_CACHE_KEY) || '{}') || {};
+      BIND_STABLE.forEach(function (k) { if (map[k] != null) prev[k] = map[k]; });
+      localStorage.setItem(BIND_CACHE_KEY, JSON.stringify(prev));
+    } catch (e) {}
+  }
+  function clearBindCache() {
+    try {
+      Object.keys(localStorage).forEach(function (k) { if (k.indexOf('tvkn_') === 0) localStorage.removeItem(k); });
+    } catch (e) {}
+  }
+  // Vẽ ngay khi DOM sẵn sàng (trước khi mạng trả về)
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', paintCachedBindings);
+  else paintCachedBindings();
+
   // ---------- ĐĂNG KÝ ----------
   // info = { email, password, name, avatar, grade }
   async function signUp(info) {
@@ -35,6 +69,7 @@ window.TVKN = (function () {
 
   // ---------- ĐĂNG XUẤT ----------
   async function signOut() {
+    clearBindCache();   // xóa cache chỉ số để người dùng sau không thấy dữ liệu cũ
     if (sb) await sb.auth.signOut();
     window.location.replace('dang-nhap.html');
   }
@@ -114,6 +149,7 @@ window.TVKN = (function () {
       const k = el.getAttribute('data-bind');
       if (k in map && map[k] != null) el.textContent = map[k];
     });
+    saveBindCache(map);   // lưu để lần sau vẽ ngay, tránh nháy 0
   }
 
   // ---------- Dựng toàn bộ hồ sơ + chỉ số thật, đổ lên giao diện ----------
@@ -121,9 +157,15 @@ window.TVKN = (function () {
   async function renderProfile(profile) {
     applyToDOM(profile);
     let progress = null, lessons = [], badges = [];
-    try { progress = await getProgress(); } catch (e) {}
-    try { lessons  = await getLessons();  } catch (e) {}
-    try { badges   = await getBadges();   } catch (e) {}
+    // Gọi SONG SONG 3 truy vấn (thay vì nối tiếp) để giảm độ trễ đồng bộ
+    try {
+      const r = await Promise.all([
+        getProgress().catch(function () { return null; }),
+        getLessons().catch(function () { return []; }),
+        getBadges().catch(function () { return []; })
+      ]);
+      progress = r[0]; lessons = r[1] || []; badges = r[2] || [];
+    } catch (e) {}
     const completed = (lessons || []).filter(function (l) { return l.status === 'completed'; }).length;
     const xp = progress ? (progress.xp || 0) : 0;
     const level = progress ? (progress.level || 1) : 1;

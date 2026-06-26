@@ -1168,7 +1168,7 @@
     </p>
     <div class="hero-buttons">
       <a href="trang-lop.html" class="btn btn-primary">🎯 Bắt đầu học ngay</a>
-      <a href="bai-1.html" class="btn btn-secondary">🎁 Học thử miễn phí</a>
+      <a href="hoc-bai.html?id=bai-1" class="btn btn-secondary">🎁 Học thử miễn phí</a>
     </div>
     <div class="hero-stats">
       <div class="stat">
@@ -1576,7 +1576,7 @@
       // Ẩn khối hồ sơ cá nhân (lời chào, XP, huy hiệu... của tài khoản)
       var ps = document.querySelector('.profile-section');
       if (ps) ps.style.display = 'none';
-      // Khách: "Bắt đầu học ngay" → mời đăng nhập; còn "Học thử miễn phí" giữ nguyên → bai-1.html
+      // Khách: "Bắt đầu học ngay" → mời đăng nhập; "Học thử miễn phí" → hoc-bai.html?id=bai-1 (engine, chế độ học thử)
       var primaryBtn = document.querySelector('.hero-buttons .btn-primary');
       if (primaryBtn) primaryBtn.setAttribute('href', 'dang-nhap.html');
     }
