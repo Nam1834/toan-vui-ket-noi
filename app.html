@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<title>Toán Vui Kết Nối</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== Biến màu — đồng bộ với index.html ===== */
+  :root {
+    --blue: #4F8CFF;
+    --yellow: #FFD93D;
+    --green: #6BCB77;
+    --orange: #FF9F43;
+    --pink: #FF6B9D;
+    --purple: #9B72FF;
+    --white: #FFFFFF;
+    --bg-soft: #F4F8FF;
+    --text-dark: #2D3748;
+    --text-soft: #6B7280;
+    --shadow: 0 8px 24px rgba(79, 140, 255, 0.15);
+    --shadow-lg: 0 16px 40px rgba(79, 140, 255, 0.22);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: 'Fredoka', 'Baloo 2', system-ui, sans-serif;
+    background: var(--bg-soft);
+    color: var(--text-dark);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+  }
+  a { text-decoration: none; color: inherit; }
+
+  /* ===== HEADER — sao y index.html ===== */
+  .header {
+    flex: 0 0 auto;
+    z-index: 100;
+    height: 80px;
+    background: var(--white);
+    box-shadow: 0 4px 20px rgba(79, 140, 255, 0.08);
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+    gap: 24px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: transform .2s ease;
+  }
+  .logo:hover { transform: scale(1.05); }
+
+  .logo-icon {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    box-shadow: 0 6px 16px rgba(79, 140, 255, 0.35);
+    animation: bunny-blink 4s infinite;
+  }
+  @keyframes bunny-blink {
+    0%, 92%, 100% { transform: rotate(0deg); }
+    94% { transform: rotate(-8deg); }
+    96% { transform: rotate(8deg); }
+    98% { transform: rotate(-4deg); }
+  }
+
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+  .logo-name {
+    font-weight: 800;
+    font-size: 18px;
+    background: linear-gradient(90deg, var(--blue), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .logo-slogan {
+    font-size: 11px;
+    color: var(--text-soft);
+    font-weight: 500;
+  }
+
+  .nav-menu {
+    display: flex;
+    gap: 6px;
+    margin: 0 auto;
+    list-style: none;
+  }
+  .nav-menu li a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: 14px;
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all .25s ease;
+  }
+  .nav-menu li a:hover {
+    background: var(--bg-soft);
+    color: var(--blue);
+    transform: translateY(-2px);
+  }
+  .nav-menu li a.active {
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    color: var(--white);
+    box-shadow: 0 6px 14px rgba(79, 140, 255, 0.35);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .icon-btn {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--bg-soft);
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all .2s ease;
+  }
+  .icon-btn:hover {
+    background: var(--blue);
+    color: var(--white);
+    transform: translateY(-2px);
+  }
+  .badge-dot {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 10px;
+    height: 10px;
+    background: var(--orange);
+    border-radius: 50%;
+    border: 2px solid var(--white);
+  }
+  .xp-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    color: var(--white);
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(255, 159, 67, 0.35);
+  }
+  .avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--green), var(--blue));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: var(--white);
+    border: 3px solid var(--white);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    cursor: pointer;
+  }
+
+  /* ===== KHUNG NỘI DUNG (chỉ phần này đổi khi chuyển trang) ===== */
+  .app-view { flex: 1 1 auto; width: 100%; border: none; background: var(--bg-soft); }
+
+  /* ===== TAB DƯỚI (điện thoại) ===== */
+  .app-tabbar { display: none; }
+
+  /* ===== RESPONSIVE — theo index.html ===== */
+  @media (max-width: 1024px) {
+    .nav-menu { display: none; }
+    .app-tabbar {
+      flex: 0 0 auto; display: flex; justify-content: space-around;
+      background: var(--white); box-shadow: 0 -4px 20px rgba(79,140,255,.08); padding: 6px 4px;
+    }
+    .tab { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; color: var(--text-soft); cursor: pointer; border: none; background: transparent; font-family: inherit; }
+    .tab .t-ico { font-size: 20px; }
+    .tab.active { color: var(--blue); }
+  }
+  @media (max-width: 640px) {
+    .header { padding: 0 16px; gap: 12px; }
+    .logo-text { display: none; }
+    .xp-pill span:last-child { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER CHUNG (sao y index.html) ===== -->
+<header class="header">
+  <div class="logo" data-top="index.html" title="Trang chủ">
+    <div class="logo-icon">🐰</div>
+    <div class="logo-text">
+      <span class="logo-name">TOÁN VUI KẾT NỐI</span>
+      <span class="logo-slogan">Mỗi ngày 15 phút - Giỏi Toán tự nhiên</span>
+    </div>
+  </div>
+
+  <ul class="nav-menu">
+    <li><a data-top="index.html">🏠 Trang chủ</a></li>
+    <li><a data-nav="trang-lop">📚 Học theo lớp</a></li>
+    <li><a data-nav="thu-thach">🎯 Thử thách</a></li>
+    <li><a data-nav="tro-choi">🎮 Trò chơi</a></li>
+    <li><a data-nav="bang-xep-hang">🏆 Bảng xếp hạng</a></li>
+    <li><a data-nav="ai-gia-su">🤖 AI Gia sư</a></li>
+    <li><a data-nav="phu-huynh">👨‍👩‍👧 Phụ huynh</a></li>
+  </ul>
+
+  <div class="header-right">
+    <button class="icon-btn" title="Thông báo">🔔<span class="badge-dot"></span></button>
+    <div class="xp-pill">🪙 <span><span data-bind="xp">0</span> XP</span></div>
+    <div class="avatar" data-nav="ho-so" title="Hồ sơ của em">👧</div>
+  </div>
+</header>
+
+<!-- ===== NỘI DUNG (iframe — chỉ phần này tải lại) ===== -->
+<iframe class="app-view" id="view" title="Nội dung"></iframe>
+
+<!-- ===== TAB DƯỚI (điện thoại) ===== -->
+<nav class="app-tabbar">
+  <button class="tab" data-nav="trang-lop"><span class="t-ico">📚</span>Bài học</button>
+  <button class="tab" data-nav="tro-choi"><span class="t-ico">🎮</span>Chơi</button>
+  <button class="tab" data-nav="thu-thach"><span class="t-ico">🎯</span>Thử thách</button>
+  <button class="tab" data-nav="bang-xep-hang"><span class="t-ico">🏆</span>Hạng</button>
+  <button class="tab" data-nav="ho-so"><span class="t-ico">👤</span>Hồ sơ</button>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+  (function () {
+    // GIỮ ĐỒNG BỘ với SHELL_PAGES trong assets/js/auth.js
+    const SHELL_PAGES = ['trang-lop', 'ho-so', 'huy-hieu', 'bang-xep-hang', 'thu-thach', 'tro-choi', 'phu-huynh', 'ai-gia-su'];
+    const DEFAULT_PAGE = 'trang-lop';
+    const iframe = document.getElementById('view');
+
+    const fileOf = p => ((p || '').split('?')[0].split('#')[0].split('/').pop() || '').replace(/\.html$/, '');
+    const wantPage = () => {
+      const p = new URLSearchParams(location.search).get('page');
+      return SHELL_PAGES.includes(p) ? p : DEFAULT_PAGE;
+    };
+    function setActive(page) {
+      document.querySelectorAll('[data-nav]').forEach(el =>
+        el.classList.toggle('active', el.getAttribute('data-nav') === page));
+    }
+    function navTo(page) {
+      if (!SHELL_PAGES.includes(page)) { window.location.href = page; return; }  // ngoài shell → toàn màn hình
+      const target = page + '.html';
+      if (fileOf(iframe.getAttribute('src') || '') !== page) iframe.src = target;  // tạo lịch sử → back/forward chạy
+      setActive(page);
+    }
+
+    // Bấm điều hướng trong header / tabbar
+    document.querySelectorAll('[data-nav]').forEach(el =>
+      el.addEventListener('click', e => { e.preventDefault(); navTo(el.getAttribute('data-nav')); }));
+    document.querySelectorAll('[data-top]').forEach(el =>
+      el.addEventListener('click', e => { e.preventDefault(); window.location.href = el.getAttribute('data-top'); }));
+
+    // Khi iframe tải xong: đồng bộ địa chỉ (không thêm lịch sử) + cập nhật header
+    iframe.addEventListener('load', () => {
+      try {
+        const f = fileOf(iframe.contentWindow.location.pathname);
+        if (SHELL_PAGES.includes(f)) {
+          history.replaceState({ page: f }, '', '?page=' + f);
+          setActive(f);
+        }
+      } catch (e) { /* khác origin (hiếm) → bỏ qua */ }
+      // Làm tươi số liệu header (XP, huy hiệu...) phòng khi trang con vừa thay đổi
+      try { if (window.TVKN && TVKN.applyProfile) TVKN.applyProfile().catch(function () {}); } catch (e) {}
+    });
+
+    // Đổ dữ liệu header + bắt buộc đăng nhập (chưa login → tự về trang đăng nhập toàn màn hình)
+    if (window.TVKN && TVKN.guardPage) TVKN.guardPage().catch(function () {});
+
+    // Mở trang khởi đầu
+    navTo(wantPage());
+  })();
+</script>
+</body>
+</html>

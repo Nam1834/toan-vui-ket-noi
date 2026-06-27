@@ -5,7 +5,7 @@
 Object.assign(window.TVKN_LESSONS.lessons, {
 
   'lop5-bai-1': {
-    grade: 5, no: 1, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 1, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Ôn tập số tự nhiên',
     desc: 'Ôn đọc, viết, giá trị chữ số, so sánh và làm tròn số tự nhiên.',
     icon: '🔢',
@@ -38,7 +38,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-2': {
-    grade: 5, no: 2, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 2, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Ôn tập các phép tính với số tự nhiên',
     desc: 'Cộng, trừ, nhân, chia số tự nhiên và tính bằng cách thuận tiện.',
     icon: '➗',
@@ -71,7 +71,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-3': {
-    grade: 5, no: 3, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 3, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Thành phần của phép cộng, phép trừ',
     desc: 'Gọi tên số hạng, tổng, số bị trừ, số trừ và hiệu.',
     icon: '➕',
@@ -104,7 +104,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-4': {
-    grade: 5, no: 4, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 4, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Phân số thập phân',
     desc: 'Nhận biết phân số thập phân và đưa phân số về phân số thập phân.',
     icon: '🔟',
@@ -134,7 +134,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-5': {
-    grade: 5, no: 5, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 5, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Ôn tập các phép tính với phân số',
     desc: 'Cộng, trừ, nhân, chia phân số và so sánh phân số.',
     icon: '➗',
@@ -164,7 +164,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-6': {
-    grade: 5, no: 6, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 6, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Cộng, trừ hai phân số khác mẫu số',
     desc: 'Quy đồng mẫu số rồi cộng hoặc trừ hai phân số.',
     icon: '➕',
@@ -194,7 +194,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-7': {
-    grade: 5, no: 7, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 7, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Hỗn số',
     desc: 'Nhận biết hỗn số, đổi hỗn số ra phân số và ngược lại.',
     icon: '🔢',
@@ -224,7 +224,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-8': {
-    grade: 5, no: 8, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 8, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Ôn tập hình học và đo lường',
     desc: 'Đổi đơn vị đo, nhận biết góc và tính diện tích hình chữ nhật.',
     icon: '📐',
@@ -257,7 +257,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-9': {
-    grade: 5, no: 9, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 9, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Luyện tập chung',
     desc: 'Ôn tổng hợp số tự nhiên, phân số, hỗn số và giải toán thực tế.',
     icon: '🧮',
@@ -287,7 +287,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-10': {
-    grade: 5, no: 10, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 10, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Khái niệm số thập phân',
     desc: 'Nhận biết số thập phân, phần nguyên, phần thập phân và các hàng.',
     icon: '🔢',
@@ -317,7 +317,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-11': {
-    grade: 5, no: 11, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 11, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'So sánh các số thập phân',
     desc: 'So sánh số thập phân theo phần nguyên rồi đến từng hàng phần thập phân.',
     icon: '⚖️',
@@ -347,7 +347,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-12': {
-    grade: 5, no: 12, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 12, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Viết số đo đại lượng dưới dạng số thập phân',
     desc: 'Đổi số đo có hai đơn vị thành số thập phân qua bước hỗn số.',
     icon: '📏',
@@ -377,7 +377,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-13': {
-    grade: 5, no: 13, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 13, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Làm tròn số thập phân',
     desc: 'Làm tròn số thập phân đến số tự nhiên, hàng phần mười, phần trăm.',
     icon: '🎯',
@@ -407,7 +407,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-14': {
-    grade: 5, no: 14, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 14, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Luyện tập chung',
     desc: 'Ôn cấu tạo, đổi đơn vị, làm tròn và so sánh số thập phân.',
     icon: '🧮',
@@ -437,7 +437,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-15': {
-    grade: 5, no: 15, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 15, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Ki-lô-mét vuông. Héc-ta',
     desc: 'Nhận biết và đổi các đơn vị đo diện tích lớn km², ha.',
     icon: '🗺️',
@@ -470,7 +470,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-16': {
-    grade: 5, no: 16, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 16, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Các đơn vị đo diện tích',
     desc: 'Hệ thống các đơn vị đo diện tích và quan hệ gấp 100 lần.',
     icon: '📐',
@@ -503,7 +503,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-17': {
-    grade: 5, no: 17, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 17, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Thực hành và trải nghiệm với đơn vị đo đại lượng',
     desc: 'Vận dụng diện tích vào lát sàn, làm giá sách, cắt kính.',
     icon: '🛠️',
@@ -533,7 +533,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-18': {
-    grade: 5, no: 18, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 18, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Luyện tập chung',
     desc: 'Ôn đổi, so sánh đơn vị diện tích và giải toán lát sàn.',
     icon: '🧮',
@@ -563,7 +563,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-19': {
-    grade: 5, no: 19, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 19, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Phép cộng số thập phân',
     desc: 'Cộng số thập phân và vận dụng tính chất giao hoán, kết hợp.',
     icon: '➕',
@@ -593,7 +593,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop5-bai-20': {
-    grade: 5, no: 20, theme: 'pink', mascot: '🦅', avatar: '🦅',
+    grade: 5, no: 20, theme: 'pink', mascot: '🦁', avatar: '🦁',
     title: 'Phép trừ số thập phân',
     desc: 'Trừ số thập phân, thêm chữ số 0 và thử lại bằng phép cộng.',
     icon: '➖',
