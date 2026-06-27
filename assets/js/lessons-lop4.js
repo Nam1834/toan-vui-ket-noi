@@ -5,7 +5,7 @@
 Object.assign(window.TVKN_LESSONS.lessons, {
 
   'lop4-bai-1': {
-    grade: 4, no: 1, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 1, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Ôn tập các số đến 100 000',
     desc: 'Đọc, viết, phân tích và so sánh số có nhiều chữ số.',
     icon: '🔢',
@@ -42,7 +42,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-2': {
-    grade: 4, no: 2, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 2, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Ôn tập các phép tính trong phạm vi 100 000',
     desc: 'Tính nhẩm, đặt tính và thứ tự thực hiện phép tính.',
     icon: '➗',
@@ -75,7 +75,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-3': {
-    grade: 4, no: 3, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 3, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Số chẵn, số lẻ',
     desc: 'Nhận biết số chẵn, số lẻ qua chữ số tận cùng.',
     icon: '🔵',
@@ -108,7 +108,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-4': {
-    grade: 4, no: 4, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 4, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Biểu thức chứa chữ',
     desc: 'Dùng chữ thay cho số và tính giá trị biểu thức.',
     icon: '🔤',
@@ -142,7 +142,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-5': {
-    grade: 4, no: 5, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 5, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Giải bài toán có ba bước tính',
     desc: 'Phân tích bài toán thành ba bước nhỏ rồi giải.',
     icon: '📝',
@@ -176,7 +176,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-6': {
-    grade: 4, no: 6, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 6, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Luyện tập chung',
     desc: 'Ôn số chẵn lẻ, làm tròn, biểu thức và giải toán.',
     icon: '🎯',
@@ -211,7 +211,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-7': {
-    grade: 4, no: 7, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 7, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Đo góc, đơn vị đo góc',
     desc: 'Làm quen đơn vị độ và đọc số đo góc.',
     icon: '📐',
@@ -244,7 +244,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-8': {
-    grade: 4, no: 8, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 8, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Góc nhọn, góc tù, góc bẹt',
     desc: 'Phân loại góc bằng cách so sánh với góc vuông.',
     icon: '📐',
@@ -277,7 +277,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-9': {
-    grade: 4, no: 9, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 9, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Luyện tập chung',
     desc: 'Ôn tập đo góc và nhận diện các loại góc.',
     icon: '🎯',
@@ -309,7 +309,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-10': {
-    grade: 4, no: 10, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 10, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Số có sáu chữ số. Số 1 000 000',
     desc: 'Đọc, viết số có sáu chữ số và làm quen số một triệu.',
     icon: '🔢',
@@ -344,7 +344,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-11': {
-    grade: 4, no: 11, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 11, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Hàng và lớp',
     desc: 'Nhóm các hàng thành lớp đơn vị, lớp nghìn, lớp triệu.',
     icon: '🗂️',
@@ -376,7 +376,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-12': {
-    grade: 4, no: 12, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 12, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Các số trong phạm vi lớp triệu',
     desc: 'Đọc, viết và phân tích số có đến chín chữ số.',
     icon: '🔢',
@@ -410,7 +410,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-13': {
-    grade: 4, no: 13, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 13, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Làm tròn số đến hàng trăm nghìn',
     desc: 'Quy tắc làm tròn dựa vào chữ số hàng chục nghìn.',
     icon: '🔁',
@@ -439,7 +439,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-14': {
-    grade: 4, no: 14, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 14, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'So sánh các số có nhiều chữ số',
     desc: 'Quy tắc so sánh và sắp xếp thứ tự số lớn.',
     icon: '⚖️',
@@ -471,7 +471,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-15': {
-    grade: 4, no: 15, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 15, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Làm quen với dãy số tự nhiên',
     desc: 'Đặc điểm của dãy số tự nhiên, số liền trước, liền sau.',
     icon: '🔢',
@@ -505,7 +505,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-16': {
-    grade: 4, no: 16, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 16, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Luyện tập chung',
     desc: 'Ôn hàng, lớp, so sánh, làm tròn số lớn.',
     icon: '🎯',
@@ -538,7 +538,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-17': {
-    grade: 4, no: 17, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 17, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Yến, tạ, tấn',
     desc: 'Đơn vị đo khối lượng lớn và cách quy đổi.',
     icon: '⚖️',
@@ -572,7 +572,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-18': {
-    grade: 4, no: 18, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 18, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Đề-xi-mét vuông, mét vuông, mi-li-mét vuông',
     desc: 'Đơn vị đo diện tích và cách quy đổi.',
     icon: '🟦',
@@ -606,7 +606,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-19': {
-    grade: 4, no: 19, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 19, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Giây, thế kỉ',
     desc: 'Đơn vị đo thời gian từ rất nhỏ đến rất lớn.',
     icon: '⏱️',
@@ -639,7 +639,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-20': {
-    grade: 4, no: 20, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 20, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Thực hành sử dụng đơn vị đo đại lượng',
     desc: 'Vận dụng khối lượng, diện tích, thời gian, tiền tệ.',
     icon: '🧪',
@@ -671,7 +671,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-21': {
-    grade: 4, no: 21, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 21, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Luyện tập chung',
     desc: 'Ôn khối lượng, diện tích, thời gian và tiền tệ.',
     icon: '🎯',
@@ -706,7 +706,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-22': {
-    grade: 4, no: 22, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 22, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Phép cộng các số có nhiều chữ số',
     desc: 'Đặt tính và cộng số lớn, có nhớ và không nhớ.',
     icon: '➕',
@@ -738,7 +738,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-23': {
-    grade: 4, no: 23, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 23, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Phép trừ các số có nhiều chữ số',
     desc: 'Đặt tính và trừ số lớn, có nhớ và không nhớ.',
     icon: '➖',
@@ -770,7 +770,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-24': {
-    grade: 4, no: 24, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 24, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Tính chất giao hoán và kết hợp của phép cộng',
     desc: 'Dùng hai tính chất để tính nhanh tổng nhiều số.',
     icon: '🔄',
@@ -803,7 +803,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-25': {
-    grade: 4, no: 25, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 25, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Tìm hai số biết tổng và hiệu',
     desc: 'Giải dạng toán tổng - hiệu bằng sơ đồ đoạn thẳng.',
     icon: '📊',
@@ -836,7 +836,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-26': {
-    grade: 4, no: 26, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 26, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Luyện tập chung',
     desc: 'Ôn cộng, trừ, tính nhanh và toán tổng - hiệu.',
     icon: '🎯',
@@ -870,7 +870,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-27': {
-    grade: 4, no: 27, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 27, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Hai đường thẳng vuông góc',
     desc: 'Nhận biết hai đường thẳng vuông góc và dùng ê ke.',
     icon: '📐',
@@ -899,7 +899,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-28': {
-    grade: 4, no: 28, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 28, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Thực hành vẽ hai đường thẳng vuông góc',
     desc: 'Dùng ê ke vẽ đường vuông góc và làm dự án diều.',
     icon: '✏️',
@@ -932,7 +932,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-29': {
-    grade: 4, no: 29, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 29, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Hai đường thẳng song song',
     desc: 'Nhận biết hai đường thẳng song song không cắt nhau.',
     icon: '🛤️',
@@ -961,7 +961,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-30': {
-    grade: 4, no: 30, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 30, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Thực hành vẽ hai đường thẳng song song',
     desc: 'Vẽ đường song song và làm bộ đồ chơi ghép hình.',
     icon: '✏️',
@@ -990,7 +990,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-31': {
-    grade: 4, no: 31, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 31, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Hình bình hành, hình thoi',
     desc: 'Nhận biết đặc điểm của hình bình hành và hình thoi.',
     icon: '🔷',
@@ -1022,7 +1022,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-32': {
-    grade: 4, no: 32, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 32, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Luyện tập chung',
     desc: 'Ôn vuông góc, song song, hình bình hành, hình thoi.',
     icon: '🎯',
@@ -1053,7 +1053,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-33': {
-    grade: 4, no: 33, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 33, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Ôn tập các số đến lớp triệu',
     desc: 'Đọc, viết, so sánh và phân tích số lớn.',
     icon: '🔢',
@@ -1087,7 +1087,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-34': {
-    grade: 4, no: 34, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 34, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Ôn tập phép cộng, phép trừ',
     desc: 'Ôn tính nhẩm, đặt tính và giải toán cộng trừ.',
     icon: '➕',
@@ -1122,7 +1122,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-35': {
-    grade: 4, no: 35, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 35, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Ôn tập hình học',
     desc: 'Ôn các loại góc, vuông góc, song song và hình đặc biệt.',
     icon: '📐',
@@ -1153,7 +1153,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-36': {
-    grade: 4, no: 36, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 36, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Ôn tập đo lường',
     desc: 'Ôn đơn vị khối lượng, diện tích và thời gian.',
     icon: '⚖️',
@@ -1187,7 +1187,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop4-bai-37': {
-    grade: 4, no: 37, theme: 'purple', mascot: '🦉', avatar: '🦉',
+    grade: 4, no: 37, theme: 'purple', mascot: '🐰', avatar: '🐰',
     title: 'Ôn tập chung',
     desc: 'Tổng hợp số, phép tính, đo lường và hình học học kì 1.',
     icon: '🏆',

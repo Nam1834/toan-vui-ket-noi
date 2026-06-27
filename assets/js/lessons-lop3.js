@@ -4,7 +4,7 @@
 // ============================================================
 Object.assign(window.TVKN_LESSONS.lessons, {
   'lop3-bai-1': {
-    grade: 3, no: 1, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 1, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Ôn tập các số đến 1000',
     desc: 'Đọc, viết, phân tích và so sánh các số trong phạm vi 1000.',
     icon: '🔢',
@@ -42,7 +42,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-2': {
-    grade: 3, no: 2, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 2, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Ôn tập phép cộng, phép trừ trong phạm vi 1000',
     desc: 'Tính nhẩm tròn chục, tròn trăm; đặt tính rồi tính; tìm tổng và hiệu.',
     icon: '➕',
@@ -79,7 +79,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-3': {
-    grade: 3, no: 3, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 3, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Tìm thành phần trong phép cộng, phép trừ',
     desc: 'Tìm số hạng, số bị trừ, số trừ chưa biết trong phép tính.',
     icon: '🔍',
@@ -113,7 +113,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-4': {
-    grade: 3, no: 4, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 4, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Ôn tập bảng nhân 2, 5; bảng chia 2, 5',
     desc: 'Củng cố bảng nhân, bảng chia 2 và 5; đếm thêm, đếm bớt; so sánh.',
     icon: '✖️',
@@ -151,7 +151,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-5': {
-    grade: 3, no: 5, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 5, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Bảng nhân 3, bảng chia 3',
     desc: 'Lập và ghi nhớ bảng nhân 3, bảng chia 3; đếm thêm, đếm bớt 3.',
     icon: '3️⃣',
@@ -189,7 +189,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-6': {
-    grade: 3, no: 6, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 6, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Bảng nhân 4, bảng chia 4',
     desc: 'Lập và ghi nhớ bảng nhân 4, bảng chia 4; so sánh kết quả; giải toán.',
     icon: '4️⃣',
@@ -227,7 +227,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-7': {
-    grade: 3, no: 7, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 7, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Ôn tập hình học và đo lường',
     desc: 'Nhận diện hình khối, đường gấp khúc, khối lượng, dung tích, xem giờ.',
     icon: '📐',
@@ -260,7 +260,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-8': {
-    grade: 3, no: 8, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 8, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Luyện tập chung',
     desc: 'Ôn so sánh số, đặt tính, đặc tính số 0 và số 1, nhân chia trong bảng.',
     icon: '🎯',
@@ -294,7 +294,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-9': {
-    grade: 3, no: 9, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 9, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Bảng nhân 6, bảng chia 6',
     desc: 'Lập và ghi nhớ bảng nhân 6, bảng chia 6; bước nhảy 6; giải toán.',
     icon: '6️⃣',
@@ -332,7 +332,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-10': {
-    grade: 3, no: 10, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 10, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Bảng nhân 7, bảng chia 7',
     desc: 'Lập và ghi nhớ bảng nhân 7, bảng chia 7; bước nhảy 7; giải toán.',
     icon: '7️⃣',
@@ -370,7 +370,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-11': {
-    grade: 3, no: 11, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 11, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Bảng nhân 8, bảng chia 8',
     desc: 'Lập và ghi nhớ bảng nhân 8, bảng chia 8; bước nhảy 8; giải toán.',
     icon: '8️⃣',
@@ -408,7 +408,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-12': {
-    grade: 3, no: 12, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 12, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Bảng nhân 9, bảng chia 9',
     desc: 'Lập và ghi nhớ bảng nhân 9, bảng chia 9; bước nhảy 9; giải toán.',
     icon: '9️⃣',
@@ -446,7 +446,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-13': {
-    grade: 3, no: 13, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 13, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Tìm thành phần trong phép nhân, phép chia',
     desc: 'Tìm thừa số, số bị chia, số chia chưa biết trong phép tính.',
     icon: '🔍',
@@ -480,7 +480,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-14': {
-    grade: 3, no: 14, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 14, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Một phần mấy',
     desc: 'Nhận biết một phần hai, một phần ba... của hình và của một nhóm đồ vật.',
     icon: '🍕',
@@ -514,7 +514,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-15': {
-    grade: 3, no: 15, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 15, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Luyện tập chung',
     desc: 'Ôn nhân chia trong bảng, tìm thành phần chưa biết, một phần mấy, giải toán.',
     icon: '🎯',
@@ -552,7 +552,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-16': {
-    grade: 3, no: 16, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 16, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Điểm ở giữa, trung điểm của đoạn thẳng',
     desc: 'Nhận biết điểm ở giữa hai điểm và trung điểm của đoạn thẳng.',
     icon: '📍',
@@ -585,7 +585,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-17': {
-    grade: 3, no: 17, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 17, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Hình tròn. Tâm, bán kính, đường kính',
     desc: 'Nhận biết tâm, bán kính, đường kính; đường kính dài gấp đôi bán kính.',
     icon: '⭕',
@@ -618,7 +618,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-18': {
-    grade: 3, no: 18, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 18, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Luyện tập về hình tròn',
     desc: 'Vẽ hình tròn bằng com pa; luyện tập bán kính, đường kính.',
     icon: '🧭',
@@ -652,7 +652,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-19': {
-    grade: 3, no: 19, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 19, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Hình tam giác, hình tứ giác. Hình chữ nhật, hình vuông',
     desc: 'Nhận biết đỉnh, cạnh, góc của các hình; phân biệt hình chữ nhật, hình vuông.',
     icon: '🔺',
@@ -686,7 +686,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop3-bai-20': {
-    grade: 3, no: 20, theme: 'blue', mascot: '🐢', avatar: '🐢',
+    grade: 3, no: 20, theme: 'orange', mascot: '🦊', avatar: '🦊',
     title: 'Luyện tập hình tam giác, tứ giác, chữ nhật, vuông',
     desc: 'Luyện tập phân loại hình, đo cạnh, ghép hình và xếp que tính.',
     icon: '📏',

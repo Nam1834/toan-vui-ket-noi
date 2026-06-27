@@ -5,7 +5,7 @@
 Object.assign(window.TVKN_LESSONS.lessons, {
 
   'lop2-bai-1': {
-    grade: 2, no: 1, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 1, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Ôn tập các số đến 100',
     desc: 'Đọc, viết và phân tích các số đến 100 thành chục và đơn vị.',
     icon: '🔢',
@@ -30,7 +30,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-2': {
-    grade: 2, no: 2, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 2, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Tia số. Số liền trước, số liền sau',
     desc: 'Nhận biết vị trí số trên tia số, tìm số liền trước và số liền sau.',
     icon: '📏',
@@ -55,7 +55,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-3': {
-    grade: 2, no: 3, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 3, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Các thành phần của phép cộng, phép trừ',
     desc: 'Gọi tên số hạng, tổng, số bị trừ, số trừ và hiệu.',
     icon: '🧮',
@@ -79,7 +79,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-4': {
-    grade: 2, no: 4, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 4, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Hơn, kém nhau bao nhiêu',
     desc: 'Tìm phần hơn, phần kém giữa hai số bằng phép trừ.',
     icon: '⚖️',
@@ -103,7 +103,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-5': {
-    grade: 2, no: 5, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 5, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Ôn tập phép cộng, phép trừ (không nhớ) trong phạm vi 100',
     desc: 'Cộng, trừ không nhớ các số trong phạm vi 100 và tính nhẩm tròn chục.',
     icon: '➕',
@@ -127,7 +127,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-6': {
-    grade: 2, no: 6, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 6, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Luyện tập chung',
     desc: 'Ôn tập cấu tạo số, tia số, so sánh và tính toán trong phạm vi 100.',
     icon: '🎯',
@@ -151,7 +151,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-7': {
-    grade: 2, no: 7, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 7, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Phép cộng (qua 10) trong phạm vi 20',
     desc: 'Cộng qua 10 bằng cách làm tròn 10 rồi cộng tiếp.',
     icon: '➕',
@@ -175,7 +175,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-8': {
-    grade: 2, no: 8, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 8, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Bảng cộng (qua 10)',
     desc: 'Học thuộc và vận dụng bảng cộng qua 10 trong phạm vi 20.',
     icon: '🔢',
@@ -199,7 +199,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-9': {
-    grade: 2, no: 9, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 9, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Bài toán về thêm, bớt một số đơn vị',
     desc: 'Nhận biết "thêm" làm tính cộng, "bớt" làm tính trừ và giải bài toán có lời văn.',
     icon: '📝',
@@ -223,7 +223,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-10': {
-    grade: 2, no: 10, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 10, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Luyện tập chung',
     desc: 'Ôn tập phép cộng qua 10, chuỗi tính và giải toán trong phạm vi 20.',
     icon: '🎯',
@@ -247,7 +247,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-11': {
-    grade: 2, no: 11, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 11, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Phép trừ (qua 10) trong phạm vi 20',
     desc: 'Trừ qua 10 bằng cách tách số để về 10 rồi trừ tiếp.',
     icon: '➖',
@@ -271,7 +271,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-12': {
-    grade: 2, no: 12, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 12, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Bảng trừ (qua 10)',
     desc: 'Học thuộc và vận dụng bảng trừ qua 10 trong phạm vi 20.',
     icon: '🔢',
@@ -295,7 +295,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-13': {
-    grade: 2, no: 13, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 13, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Bài toán về nhiều hơn, ít hơn một số đơn vị',
     desc: 'Giải bài toán "nhiều hơn" làm tính cộng, "ít hơn" làm tính trừ.',
     icon: '📝',
@@ -319,7 +319,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-14': {
-    grade: 2, no: 14, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 14, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Luyện tập chung',
     desc: 'Ôn tập cộng, trừ qua 10, chuỗi tính và giải toán trong phạm vi 20.',
     icon: '🎯',
@@ -343,7 +343,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-15': {
-    grade: 2, no: 15, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 15, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Ki-lô-gam',
     desc: 'Làm quen với đơn vị đo khối lượng ki-lô-gam (kg) và tính toán với kg.',
     icon: '⚖️',
@@ -367,7 +367,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-16': {
-    grade: 2, no: 16, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 16, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Lít',
     desc: 'Làm quen với đơn vị đo dung tích lít (l) và tính toán với lít.',
     icon: '🥤',
@@ -391,7 +391,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-17': {
-    grade: 2, no: 17, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 17, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Thực hành và trải nghiệm với các đơn vị ki-lô-gam, lít',
     desc: 'Đọc số đo trên cân, so sánh khối lượng và dung tích trong thực tế.',
     icon: '🧪',
@@ -415,7 +415,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-18': {
-    grade: 2, no: 18, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 18, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Luyện tập chung',
     desc: 'Ôn tập tính toán với kg, lít và giải bài toán về khối lượng, dung tích.',
     icon: '🎯',
@@ -439,7 +439,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-19': {
-    grade: 2, no: 19, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 19, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Phép cộng (có nhớ) số có hai chữ số với số có một chữ số',
     desc: 'Cộng có nhớ: khi đơn vị quá 10 thì nhớ 1 sang hàng chục.',
     icon: '➕',
@@ -464,7 +464,7 @@ Object.assign(window.TVKN_LESSONS.lessons, {
   },
 
   'lop2-bai-20': {
-    grade: 2, no: 20, theme: 'orange', mascot: '🦊', avatar: '🦊',
+    grade: 2, no: 20, theme: 'blue', mascot: '🐼', avatar: '🐼',
     title: 'Phép cộng (có nhớ) số có hai chữ số với số có hai chữ số',
     desc: 'Cộng có nhớ hai số có hai chữ số trong phạm vi 100.',
     icon: '➕',

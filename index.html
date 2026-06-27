@@ -1168,7 +1168,7 @@
     </p>
     <div class="hero-buttons">
       <a href="trang-lop.html" class="btn btn-primary">🎯 Bắt đầu học ngay</a>
-      <a href="hoc-bai.html?id=bai-1" class="btn btn-secondary">🎁 Học thử miễn phí</a>
+      <button type="button" class="btn btn-secondary" id="trialBtn">🎁 Học thử miễn phí</button>
     </div>
     <div class="hero-stats">
       <div class="stat">
@@ -1665,6 +1665,41 @@
         el.textContent = '🎮 ' + nf.format(n) + ' lượt chơi';
       });
     } catch (e) { console.warn('gamePlays không khả dụng:', e); }
+  })();
+</script>
+
+<!-- ===== MODAL CHỌN LỚP ĐỂ HỌC THỬ ===== -->
+<style>
+  .trial-grade { display:flex; align-items:center; justify-content:center; gap:8px; padding:14px; border-radius:14px; background:var(--bg-soft); font-weight:700; font-size:16px; color:var(--text-dark); border:2px solid transparent; text-decoration:none; transition:all .2s; }
+  .trial-grade:hover { border-color:var(--blue); background:#fff; transform:translateY(-2px); box-shadow:var(--shadow); }
+</style>
+<div id="trialModal" style="display:none; position:fixed; inset:0; z-index:10000; background:rgba(45,55,72,.55); align-items:center; justify-content:center; padding:20px">
+  <div style="background:#fff; border-radius:24px; max-width:440px; width:100%; padding:30px 28px; box-shadow:0 24px 60px rgba(0,0,0,.3); text-align:center">
+    <div style="font-size:42px">🎁</div>
+    <h3 style="font-family:'Baloo 2',sans-serif; font-size:22px; font-weight:800; margin:6px 0 4px">Học thử miễn phí</h3>
+    <p style="color:var(--text-soft); font-size:14px; margin-bottom:18px">Chọn lớp của em — học thử <b>2 bài đầu</b> mỗi lớp, không cần đăng nhập!</p>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+      <a href="hoc-bai.html?id=bai-1" class="trial-grade">🐣 Lớp 1</a>
+      <a href="hoc-bai.html?id=lop2-bai-1" class="trial-grade">🐼 Lớp 2</a>
+      <a href="hoc-bai.html?id=lop3-bai-1" class="trial-grade">🦊 Lớp 3</a>
+      <a href="hoc-bai.html?id=lop4-bai-1" class="trial-grade">🐰 Lớp 4</a>
+      <a href="hoc-bai.html?id=lop5-bai-1" class="trial-grade" style="grid-column:1/-1">🦁 Lớp 5</a>
+    </div>
+    <button type="button" id="trialClose" style="margin-top:16px; background:none; border:none; color:var(--text-soft); font-family:inherit; font-size:14px; cursor:pointer; text-decoration:underline">Đóng</button>
+  </div>
+</div>
+<script>
+  (function () {
+    var btn = document.getElementById('trialBtn'),
+        modal = document.getElementById('trialModal'),
+        close = document.getElementById('trialClose');
+    if (!btn || !modal) return;
+    function open() { modal.style.display = 'flex'; }
+    function hide() { modal.style.display = 'none'; }
+    btn.addEventListener('click', open);
+    if (close) close.addEventListener('click', hide);
+    modal.addEventListener('click', function (e) { if (e.target === modal) hide(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hide(); });
   })();
 </script>
 </body>

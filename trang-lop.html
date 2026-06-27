@@ -462,19 +462,19 @@
     <h2 class="section-title">🎮 Trò chơi Toán học</h2>
     <p class="section-sub">Vừa chơi vừa luyện - giỏi Toán cực vui!</p>
     <div class="game-grid">
-      <div class="game-card gc1" onclick="celebrate(event)">
+      <div class="game-card gc1" onclick="location.href='dua-xe.html'">
         <div class="game-thumb">🚗</div>
         <div class="game-body"><div class="game-title">Đua xe Toán học</div><div class="game-meta"><span>Lớp 1-5</span><span class="game-xp">+50 XP</span></div></div>
       </div>
-      <div class="game-card gc2" onclick="celebrate(event)">
+      <div class="game-card gc2" onclick="location.href='ban-bong.html'">
         <div class="game-thumb">🎈</div>
         <div class="game-body"><div class="game-title">Bắn bóng số học</div><div class="game-meta"><span>Lớp 1-3</span><span class="game-xp">+40 XP</span></div></div>
       </div>
-      <div class="game-card gc3" onclick="celebrate(event)">
+      <div class="game-card gc3" onclick="location.href='kho-bau.html'">
         <div class="game-thumb">🏴‍☠️</div>
         <div class="game-body"><div class="game-title">Kho báu phép tính</div><div class="game-meta"><span>Lớp 2-5</span><span class="game-xp">+60 XP</span></div></div>
       </div>
-      <div class="game-card gc4" onclick="celebrate(event)">
+      <div class="game-card gc4" onclick="location.href='rung-chuong.html'">
         <div class="game-thumb">🔔</div>
         <div class="game-body"><div class="game-title">Rung chuông vàng</div><div class="game-meta"><span>Lớp 1-5</span><span class="game-xp">+100 XP</span></div></div>
       </div>
@@ -497,9 +497,9 @@
 <nav class="footer-nav">
   <a href="index.html"><span>🏠</span>Trang chủ</a>
   <a href="trang-lop.html" class="active"><span>📚</span>Bài học</a>
-  <a href="#" onclick="celebrate(event)"><span>🎮</span>Trò chơi</a>
-  <a href="#" onclick="celebrate(event)"><span>🎯</span>Thử thách</a>
-  <a href="#" onclick="celebrate(event)"><span>👤</span>Hồ sơ</a>
+  <a href="tro-choi.html"><span>🎮</span>Trò chơi</a>
+  <a href="thu-thach.html"><span>🎯</span>Thử thách</a>
+  <a href="ho-so.html"><span>👤</span>Hồ sơ</a>
 </nav>
 
 <script>
@@ -604,7 +604,7 @@
       completed:   { badge: '✓ Đã hoàn thành', btn: 'Ôn lại' },
       in_progress: { badge: '⏳ Đang học',     btn: 'Học tiếp' },
       not_started: { badge: '● Chưa học',      btn: 'Bắt đầu' },
-      locked:      { badge: '🔒 Bị khóa',      btn: '🔒 Xem thử' }
+      locked:      { badge: '🔒 Bị khóa',      btn: '🔒 Chưa mở' }
     };
     const linkOf = id => DATA.lessons[id] ? ('hoc-bai.html?id=' + encodeURIComponent(id)) : (id + '.html');
 
@@ -633,7 +633,9 @@
           '<div class="lesson-name">' + esc(L ? L.title : id) + '</div></div></div>' +
           '<div class="lesson-desc">' + esc(L ? L.desc : '') + '</div>' +
           (locked ? '<div class="lesson-note">Hoàn thành bài trước để mở khóa</div>' : '') +
-          '<a href="' + linkOf(id) + '" class="lesson-btn' + (locked ? ' preview' : '') + '">' + v.btn + '</a>' +
+          (locked
+            ? '<span class="lesson-btn">' + v.btn + '</span>'
+            : '<a href="' + linkOf(id) + '" class="lesson-btn">' + v.btn + '</a>') +
           '</div>';
       });
       if (curTopic !== null) html += '</div>';

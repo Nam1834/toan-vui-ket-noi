@@ -818,16 +818,17 @@
     if (correctCount >= 0 && document.getElementById('task-quiz').classList.contains('done') && thinkDone) {
       markTask('task-xp');
       markTask('task-streak');
-      const totalXP = correctCount * 10 + 20;
+      const totalXP = 50;   // phần thưởng thử thách hằng ngày: +50 XP (đúng mô tả docs)
       document.getElementById('rCorrect').textContent = correctCount + '/5 câu';
       document.getElementById('rThink').textContent = 'Hoàn thành';
       document.getElementById('rXP').textContent = '+' + totalXP + ' XP';
-      // Ghi tiến độ thật vào Supabase: cộng XP + xu, tăng chuỗi ngày học
+      // Ghi tiến độ thật vào Supabase: cộng XP + xu, tăng chuỗi ngày học.
+      // Dấu '🎯' để hệ thống đếm số thử thách → trao huy hiệu "Nhà Thử Thách".
       if (window.TVKN && TVKN.configured) {
         TVKN.bumpStreak().then(function (s) {
           if (s) document.getElementById('streakNum').textContent = '🔥 ' + s + ' ngày';
         }).catch(function () {});
-        TVKN.addXp(totalXP, 'Hoàn thành thử thách hằng ngày (' + correctCount + '/5 câu)', 20)
+        TVKN.addXp(totalXP, '🎯 Thử thách hằng ngày — hoàn thành (' + correctCount + '/5 câu)', 20)
           .then(function () { return TVKN.checkBadges(); }).catch(function () {});
       } else {
         document.getElementById('streakNum').textContent = '🔥 13 ngày';

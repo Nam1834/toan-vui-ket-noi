@@ -1,8 +1,69 @@
 // ============================================================
+//  SHELL — header dùng chung KHÔNG tải lại (app.html + iframe)
+//  • Trong iframe: ẩn header/footer riêng của trang con; link "trong shell"
+//    để iframe tự đi (header đứng yên), link "ngoài shell" (bài học, trò chơi,
+//    đăng nhập, admin...) mở toàn màn hình ở cửa sổ trên cùng.
+//  • Mở thẳng 1 trang dashboard ở top → tự bọc vào app.html (vào shell).
+//  GIỮ ĐỒNG BỘ danh sách SHELL_PAGES này với app.html.
+// ============================================================
+(function tvknShell() {
+  var SHELL_PAGES = ['trang-lop', 'ho-so', 'huy-hieu', 'bang-xep-hang', 'thu-thach', 'tro-choi', 'phu-huynh', 'ai-gia-su'];
+  function fileOf(p) { return ((p || '').split('?')[0].split('#')[0].split('/').pop() || '').replace(/\.html$/, ''); }
+  var framed = false;
+  try { framed = (window.self !== window.top); } catch (e) { framed = true; }
+  var here = fileOf(location.pathname) || 'index';
+
+  if (framed) {
+    // Lưới an toàn: trang full-screen (bài học, trò chơi, đăng nhập, admin, kết quả...)
+    // lỡ bị nạp trong iframe (vd nút game dùng onclick=location.href) → đẩy ra toàn màn hình.
+    if (SHELL_PAGES.indexOf(here) < 0) {
+      try { window.top.location.href = location.href; } catch (e) { window.location.href = location.href; }
+      return;
+    }
+    // Ẩn header + thanh điều hướng riêng của trang con (shell đã có header chung)
+    function hideChrome() {
+      if (document.getElementById('tvkn-framed-css')) return;
+      var st = document.createElement('style');
+      st.id = 'tvkn-framed-css';
+      st.textContent = '.header,.footer-nav{display:none!important}';
+      (document.head || document.documentElement).appendChild(st);
+      document.documentElement.classList.add('tvkn-framed');
+    }
+    if (document.head) hideChrome(); else document.addEventListener('DOMContentLoaded', hideChrome);
+
+    // Bắt click link: ngoài shell → mở toàn màn hình; trong shell → để iframe tự đi
+    document.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a) return;
+      if (a.target === '_blank' || a.hasAttribute('download')) return;
+      var raw = a.getAttribute('href') || '';
+      if (!raw || raw.charAt(0) === '#' || /^(mailto:|tel:|javascript:)/i.test(raw)) return;
+      var url; try { url = new URL(raw, location.href); } catch (err) { return; }
+      if (url.origin !== location.origin) return;             // khác site → để mặc định
+      if (SHELL_PAGES.indexOf(fileOf(url.pathname)) < 0) {     // ngoài shell → mở toàn màn hình
+        e.preventDefault();
+        try { window.top.location.href = url.href; } catch (err2) { window.location.href = url.href; }
+      }
+      // trang trong shell → không can thiệp, iframe tự điều hướng (header đứng yên)
+    }, true);
+  } else if (SHELL_PAGES.indexOf(here) >= 0) {
+    // Mở thẳng trang dashboard ở top → bọc vào shell để có header chung
+    var extra = location.search ? ('&' + location.search.slice(1)) : '';
+    location.replace('app.html?page=' + here + extra);
+  }
+})();
+
+// ============================================================
 //  TVKN — Thư viện Auth + dữ liệu dùng chung (Supabase)
 //  Cần nạp trước: supabase-js (CDN) → supabase-config.js → auth.js
 // ============================================================
 window.TVKN = (function () {
+
+  // Chuyển hướng ở cửa sổ TRÊN CÙNG (thoát khỏi iframe shell nếu đang ở trong)
+  function topGo(url) {
+    try { (window.top || window).location.replace(url); }
+    catch (e) { window.location.replace(url); }
+  }
 
   function ensure() {
     if (!sb) { throw new Error('Supabase chưa cấu hình (xem supabase-config.js)'); }
@@ -71,7 +132,7 @@ window.TVKN = (function () {
   async function signOut() {
     clearBindCache();   // xóa cache chỉ số để người dùng sau không thấy dữ liệu cũ
     if (sb) await sb.auth.signOut();
-    window.location.replace('dang-nhap.html');
+    topGo('dang-nhap.html');   // thoát hẳn shell về trang đăng nhập toàn màn hình
   }
 
   // ---------- LẤY USER HIỆN TẠI ----------
@@ -93,9 +154,9 @@ window.TVKN = (function () {
   // ---------- CHẶN TRANG: chưa đăng nhập → về trang đăng nhập ----------
   // Trả về profile nếu đã đăng nhập.
   async function requireAuth() {
-    if (!sb) { window.location.replace('dang-nhap.html'); return null; }
+    if (!sb) { topGo('dang-nhap.html'); return null; }
     const { data: { session } } = await sb.auth.getSession();
-    if (!session) { window.location.replace('dang-nhap.html'); return null; }
+    if (!session) { topGo('dang-nhap.html'); return null; }
     return await getProfile();
   }
 
@@ -123,7 +184,25 @@ window.TVKN = (function () {
     }
   }
 
-  const TOTAL_LESSONS = 10;   // tổng số bài học (bai-1..bai-10)
+  // Tổng số bài của một LỚP (động). Ưu tiên đếm THẬT từ dữ liệu bài (TVKN_LESSONS)
+  // nếu trang có nạp; nếu không (ho-so/index/phu-huynh) thì dùng bảng dự phòng theo lớp.
+  const LESSONS_PER_GRADE = { 1: 10, 2: 20, 3: 20, 4: 37, 5: 20 };
+  function gradeLessonIds(grade) {
+    try {
+      if (window.TVKN_LESSONS && TVKN_LESSONS.lessons) {
+        const g = Number(grade);
+        const ids = Object.keys(TVKN_LESSONS.lessons).filter(function (k) {
+          return Number(TVKN_LESSONS.lessons[k].grade) === g;
+        });
+        if (ids.length) return ids;
+      }
+    } catch (e) {}
+    return null;   // trang này không nạp dữ liệu bài
+  }
+  function totalLessons(grade) {
+    const ids = gradeLessonIds(grade);
+    return ids ? ids.length : (LESSONS_PER_GRADE[Number(grade)] || 10);
+  }
 
   // ---------- Đổ dữ liệu thật vào các phần tử [data-bind] ----------
   // Khóa hỗ trợ: name, avatar, grade, xp, level, streak, coins,
@@ -166,14 +245,20 @@ window.TVKN = (function () {
       ]);
       progress = r[0]; lessons = r[1] || []; badges = r[2] || [];
     } catch (e) {}
-    const completed = (lessons || []).filter(function (l) { return l.status === 'completed'; }).length;
+    const grade = profile ? (profile.grade || 1) : 1;
+    const gradeIds = gradeLessonIds(grade);   // null nếu trang không nạp dữ liệu bài
+    const total = totalLessons(grade);
+    const completed = (lessons || []).filter(function (l) {
+      if (l.status !== 'completed') return false;
+      return gradeIds ? (gradeIds.indexOf(l.lesson_id) >= 0) : true;   // lọc đúng lớp nếu biết
+    }).length;
     const xp = progress ? (progress.xp || 0) : 0;
     const level = progress ? (progress.level || 1) : 1;
     const stats = {
       badgeCount: (badges || []).length,
-      completed:  completed,
-      total:      TOTAL_LESSONS,
-      percent:    Math.min(100, Math.round(completed / TOTAL_LESSONS * 100)),
+      completed:  Math.min(completed, total),
+      total:      total,
+      percent:    total ? Math.min(100, Math.round(completed / total * 100)) : 0,
       nextXp:     Math.max(0, level * 1000 - xp)   // XP còn thiếu để lên cấp tiếp theo
     };
     bindCommon(profile, progress, stats);
@@ -229,13 +314,13 @@ window.TVKN = (function () {
 
   // ---------- Chặn trang ADMIN: chỉ role='admin' mới vào ----------
   async function requireAdmin() {
-    if (!sb) { window.location.replace('dang-nhap.html'); return null; }
+    if (!sb) { topGo('dang-nhap.html'); return null; }
     const { data: { session } } = await sb.auth.getSession();
-    if (!session) { window.location.replace('dang-nhap.html'); return null; }
+    if (!session) { topGo('dang-nhap.html'); return null; }
     const profile = await getProfile();
     if (!profile || profile.role !== 'admin') {
       alert('⛔ Trang quản trị chỉ dành cho quản trị viên.');
-      window.location.replace('index.html');
+      topGo('index.html');
       return null;
     }
     return profile;
@@ -311,7 +396,9 @@ window.TVKN = (function () {
     { id: 'suu-tam-xp',       name: 'Nhà Sưu Tầm XP',     icon: '⭐', desc: 'Đạt 500 XP',                      cond: function (s) { return s.xp >= 500; } },
     { id: 'cao-thu-toan',     name: 'Cao Thủ Toán',       icon: '🏆', desc: 'Đạt 1000 XP',                     cond: function (s) { return s.xp >= 1000; } },
     { id: 'game-thu',         name: 'Game Thủ',           icon: '🎮', desc: 'Hoàn thành 1 trò chơi',           cond: function (s) { return s.gamesWon >= 1; } },
-    { id: 'cao-thu-game',     name: 'Cao Thủ Game',       icon: '🕹️', desc: 'Hoàn thành 10 lượt chơi',         cond: function (s) { return s.gamesWon >= 10; } }
+    { id: 'cao-thu-game',     name: 'Cao Thủ Game',       icon: '🕹️', desc: 'Hoàn thành 10 lượt chơi',         cond: function (s) { return s.gamesWon >= 10; } },
+    { id: 'nha-thu-thach',    name: 'Nhà Thử Thách',      icon: '🎯', desc: 'Hoàn thành thử thách đầu tiên',    cond: function (s) { return s.challengesDone >= 1; } },
+    { id: 'chien-binh-tt',    name: 'Chiến Binh Thử Thách', icon: '🏵️', desc: 'Hoàn thành 10 thử thách',         cond: function (s) { return s.challengesDone >= 10; } }
   ];
 
   // Kiểm tra & trao huy hiệu mới đạt được (gọi sau khi học/chơi xong)
@@ -327,7 +414,12 @@ window.TVKN = (function () {
       const r = await sb.from('activity_log').select('*', { count: 'exact', head: true }).eq('user_id', user.id).like('text', '🎮%');
       gamesWon = r.count || 0;
     } catch (e) {}
-    const stats = { completedLessons: completedLessons, streak: prog ? prog.streak_days : 0, xp: prog ? prog.xp : 0, gamesWon: gamesWon };
+    var challengesDone = 0;
+    try {
+      const rc = await sb.from('activity_log').select('*', { count: 'exact', head: true }).eq('user_id', user.id).like('text', '🎯%');
+      challengesDone = rc.count || 0;
+    } catch (e) {}
+    const stats = { completedLessons: completedLessons, streak: prog ? prog.streak_days : 0, xp: prog ? prog.xp : 0, gamesWon: gamesWon, challengesDone: challengesDone };
     const have = new Set((await getBadges()).map(function (b) { return b.badge_id; }));
     const newly = BADGES.filter(function (b) { return !have.has(b.id) && b.cond(stats); });
     if (newly.length) {
