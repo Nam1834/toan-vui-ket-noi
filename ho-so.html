@@ -619,10 +619,11 @@
         }
       } catch (err) { console.error('badges', err); }
 
-      // ===== Tổng thời gian học (chưa theo dõi) =====
+      // ===== Tổng thời gian học (THẬT — lấy từ DB study_time) =====
       try {
+        var st = await TVKN.getStudyTime();           // { total, last7, byDay } (giây)
         var statNumsT = document.querySelectorAll('.stat-card .stat-num');
-        if (statNumsT[3]) statNumsT[3].textContent = '—';
+        if (statNumsT[3]) statNumsT[3].textContent = TVKN.fmtDuration(st.total);
       } catch (err) { console.error('study time', err); }
 
     } catch (err) {
