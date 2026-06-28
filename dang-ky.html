@@ -140,8 +140,8 @@
     const email = document.getElementById('email').value.trim();
     const pass = document.getElementById('pass').value;
     const pass2 = document.getElementById('pass2').value;
-    if (!name) return setMsg('✏️ Em hãy nhập họ tên.');
-    if (!email) return setMsg('📧 Em hãy nhập email.');
+    if (!name) return setMsg('✏️ Vui lòng nhập họ tên.');
+    if (!email) return setMsg('📧 Vui lòng nhập email.');
     if (pass.length < 6) return setMsg('🔒 Mật khẩu cần ít nhất 6 ký tự.');
     if (pass !== pass2) return setMsg('🔒 Hai mật khẩu chưa khớp.');
 
@@ -152,7 +152,7 @@
       const u = data.user;
       // Supabase trả identities = [] khi email ĐÃ tồn tại (chống dò email)
       if (u && Array.isArray(u.identities) && u.identities.length === 0) {
-        setMsg('📧 Email này đã được đăng ký rồi. Em hãy bấm "Đăng nhập" nhé!');
+        setMsg('📧 Email này đã được đăng ký rồi. Vui lòng bấm "Đăng nhập".');
         btn.disabled = false;
         return;
       }
@@ -164,17 +164,17 @@
         window.location.href = r === 'admin' ? 'admin.html' : r === 'parent' ? 'phu-huynh.html' : 'index.html';
       } else {
         // Confirm email đang BẬT
-        setMsg('📩 Đã gửi email xác nhận. Em mở email để kích hoạt rồi đăng nhập nhé!', true);
+        setMsg('📩 Đã gửi email xác nhận. Hãy mở email để kích hoạt rồi đăng nhập.', true);
       }
     } catch (err) {
       const code = err.code || err.error_code || '';
       let m = err.message || 'Đăng ký thất bại';
       if (/already.*regist|already.*exist|user_already/i.test(m) || code === 'user_already_exists')
-        m = 'Email này đã được đăng ký rồi. Em hãy đăng nhập.';
+        m = 'Email này đã được đăng ký rồi. Vui lòng đăng nhập.';
       else if (/rate limit|over_email_send/i.test(m) || code === 'over_email_send_rate_limit')
         m = 'Gửi email xác nhận quá nhanh — thử lại sau vài phút, hoặc tắt "Confirm email" trong Supabase.';
       else if (/email/i.test(m) && /invalid/i.test(m))
-        m = 'Email không hợp lệ, em kiểm tra lại nhé.';
+        m = 'Email không hợp lệ, vui lòng kiểm tra lại.';
       else if (/password/i.test(m))
         m = 'Mật khẩu chưa hợp lệ (cần ít nhất 6 ký tự).';
       setMsg('❌ ' + m);
