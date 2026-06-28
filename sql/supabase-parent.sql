@@ -90,7 +90,8 @@ returns json language plpgsql security definer set search_path = public
 as $$
 declare v_child uuid; v_name text;
 begin
-  if (select role from public.profiles where id = auth.uid()) <> 'parent' then
+  if auth.uid() is null then raise exception 'Cần đăng nhập.'; end if;
+  if coalesce((select role from public.profiles where id = auth.uid()), '') <> 'parent' then
     raise exception 'Chỉ tài khoản phụ huynh mới liên kết được con.';
   end if;
   select id, name into v_child, v_name
@@ -110,6 +111,7 @@ create or replace function public.unlink_child(p_child uuid)
 returns void language plpgsql security definer set search_path = public
 as $$
 begin
+  if auth.uid() is null then raise exception 'Cần đăng nhập.'; end if;
   delete from public.parent_links
    where parent_id = auth.uid() and child_id = p_child;
 end $$;
@@ -131,7 +133,8 @@ returns text language plpgsql security definer set search_path = public
 as $$
 declare v_code text;
 begin
-  if (select role from public.profiles where id = auth.uid()) <> 'student' then
+  if auth.uid() is null then raise exception 'Cần đăng nhập.'; end if;
+  if coalesce((select role from public.profiles where id = auth.uid()), '') <> 'student' then
     raise exception 'Chỉ học sinh mới có mã liên kết.';
   end if;
   v_code := public.gen_link_code((select name from public.profiles where id = auth.uid()));
@@ -139,11 +142,11 @@ begin
   return v_code;
 end $$;
 
--- Quyền gọi RPC
-revoke execute on function public.link_child(text)          from anon;
-revoke execute on function public.unlink_child(uuid)        from anon;
-revoke execute on function public.list_children()           from anon;
-revoke execute on function public.regenerate_link_code()    from anon;
+-- Quyền gọi RPC: thu hồi khỏi PUBLIC (gồm anon) rồi chỉ cấp cho người ĐÃ đăng nhập.
+revoke execute on function public.link_child(text)          from public;
+revoke execute on function public.unlink_child(uuid)        from public;
+revoke execute on function public.list_children()           from public;
+revoke execute on function public.regenerate_link_code()    from public;
 grant  execute on function public.link_child(text)          to authenticated;
 grant  execute on function public.unlink_child(uuid)        to authenticated;
 grant  execute on function public.list_children()           to authenticated;
