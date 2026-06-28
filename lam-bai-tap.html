@@ -245,6 +245,30 @@
   const answered = new Array(questions.length).fill(false);
   let baseXp = 0;   // XP nền — gán = XP thật của người học sau khi đăng nhập
 
+  // Đọc to câu hỏi hiện tại (chuyển ký hiệu toán sang lời cho dễ nghe)
+  function speakQuestion() {
+    try {
+      const Q = questions[idx]; if (!Q) return;
+      let t = String(Q.q || '');
+      t = t.replace(/<[^>]+>/g, ' ');                    // bỏ thẻ HTML
+      t = t.replace(/[×x✕*]/g, ' nhân ')
+           .replace(/[÷:]/g, ' chia ')
+           .replace(/\+/g, ' cộng ')
+           .replace(/(\d)\s*[-–]\s*(\d)/g, '$1 trừ $2')  // dấu trừ giữa hai số
+           .replace(/=/g, ' bằng ')
+           .replace(/>/g, ' lớn hơn ')
+           .replace(/</g, ' bé hơn ')
+           .replace(/\s+/g, ' ').trim();
+      if (window.TVKN && typeof TVKN.speak === 'function') { TVKN.speak(t); return; }
+      if ('speechSynthesis' in window) {
+        const synth = window.speechSynthesis; synth.cancel();
+        const u = new SpeechSynthesisUtterance(t); u.lang = 'vi-VN'; u.rate = 0.85;
+        window.__tvknUtter = u;
+        setTimeout(function () { try { synth.resume(); synth.speak(u); } catch (e) {} }, 60);
+      }
+    } catch (e) {}
+  }
+
   function render() {
     const Q = questions[idx];
     selected = null; checked = false;
@@ -288,7 +312,7 @@
       <div class="qno">Câu ${idx+1}/${questions.length}</div>
       <div class="qtext">${Q.q}</div>
       ${Q.img ? `<div class="qimg">${Q.img}</div>` : ''}
-      <button class="listen" onclick="celebrate(event)">🔊 Nghe câu hỏi</button>
+      <button class="listen" onclick="speakQuestion()">🔊 Nghe câu hỏi</button>
       ${body}
       <div class="hint-row">
         <button class="hint-btn" onclick="showHint()">💡 Gợi ý</button>

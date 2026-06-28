@@ -654,13 +654,19 @@
   }
   function listenQuestion() {
     const text = questionInput.value.trim() || 'Em hãy nhập câu hỏi để Thỏ đọc cho nghe nhé!';
-    if ('speechSynthesis' in window) {
+    let ok = false;
+    if (window.TVKN && typeof TVKN.speak === 'function') {
+      ok = TVKN.speak(text);
+    } else if ('speechSynthesis' in window) {
+      const synth = window.speechSynthesis;
+      synth.cancel();
       const u = new SpeechSynthesisUtterance(text);
       u.lang = 'vi-VN'; u.rate = 0.95;
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(u);
+      window.__tvknUtter = u;
+      setTimeout(function () { try { synth.resume(); synth.speak(u); } catch (e) {} }, 60);
+      ok = true;
     }
-    showToast('🔊 Đang đọc câu hỏi...');
+    showToast(ok ? '🔊 Đang đọc câu hỏi...' : '⚠️ Trình duyệt không hỗ trợ đọc.');
   }
   function reviewHistory(text) {
     questionInput.value = text;
