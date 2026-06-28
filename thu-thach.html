@@ -893,7 +893,7 @@
   (async function () {
     if (!(window.TVKN && TVKN.configured)) return;
     try {
-      var data = await TVKN.guardPage();          // { profile, progress, ... } thật
+      var data = await TVKN.trialPage();          // khách: null (đã null-safe bên dưới) + banner; login: dữ liệu thật
       var profile = data && data.profile ? data.profile : null;
       var progress = data && data.progress ? data.progress : null;
       var myName = profile && profile.name ? profile.name : '';

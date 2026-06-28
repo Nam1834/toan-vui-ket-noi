@@ -698,8 +698,8 @@
   window.tvknLogout = function(){ TVKN.signOut(); };
 
   (async function () {
-    const data = await TVKN.guardPage();   // {profile, progress, lessons, badges, stats}
-    if (!data) return;                      // chưa đăng nhập → guardPage đã tự chuyển trang
+    const data = await TVKN.guardPageSoft('trang Phụ huynh');   // khách → tường đăng nhập (không redirect)
+    if (!data) return;                      // khách: dừng render nội dung cá nhân (đã hiện tường đăng nhập)
 
     const fmtDate = function (iso) {
       if (!iso) return '';

@@ -399,19 +399,18 @@
     .podium-base { display: none; }
     .p1, .p2, .p3 { order: 0; }
 
-    /* list rows become cards */
+    /* list rows become cards — dùng FLEX để 2 ô "⭐ XP" và "🔥 Chuỗi" không đè lên nhau */
     .rank-row {
-      grid-template-columns: 48px 48px 1fr;
-      grid-template-areas:
-        "no avatar info"
-        "stats stats stats";
-      row-gap: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 16px;
+      grid-template-columns: none;
+      grid-template-areas: none;
     }
-    .rank-no { grid-area: no; }
-    .rank-avatar { grid-area: avatar; }
-    .rank-info { grid-area: info; }
-    .rank-stat { grid-area: stats; display: inline-block; margin-right: 18px; }
-    .rank-stats-wrap { grid-area: stats; display: flex; gap: 18px; flex-wrap: wrap; }
+    .rank-no, .rank-avatar { flex: 0 0 auto; }
+    .rank-info { flex: 1 1 45%; min-width: 0; }
+    .rank-stat { flex: 0 0 auto; margin: 0; }
   }
   @media (max-width: 560px) {
     .header { padding: 0 14px; gap: 10px; }
@@ -686,9 +685,9 @@
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
 <script>
-  /* Chặn trang + hiển thị đúng người đăng nhập (Supabase) */
+  /* Cho khách XEM (không ép login). Đã đăng nhập → bind dữ liệu thật. */
   window.tvknLogout = function(){ TVKN.signOut(); };
-  TVKN.guardPage();
+  TVKN.trialPage();   // khách → banner mời đăng nhập; bảng xếp hạng là view public nên vẫn hiển thị
 </script>
 <script>
   /* ============ ĐỔ DỮ LIỆU THẬT TỪ SUPABASE VÀO BẢNG XẾP HẠNG ============ */

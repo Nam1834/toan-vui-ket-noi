@@ -297,9 +297,9 @@ window.TVKN = (function () {
     var bar = document.createElement('div');
     bar.id = 'tvkn-trial';
     bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:9998;background:linear-gradient(135deg,#FF9F43,#FFD93D);color:#3a2a00;padding:11px 16px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;font-family:inherit;font-weight:600;font-size:14px;box-shadow:0 -6px 20px rgba(0,0,0,.15)';
-    bar.innerHTML = '🎁 Em đang <b>học thử miễn phí</b> — đăng nhập để lưu tiến độ &amp; mở khoá tất cả bài học!' +
-      '<a href="dang-nhap.html" style="background:#fff;color:#FF7A00;padding:7px 16px;border-radius:999px;font-weight:800;text-decoration:none">Đăng nhập</a>' +
-      '<a href="dang-ky.html" style="background:#2D3748;color:#fff;padding:7px 16px;border-radius:999px;font-weight:800;text-decoration:none">Đăng ký miễn phí</a>';
+    bar.innerHTML = '🎁 Em đang <b>xem thử miễn phí</b> — đăng nhập để lưu tiến độ &amp; mở đầy đủ tính năng!' +
+      '<a href="dang-nhap.html" target="_top" style="background:#fff;color:#FF7A00;padding:7px 16px;border-radius:999px;font-weight:800;text-decoration:none">Đăng nhập</a>' +
+      '<a href="dang-ky.html" target="_top" style="background:#2D3748;color:#fff;padding:7px 16px;border-radius:999px;font-weight:800;text-decoration:none">Đăng ký miễn phí</a>';
     document.body.appendChild(bar);
   }
 
@@ -544,7 +544,7 @@ window.TVKN = (function () {
 
     var panel = document.createElement('div');
     panel.id = 'tvkn-notif';
-    panel.style.cssText = 'position:fixed;z-index:9999;width:300px;max-height:60vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.18);display:none;font-family:inherit;color:#2D3748';
+    panel.style.cssText = 'position:fixed;z-index:9999;width:300px;max-width:calc(100vw - 16px);max-height:60vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.18);display:none;font-family:inherit;color:#2D3748';
     document.body.appendChild(panel);
     var open = false;
     function hide() { open = false; panel.style.display = 'none'; }
@@ -577,8 +577,15 @@ window.TVKN = (function () {
         e.stopPropagation();
         if (open) { hide(); return; }
         var r = bell.getBoundingClientRect();
+        var pad = 8;
+        // Bề rộng panel co theo màn hình (tối đa 300px, chừa lề 2 bên)
+        var w = Math.min(300, window.innerWidth - pad * 2);
+        panel.style.width = w + 'px';
+        // Neo phải theo nút chuông, nhưng KẸP lại để mép trái không bao giờ âm (tràn ra ngoài)
+        var right = Math.max(pad, window.innerWidth - r.right);
+        right = Math.min(right, window.innerWidth - w - pad);
         panel.style.top = (r.bottom + 8) + 'px';
-        panel.style.right = Math.max(8, window.innerWidth - r.right) + 'px';
+        panel.style.right = right + 'px';
         panel.style.left = 'auto';
         panel.style.display = 'block';
         open = true;
@@ -589,8 +596,26 @@ window.TVKN = (function () {
       if (open && !panel.contains(e.target) && !bells.some(function (b) { return b.contains(e.target); })) hide();
     });
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initBell);
-  else initBell();
+  // ---------- LƯỚI AN TOÀN RESPONSIVE (áp cho MỌI trang vì auth.js nạp khắp nơi) ----------
+  // Chặn tràn ngang trên màn hình nhỏ + ghim ảnh/bảng/dropdown trong khung nhìn.
+  function injectResponsiveCSS() {
+    if (document.getElementById('tvkn-responsive')) return;
+    var st = document.createElement('style');
+    st.id = 'tvkn-responsive';
+    // Tránh đặt overflow-x:hidden lên html/body toàn cục vì sẽ làm hỏng header position:sticky.
+    st.textContent =
+      'img,svg,video,canvas{max-width:100%}' +
+      'table{max-width:100%;display:block;overflow-x:auto}' +
+      '#tvkn-notif{max-width:calc(100vw - 16px)}' +
+      '#tvkn-loginwall,#tvkn-trial{max-width:100vw}' +
+      // Mobile từng ẩn nhầm CẢ số XP (rule .xp-pill span:last-child). Luôn hiện số XP lại.
+      '.xp-pill span{display:inline !important}';
+    (document.head || document.documentElement).appendChild(st);
+  }
+
+  function tvknOnReady() { injectResponsiveCSS(); initBell(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tvknOnReady);
+  else tvknOnReady();
 
   // ---------- THỐNG KÊ LƯỢT CHƠI GAME (đếm thật từ nhật ký 🎮) ----------
   // Trả về { played: số lượt thắng game, favorite: tên game chơi nhiều nhất }
@@ -612,10 +637,43 @@ window.TVKN = (function () {
     return { played: rows.length, favorite: fav };
   }
 
+  // ---------- Tường đăng nhập: trang CÁ NHÂN cho khách → hiện thông báo thay vì redirect ----------
+  function showLoginWall(label) {
+    if (document.getElementById('tvkn-loginwall')) return;
+    var ov = document.createElement('div');
+    ov.id = 'tvkn-loginwall';
+    ov.style.cssText = 'position:fixed;inset:0;z-index:9997;background:rgba(244,248,255,.96);display:flex;align-items:center;justify-content:center;padding:24px;font-family:inherit';
+    ov.innerHTML =
+      '<div style="max-width:420px;width:100%;background:#fff;border-radius:26px;padding:36px 30px;text-align:center;box-shadow:0 16px 40px rgba(79,140,255,.22)">' +
+        '<div style="font-size:60px;margin-bottom:10px">🔒</div>' +
+        '<h2 style="font-family:\'Baloo 2\',sans-serif;font-size:24px;font-weight:800;color:#2D3748;margin-bottom:8px">Cần đăng nhập</h2>' +
+        '<p style="color:#6B7280;font-size:15px;margin-bottom:22px">Em hãy đăng nhập để xem ' + (label || 'trang này') + ' nhé!</p>' +
+        '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
+          '<a href="dang-nhap.html" target="_top" style="background:linear-gradient(135deg,#4F8CFF,#9B72FF);color:#fff;padding:13px 26px;border-radius:14px;font-weight:800;text-decoration:none;box-shadow:0 8px 20px rgba(79,140,255,.35)">Đăng nhập</a>' +
+          '<a href="dang-ky.html" target="_top" style="background:#F4F8FF;color:#2D3748;padding:13px 26px;border-radius:14px;font-weight:800;text-decoration:none">Đăng ký miễn phí</a>' +
+        '</div>' +
+        '<a href="index.html" target="_top" style="display:inline-block;margin-top:18px;color:#6B7280;font-size:13px;font-weight:600;text-decoration:none">← Về trang chủ</a>' +
+      '</div>';
+    document.body.appendChild(ov);
+  }
+
+  // Trang CÁ NHÂN: đã login → render dữ liệu thật; khách → hiện tường đăng nhập (KHÔNG redirect)
+  async function guardPageSoft(label) {
+    if (sb) {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session) {
+        const profile = await getProfile();
+        return await renderProfile(profile);
+      }
+    }
+    showLoginWall(label);
+    return null;
+  }
+
   return {
     configured: typeof TVKN_CONFIGURED !== 'undefined' ? TVKN_CONFIGURED : false,
     signUp, signIn, signOut, getUser, getProfile,
-    requireAuth, applyToDOM, guardPage, applyProfile, isLoggedIn, requireAdmin, bindCommon,
+    requireAuth, applyToDOM, guardPage, guardPageSoft, applyProfile, isLoggedIn, requireAdmin, bindCommon,
     getProgress, addXp, bumpStreak, setLesson,
     getActivity, getLessons, getBadges, getLeaderboard, getMyRank, getCohortStats,
     adminOverview, adminUsers,

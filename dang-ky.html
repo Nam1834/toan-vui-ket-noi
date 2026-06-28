@@ -14,14 +14,14 @@
     --shadow:0 8px 24px rgba(79,140,255,.15); --shadow-lg:0 16px 40px rgba(79,140,255,.22);
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'Fredoka','Baloo 2',system-ui,sans-serif;color:var(--text-dark);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#E8F0FF,#F4F8FF)}
+  body{font-family:'Fredoka','Baloo 2',system-ui,sans-serif;color:var(--text-dark);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#E8F0FF,#F4F8FF);overflow-x:hidden}
   .card{background:var(--white);border-radius:30px;box-shadow:var(--shadow-lg);width:100%;max-width:460px;padding:34px 32px;text-align:center}
   .logo-icon{width:70px;height:70px;margin:0 auto 12px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:38px;box-shadow:0 8px 20px rgba(79,140,255,.4)}
   .brand{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:21px;background:linear-gradient(90deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
   .welcome{color:var(--text-soft);font-size:14px;margin:4px 0 20px}
   .field-label{display:block;text-align:left;font-weight:700;font-size:13px;margin:0 0 6px 4px}
   .row{display:flex;gap:12px}
-  .row>div{flex:1}
+  .row>div{flex:1;min-width:0}
   .avatar-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:16px}
   .avatar-opt{width:48px;height:48px;border-radius:14px;border:2px solid #E8ECF4;background:var(--bg-soft);font-size:26px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
   .avatar-opt:hover{transform:translateY(-3px)}

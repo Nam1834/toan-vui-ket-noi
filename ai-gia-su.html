@@ -933,9 +933,9 @@
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
 <script>
-  /* Chặn trang + hiển thị đúng người đăng nhập (Supabase) */
+  /* Cho khách XEM (không ép login). Đã đăng nhập → bind dữ liệu thật. */
   window.tvknLogout = function(){ TVKN.signOut(); };
-  TVKN.guardPage();
+  TVKN.trialPage();   // khách → banner mời đăng nhập; AI Gia sư vẫn dùng thử được
 </script>
 </body>
 </html>

@@ -285,59 +285,12 @@
       });
     }
 
-    // ---- Chặn đăng nhập + chặn theo LỚP + chặn theo TIẾN ĐỘ (mở khóa tuần tự) ----
-    // Bài học thử (TRIAL): khách xem được, không bắt buộc login (giữ đúng hành vi trang chủ "Học thử miễn phí").
-    // Các bài còn lại: bắt buộc đăng nhập. Học sinh chỉ vào được bài ĐÚNG LỚP và ĐÃ MỞ KHÓA.
-    // Học thử: 2 bài ĐẦU của MỌI lớp đều cho khách xem (không cần đăng nhập).
-    // (Học sinh ĐÃ đăng nhập vẫn bị enforceAccess chặn nếu mở bài khác lớp mình.)
+    // ---- Chỉ chặn ĐĂNG NHẬP (KHÔNG chặn theo lớp, KHÔNG khóa tuần tự) ----
+    // Học sinh được học bài của BẤT KỲ lớp nào, theo thứ tự tùy ý; tiến độ lưu theo từng bài.
+    // Bài học thử (TRIAL): 2 bài ĐẦU của MỌI lớp cho khách xem (không cần đăng nhập).
+    // Các bài còn lại: bắt buộc đăng nhập (guardPage tự chuyển về trang đăng nhập).
     const TRIAL_PER_GRADE = 2;
     const isTrial = (typeof L.trial === 'boolean') ? L.trial : (!!L.no && L.no <= TRIAL_PER_GRADE);
-
-    // Thay nội dung bài bằng thông báo khóa (xóa nội dung để không vượt rào xem trước)
-    function blockAccess(msg) {
-      try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {}
-      wrap.innerHTML = '<div class="block" style="text-align:center;margin-top:40px">' +
-        '<h2 class="block-title" style="justify-content:center">🔒 Bài học chưa mở</h2>' +
-        '<p class="block-sub">' + U.esc(msg) + '</p>' +
-        '<a href="trang-lop.html" class="btn btn-primary btn-block">📚 Về danh sách bài của em</a></div>';
-    }
-
-    // Bài này có bị KHÓA theo quy tắc mở khóa tuần tự không? (giống hệt trang-lop.html)
-    function isLessonLocked(targetId, grade, lessonProgress) {
-      const g = Number(grade);
-      const lp = {};
-      (lessonProgress || []).forEach(function (l) { if (l && l.lesson_id) lp[l.lesson_id] = l.status; });
-      const ord = Object.keys(DATA.lessons)
-        .filter(function (k) { return Number(DATA.lessons[k].grade) === g; })
-        .sort(function (a, b) { return (DATA.lessons[a].no || 0) - (DATA.lessons[b].no || 0); });
-      const states = {};
-      for (var i = 0; i < ord.length; i++) {
-        var lid = ord[i];
-        var st = lp[lid] || 'not_started';
-        if (st !== 'completed' && st !== 'in_progress') st = 'not_started';
-        if (st === 'not_started' && i > 0 && states[ord[i - 1]] !== 'completed') st = 'locked';
-        states[lid] = st;
-      }
-      return states[targetId] === 'locked';
-    }
-
-    // Kiểm tra quyền vào bài cho HỌC SINH đã đăng nhập
-    // (admin/giáo viên/phụ huynh được xem trước mọi bài để kiểm tra nội dung)
-    function enforceAccess(data) {
-      if (!data) return;
-      const profile = data.profile || {};
-      if (profile.role && profile.role !== 'student') return;   // không phải học sinh → cho xem trước
-      // 1) Chặn theo LỚP
-      if (L.grade && profile.grade && Number(L.grade) !== Number(profile.grade)) {
-        blockAccess('Bài này thuộc Lớp ' + L.grade + ' — không thuộc lớp của em (Lớp ' + profile.grade + '). Em hãy học các bài của lớp mình nhé!');
-        return;
-      }
-      // 2) Chặn theo TIẾN ĐỘ (chưa hoàn thành bài trước đó thì chưa mở)
-      if (isLessonLocked(id, profile.grade, data.lessons)) {
-        blockAccess('Em cần hoàn thành bài học trước đó để mở khóa bài này nhé!');
-        return;
-      }
-    }
 
     if (window.TVKN) {
       window.tvknLogout = function () { TVKN.signOut(); };
@@ -349,12 +302,10 @@
               a.setAttribute('href', 'index.html');
               a.textContent = a.textContent.replace('Danh sách bài', 'Trang chủ');
             });
-            return;             // khách: cho học thử, không chặn lớp
           }
-          enforceAccess(data);  // đã đăng nhập: vẫn chặn đúng lớp + tiến độ
         }).catch(function () {});
       } else {
-        TVKN.guardPage().then(enforceAccess).catch(function () {});   // chưa login → tự về trang đăng nhập
+        TVKN.guardPage().catch(function () {});   // chưa login → tự về trang đăng nhập
       }
     }
   })();

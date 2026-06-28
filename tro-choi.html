@@ -743,7 +743,7 @@
   }
 
   (async function(){
-    const data = await TVKN.guardPage();
+    const data = await TVKN.trialPage();   // khách: null (các nhánh dưới đã null-safe) + banner mời đăng nhập
 
     // ====== Tự lọc trò chơi theo LỚP của học sinh (mặc định) ======
     // Định hướng tài liệu: "trò chơi phù hợp với từng lớp". Vào trang tự chọn sẵn
