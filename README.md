@@ -30,5 +30,5 @@ Web học toán cho học sinh tiểu học — **HTML tĩnh + [Supabase](https:
 1. Tạo project tại [supabase.com](https://supabase.com).
 2. Điền `SUPABASE_URL` + `anon key` vào `assets/js/supabase-config.js`.
 3. Mở SQL Editor, chạy lần lượt các file trong `sql/`:
-   `supabase-schema.sql` → `supabase-roles.sql` → `supabase-extra.sql` → `supabase-admin-stats.sql`.
+   `supabase-schema.sql` → `supabase-roles.sql` → `supabase-extra.sql` → `supabase-admin-stats.sql` → `supabase-parent.sql` → `supabase-study-time.sql`.
 4. Thêm email admin trong `sql/supabase-roles.sql` (bảng `admin_emails`).

@@ -456,69 +456,15 @@
     </div>
   </section>
 
-  <!-- ============ BIỂU ĐỒ TIẾN BỘ ============ -->
+  <!-- ============ BIỂU ĐỒ THỜI GIAN HỌC 7 NGÀY ============ -->
   <section class="block">
-    <h2 class="section-title">📈 Tiến bộ học tập</h2>
-    <p class="section-sub">Điểm trung bình của con qua 12 tuần. Con đang tiến bộ đều đặn!</p>
+    <h2 class="section-title">📈 Thời gian học 7 ngày qua</h2>
+    <p class="section-sub">Số phút con thực sự ngồi học mỗi ngày (tự ghi nhận khi con học bài, luyện tập, chơi).</p>
     <div class="card chart-card">
-      <div class="chart-wrap">
-        <svg class="chart-svg" viewBox="0 0 720 320" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Biểu đồ tiến bộ điểm trung bình qua 12 tuần">
-          <defs>
-            <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#4F8CFF" stop-opacity="0.35"/>
-              <stop offset="100%" stop-color="#4F8CFF" stop-opacity="0.02"/>
-            </linearGradient>
-          </defs>
-
-          <!-- Đường lưới ngang + nhãn trục dọc (%) -->
-          <!-- y=40 ->100% , y=260 ->0%. Mỗi 25% = 55px -->
-          <g font-size="13" fill="#9AA5B5" font-family="Fredoka, sans-serif">
-            <line x1="70" y1="40"  x2="690" y2="40"  stroke="#EDF1F8" stroke-width="1"/>
-            <text x="58" y="45" text-anchor="end">100%</text>
-            <line x1="70" y1="95"  x2="690" y2="95"  stroke="#EDF1F8" stroke-width="1"/>
-            <text x="58" y="100" text-anchor="end">75%</text>
-            <line x1="70" y1="150" x2="690" y2="150" stroke="#EDF1F8" stroke-width="1"/>
-            <text x="58" y="155" text-anchor="end">50%</text>
-            <line x1="70" y1="205" x2="690" y2="205" stroke="#EDF1F8" stroke-width="1"/>
-            <text x="58" y="210" text-anchor="end">25%</text>
-            <line x1="70" y1="260" x2="690" y2="260" stroke="#D7DEEA" stroke-width="1.5"/>
-            <text x="58" y="265" text-anchor="end">0%</text>
-          </g>
-
-          <!-- Vùng tô (area) - các điểm:
-               Tuần1 (110,150=50%) Tuần4 (290,117=65%) Tuần8 (490,95=75%) Tuần12 (650,62=90%) -->
-          <path d="M110,150 L290,117 L490,95 L650,62 L650,260 L110,260 Z" fill="url(#areaGrad)"/>
-
-          <!-- Đường nối -->
-          <polyline points="110,150 290,117 490,95 650,62"
-                    fill="none" stroke="#4F8CFF" stroke-width="4"
-                    stroke-linecap="round" stroke-linejoin="round"/>
-
-          <!-- Các điểm dữ liệu + nhãn % -->
-          <g font-family="Baloo 2, sans-serif" font-weight="700">
-            <circle cx="110" cy="150" r="7" fill="#fff" stroke="#4F8CFF" stroke-width="4"/>
-            <text x="110" y="138" text-anchor="middle" font-size="14" fill="#2D3748">50%</text>
-
-            <circle cx="290" cy="117" r="7" fill="#fff" stroke="#4F8CFF" stroke-width="4"/>
-            <text x="290" y="105" text-anchor="middle" font-size="14" fill="#2D3748">65%</text>
-
-            <circle cx="490" cy="95" r="7" fill="#fff" stroke="#4F8CFF" stroke-width="4"/>
-            <text x="490" y="83" text-anchor="middle" font-size="14" fill="#2D3748">75%</text>
-
-            <circle cx="650" cy="62" r="8" fill="#6BCB77" stroke="#fff" stroke-width="3"/>
-            <text x="650" y="48" text-anchor="middle" font-size="15" fill="#2F8F3E">90%</text>
-          </g>
-
-          <!-- Nhãn trục ngang (tuần) -->
-          <g font-size="13" fill="#6B7280" font-family="Fredoka, sans-serif" font-weight="600" text-anchor="middle">
-            <text x="110" y="286">Tuần 1</text>
-            <text x="290" y="286">Tuần 4</text>
-            <text x="490" y="286">Tuần 8</text>
-            <text x="650" y="286">Tuần 12</text>
-          </g>
-        </svg>
+      <div class="chart-wrap" id="studyChart">
+        <div style="text-align:center;color:var(--text-soft);padding:24px">Đang tải…</div>
       </div>
-      <div class="chart-legend"><span class="legend-line"></span> Điểm trung bình theo tuần</div>
+      <div class="chart-legend"><span class="legend-line"></span> Thời gian học theo ngày</div>
     </div>
   </section>
 
@@ -541,27 +487,16 @@
 
       <div class="card strength-card">
         <div class="mini-title">🌟 Điểm mạnh của con</div>
-        <div class="strength-list">
-          <div class="strength-item"><span class="ok">✅</span> Đếm số</div>
-          <div class="strength-item"><span class="ok">✅</span> So sánh số</div>
-          <div class="strength-item"><span class="ok">✅</span> Nhận biết hình học</div>
+        <div class="strength-list" id="strengthList">
+          <div class="strength-item">Đang tải…</div>
         </div>
-        <div class="acc-big"><span class="num">92%</span><span class="lbl">tỷ lệ chính xác</span></div>
+        <div class="acc-big" id="accBig" style="display:none"><span class="num">—</span><span class="lbl">tỷ lệ chính xác trung bình</span></div>
       </div>
 
       <div class="card improve-card">
         <div class="mini-title">📚 Nội dung cần luyện thêm</div>
-        <div class="improve-item">
-          <div class="improve-head"><span class="warn">⚠ Phép cộng</span><span class="pct">65%</span></div>
-          <div class="bar"><div style="width:65%"></div></div>
-        </div>
-        <div class="improve-item">
-          <div class="improve-head"><span class="warn">⚠ Toán có lời văn</span><span class="pct">60%</span></div>
-          <div class="bar"><div style="width:60%"></div></div>
-        </div>
-        <div class="improve-item">
-          <div class="improve-head"><span class="warn">⚠ Phân số</span><span class="pct">58%</span></div>
-          <div class="bar"><div style="width:58%"></div></div>
+        <div id="improveList">
+          <div class="improve-item"><div class="improve-head"><span>Đang tải…</span></div></div>
         </div>
       </div>
 
@@ -575,15 +510,14 @@
     <div class="week-card">
       <div class="mini-title">📄 Tổng kết tuần</div>
       <div class="week-stats">
-        <div class="week-stat"><div class="wn">—</div><div class="wl">Bài đã học</div></div>
-        <div class="week-stat"><div class="wn">—</div><div class="wl">Điểm XP</div></div>
-        <div class="week-stat"><div class="wn">—</div><div class="wl">Thời gian học</div></div>
-        <div class="week-stat"><div class="wn">—</div><div class="wl">Huy hiệu mới</div></div>
+        <div class="week-stat"><div class="wn" id="wk-lessons">—</div><div class="wl">Bài đã học</div></div>
+        <div class="week-stat"><div class="wn" id="wk-xp">—</div><div class="wl">Điểm XP</div></div>
+        <div class="week-stat"><div class="wn" id="wk-time">—</div><div class="wl">Thời gian học</div></div>
+        <div class="week-stat"><div class="wn" id="wk-badges">—</div><div class="wl">Huy hiệu mới</div></div>
         <div class="week-stat"><div class="wn" data-bind="streak">0</div><div class="wl">Ngày chuỗi</div></div>
       </div>
       <div class="week-btns">
-        <button class="btn btn-white" onclick="celebrate(event)">📥 Tải báo cáo PDF</button>
-        <button class="btn btn-glass" onclick="celebrate(event)">📧 Gửi email</button>
+        <button class="btn btn-white" onclick="window.print()">🖨️ In / Lưu PDF báo cáo</button>
       </div>
     </div>
   </section>
@@ -592,19 +526,8 @@
   <section class="block">
     <h2 class="section-title">📊 Tiến độ theo chương</h2>
     <p class="section-sub">Con đã hoàn thành tới đâu trong từng chương của chương trình.</p>
-    <div class="card">
-      <div class="chapter-item">
-        <div class="chapter-head"><span>Chương 1 - Các số đến 10</span><span class="cpct" style="color:var(--green)">100%</span></div>
-        <div class="chapter-bar"><div class="fill-blue" style="width:100%"></div></div>
-      </div>
-      <div class="chapter-item">
-        <div class="chapter-head"><span>Chương 2 - Phép cộng, phép trừ</span><span class="cpct" style="color:var(--blue)">70%</span></div>
-        <div class="chapter-bar"><div class="fill-mid" style="width:70%"></div></div>
-      </div>
-      <div class="chapter-item">
-        <div class="chapter-head"><span>Chương 3 - Các số đến 100</span><span class="cpct" style="color:var(--orange)">20%</span></div>
-        <div class="chapter-bar"><div class="fill-low" style="width:20%"></div></div>
-      </div>
+    <div class="card" id="chapterBox">
+      <div class="chapter-item"><div class="chapter-head"><span>Đang tải…</span></div></div>
     </div>
   </section>
 
@@ -612,21 +535,8 @@
   <section class="block">
     <h2 class="section-title">💡 Gợi ý đồng hành cùng con</h2>
     <p class="section-sub">Vài lời khuyên nhỏ để giúp con học tốt hơn mỗi ngày.</p>
-    <div class="tip-grid">
-      <div class="tip-card">
-        <div class="tip-ico">✍️</div>
-        <div>
-          <h4>Luyện thêm phép cộng</h4>
-          <p>Con đang gặp khó khăn ở phần phép cộng. Hãy dành 10 phút mỗi ngày để cùng con luyện thêm phần này.</p>
-        </div>
-      </div>
-      <div class="tip-card">
-        <div class="tip-ico">🚗</div>
-        <div>
-          <h4>Học qua trò chơi con yêu thích</h4>
-          <p>Con rất thích trò chơi Đua xe Toán học. Có thể khuyến khích con luyện tập thông qua trò chơi này.</p>
-        </div>
-      </div>
+    <div class="tip-grid" id="tipBox">
+      <div class="tip-card"><div class="tip-ico">💡</div><div><h4>Đang tải…</h4></div></div>
     </div>
   </section>
 
@@ -740,12 +650,41 @@
       document.querySelectorAll('.wrap > .student-card, .wrap > .block').forEach(function(el){ el.style.display = v ? '' : 'none'; });
     }
 
+    const esc = function(t){ return (t==null?'':String(t)).replace(/[<>&]/g, function(c){ return c==='<'?'&lt;':c==='>'?'&gt;':'&amp;'; }); };
+    const stripEmoji = function(s){ try { return (s||'').replace(/^[^\p{L}\p{N}]+/u,'').trim(); } catch(e){ return (s||'').replace(/^[^A-Za-zÀ-ỹ0-9]+/,'').trim(); } };
+    const chapterLabel = function(t){ return stripEmoji(t) || 'Khác'; };
+    const shortLabel = function(t){ return chapterLabel(t).replace(/^Chủ đề\s*\d+\s*:\s*/i,'').trim() || chapterLabel(t); };
+
+    // Biểu đồ cột thời gian học 7 ngày gần nhất (từ study_time)
+    function renderStudyChart(byDay){
+      const box = $('studyChart'); if (!box) return;
+      const wd = ['CN','T2','T3','T4','T5','T6','T7'];
+      const days = [];
+      for (let i=6; i>=0; i--){
+        const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-i);
+        const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+        days.push({ sec: (byDay[key]||0), label: wd[d.getDay()] });
+      }
+      const maxSec = Math.max(60, Math.max.apply(null, days.map(function(x){ return x.sec; })));
+      box.innerHTML = '<div style="display:flex;align-items:flex-end;gap:8px;height:200px;padding:8px 2px">' +
+        days.map(function(x){
+          const h = Math.round(x.sec / maxSec * 160);
+          const mins = Math.round(x.sec / 60);
+          return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px">' +
+            '<div style="font-size:12px;font-weight:700;color:#2D3748">' + (mins>0 ? mins+'′' : '') + '</div>' +
+            '<div title="'+mins+' phút" style="width:100%;max-width:46px;height:'+Math.max(4,h)+'px;border-radius:8px 8px 4px 4px;background:linear-gradient(180deg,#4F8CFF,#9B72FF)"></div>' +
+            '<div style="font-size:12px;color:#6B7280;font-weight:600">' + x.label + '</div>' +
+          '</div>';
+        }).join('') + '</div>';
+    }
+
     // Đổ dữ liệu 1 "con" (hoặc chính mình) vào giao diện
     async function renderChild(d){
       const profile = d.profile || {}, progress = d.progress || {}, lessons = d.lessons || [], badges = d.badges || [];
       const grade = Number(profile.grade) || 1;
       const ids = gradeIds(grade);
       const total = ids ? ids.length : 10;
+      const byId = {}; (lessons||[]).forEach(function(l){ byId[l.lesson_id] = l; });
       const completed = (lessons || []).filter(function(l){
         return l.status === 'completed' && (!ids || ids.indexOf(l.lesson_id) >= 0);
       }).length;
@@ -761,26 +700,127 @@
       const joinEl = $('join-date'); const created = profile.created_at || profile.joined_at;
       if (joinEl) joinEl.textContent = created ? fmtDate(created) : '—';
 
-      // Lượt chơi + hoạt động gần đây THẬT của con
       const cid = profile.id;
-      try {
-        const acts = cid ? await TVKN.childActivity(cid, 100) : [];
-        const gameEl = $('game-count');
-        if (gameEl) gameEl.textContent = (acts || []).filter(function(a){ return (a.text||'').indexOf('🎮') >= 0; }).length;
-        const list = $('recent-list');
-        if (list) {
-          const recent = (acts || []).slice(0, 5);
-          if (!recent.length) {
-            list.innerHTML = '<div class="recent-row"><div class="recent-main"><div class="recent-type">Chưa có hoạt động</div></div></div>';
-          } else {
-            list.innerHTML = recent.map(function(a){
-              const text = (a.text||'').replace(/[<>&]/g, function(c){ return c==='<'?'&lt;':c==='>'?'&gt;':'&amp;'; });
-              const xp = (a.xp_delta != null && a.xp_delta !== 0) ? '<div class="recent-xp">'+(a.xp_delta>0?'+':'')+a.xp_delta+'</div>' : '';
-              return '<div class="recent-row"><div class="recent-date">'+fmtDate(a.created_at)+'</div><div class="recent-ico">📘</div><div class="recent-main"><div class="recent-name">'+text+'</div></div>'+xp+'</div>';
-            }).join('');
-          }
+
+      // ===== Thời gian học (THẬT) — biểu đồ 7 ngày + ô tuần + tổng =====
+      let study = { total:0, last7:0, byDay:{} };
+      try { study = cid ? await TVKN.childStudyTime(cid) : { total:0, last7:0, byDay:{} }; } catch(e){}
+      renderStudyChart(study.byDay);
+
+      // ===== Lượt chơi + hoạt động gần đây THẬT của con =====
+      let acts = [];
+      try { acts = cid ? await TVKN.childActivity(cid, 100) : []; } catch(e){ acts = []; }
+      const gameEl = $('game-count');
+      if (gameEl) gameEl.textContent = (acts || []).filter(function(a){ return (a.text||'').indexOf('🎮') >= 0; }).length;
+      const list = $('recent-list');
+      if (list) {
+        const recent = (acts || []).slice(0, 5);
+        if (!recent.length) {
+          list.innerHTML = '<div class="recent-row"><div class="recent-main"><div class="recent-type">Chưa có hoạt động</div></div></div>';
+        } else {
+          list.innerHTML = recent.map(function(a){
+            const text = esc(a.text);
+            const xp = (a.xp_delta != null && a.xp_delta !== 0) ? '<div class="recent-xp">'+(a.xp_delta>0?'+':'')+a.xp_delta+'</div>' : '';
+            return '<div class="recent-row"><div class="recent-date">'+fmtDate(a.created_at)+'</div><div class="recent-ico">📘</div><div class="recent-main"><div class="recent-name">'+text+'</div></div>'+xp+'</div>';
+          }).join('');
         }
-      } catch(e){}
+      }
+
+      // ===== BÁO CÁO TUẦN (7 ngày qua, THẬT) =====
+      const weekAgo = Date.now() - 7*86400000;
+      let wkXp = 0;
+      (acts||[]).forEach(function(a){ if (new Date(a.created_at).getTime() >= weekAgo){ const x=a.xp_delta||0; if (x>0) wkXp+=x; } });
+      const wkLessons = (lessons||[]).filter(function(l){
+        return l.status==='completed' && l.updated_at && new Date(l.updated_at).getTime() >= weekAgo && (!ids || ids.indexOf(l.lesson_id) >= 0);
+      }).length;
+      const wkBadges = (badges||[]).filter(function(b){ return b.unlocked_at && new Date(b.unlocked_at).getTime() >= weekAgo; }).length;
+      if ($('wk-lessons')) $('wk-lessons').textContent = wkLessons;
+      if ($('wk-xp'))      $('wk-xp').textContent      = wkXp;
+      if ($('wk-time'))    $('wk-time').textContent    = TVKN.fmtDuration(study.last7);
+      if ($('wk-badges'))  $('wk-badges').textContent  = wkBadges;
+
+      // ===== Gom theo CHỦ ĐỀ/CHƯƠNG (từ TVKN_LESSONS + best_score) =====
+      const LMAP = (window.TVKN_LESSONS && TVKN_LESSONS.lessons) || {};
+      const topics = {};
+      (ids || []).forEach(function(id){
+        const L = LMAP[id]; if (!L) return;
+        const t = L.topic || 'Khác';
+        if (!topics[t]) topics[t] = { full:t, total:0, completed:0, scoreSum:0, scoreN:0, order: L.no || 999 };
+        const T = topics[t]; T.total++;
+        if (L.no && L.no < T.order) T.order = L.no;
+        const rec = byId[id];
+        if (rec){
+          if (rec.status === 'completed') T.completed++;
+          if (rec.best_score > 0){ T.scoreSum += rec.best_score; T.scoreN++; }
+        }
+      });
+      const topicArr = Object.keys(topics).map(function(k){
+        const T = topics[k];
+        return { full:T.full, total:T.total, completed:T.completed, order:T.order,
+                 avg: T.scoreN ? Math.round(T.scoreSum / T.scoreN) : null };
+      });
+
+      // ----- Điểm mạnh -----
+      const strengths = topicArr.filter(function(t){ return t.avg != null && t.avg >= 80; })
+                                .sort(function(a,b){ return b.avg - a.avg; }).slice(0,3);
+      const sEl = $('strengthList');
+      if (sEl){
+        sEl.innerHTML = strengths.length
+          ? strengths.map(function(t){ return '<div class="strength-item"><span class="ok">✅</span> '+esc(shortLabel(t.full))+' <span style="color:var(--green);font-weight:700;margin-left:auto">'+t.avg+'%</span></div>'; }).join('')
+          : '<div class="strength-item" style="color:var(--text-soft)">Con chưa có đủ bài đạt điểm cao để nhận xét. Cùng con luyện thêm nhé!</div>';
+      }
+      // Tỷ lệ chính xác trung bình (mọi bài đã có điểm)
+      let accSum=0, accN=0;
+      topicArr.forEach(function(t){ if (t.avg!=null){ accSum+=t.avg; accN++; } });
+      const accEl = $('accBig');
+      if (accEl){
+        if (accN){ accEl.style.display=''; const n=accEl.querySelector('.num'); if(n) n.textContent = Math.round(accSum/accN)+'%'; }
+        else accEl.style.display='none';
+      }
+
+      // ----- Cần luyện thêm -----
+      const improve = topicArr.filter(function(t){ return t.avg != null && t.avg < 70; })
+                              .sort(function(a,b){ return a.avg - b.avg; }).slice(0,3);
+      const iEl = $('improveList');
+      if (iEl){
+        iEl.innerHTML = improve.length
+          ? improve.map(function(t){ return '<div class="improve-item"><div class="improve-head"><span class="warn">⚠ '+esc(shortLabel(t.full))+'</span><span class="pct">'+t.avg+'%</span></div><div class="bar"><div style="width:'+t.avg+'%"></div></div></div>'; }).join('')
+          : '<div class="improve-item" style="color:var(--text-soft)">Tuyệt vời! Hiện chưa có phần nào con bị điểm thấp. 🎉</div>';
+      }
+
+      // ----- Tiến độ theo chương -----
+      const chapters = topicArr.slice().sort(function(a,b){ return a.order - b.order; });
+      const cEl = $('chapterBox');
+      if (cEl){
+        cEl.innerHTML = chapters.length
+          ? chapters.map(function(t){
+              const pct = t.total ? Math.round(t.completed / t.total * 100) : 0;
+              const cls = pct >= 80 ? 'fill-blue' : (pct >= 40 ? 'fill-mid' : 'fill-low');
+              const col = pct >= 80 ? 'var(--green)' : (pct >= 40 ? 'var(--blue)' : 'var(--orange)');
+              return '<div class="chapter-item"><div class="chapter-head"><span>'+esc(chapterLabel(t.full))+'</span><span class="cpct" style="color:'+col+'">'+pct+'%</span></div><div class="chapter-bar"><div class="'+cls+'" style="width:'+pct+'%"></div></div></div>';
+            }).join('')
+          : '<div class="chapter-item"><div class="chapter-head"><span style="color:var(--text-soft)">Chưa có dữ liệu chương cho lớp này.</span></div></div>';
+      }
+
+      // ----- Gợi ý cho phụ huynh (động) -----
+      const tipEl = $('tipBox');
+      if (tipEl){
+        const tips = [];
+        const weakest = improve[0] || chapters.filter(function(t){ return t.total > t.completed; }).sort(function(a,b){ return a.order-b.order; })[0];
+        if (weakest) tips.push({ ico:'✍️', h:'Luyện thêm: '+shortLabel(weakest.full), p:'Con đang cần củng cố phần này. Hãy dành ~10 phút mỗi ngày cùng con luyện thêm nhé.' });
+        // Trò chơi con thích nhất
+        const gcount = {}; (acts||[]).forEach(function(a){ const t=a.text||''; if (t.indexOf('🎮')>=0){ const nm=t.replace(/^🎮\s*/,'').split(' — ')[0].trim(); if(nm) gcount[nm]=(gcount[nm]||0)+1; } });
+        let favGame=null, favN=0; Object.keys(gcount).forEach(function(k){ if (gcount[k]>favN){ favN=gcount[k]; favGame=k; } });
+        if (favGame) tips.push({ ico:'🎮', h:'Học qua trò chơi con thích', p:'Con rất thích "'+favGame+'". Khuyến khích con luyện Toán thông qua trò chơi này.' });
+        // Nhắc duy trì thói quen
+        const streak = progress.streak_days || 0;
+        if (study.last7 === 0) tips.push({ ico:'⏰', h:'Khơi lại thói quen học', p:'Tuần qua con chưa có thời gian học ghi nhận. Cùng con đặt lịch học ngắn mỗi ngày nhé.' });
+        else if (streak >= 3) tips.push({ ico:'🔥', h:'Khen con giữ chuỗi học', p:'Con đang học liên tục '+streak+' ngày. Một lời khen sẽ giúp con duy trì động lực!' });
+        if (!tips.length) tips.push({ ico:'💡', h:'Đồng hành cùng con', p:'Hãy hỏi con hôm nay học được gì — sự quan tâm của bố mẹ là động lực lớn nhất.' });
+        tipEl.innerHTML = tips.slice(0,2).map(function(t){
+          return '<div class="tip-card"><div class="tip-ico">'+t.ico+'</div><div><h4>'+esc(t.h)+'</h4><p>'+esc(t.p)+'</p></div></div>';
+        }).join('');
+      }
     }
 
     // ===== Phụ huynh: danh sách con / chọn / liên kết / gỡ =====

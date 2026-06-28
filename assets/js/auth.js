@@ -678,7 +678,88 @@ window.TVKN = (function () {
     (document.head || document.documentElement).appendChild(st);
   }
 
-  function tvknOnReady() { injectResponsiveCSS(); initBell(); }
+  // ============================================================
+  //  THỜI GIAN HỌC — tự đếm trên TRANG HỌC, lưu DB theo NGÀY
+  //  • Chỉ tính khi tab đang hiện & người dùng còn TƯƠNG TÁC (không tính lúc bỏ đó).
+  //  • Gộp theo ngày qua RPC add_study_time (chống client bịa số qua REST).
+  // ============================================================
+  const STUDY_PAGES = ['hoc-bai', 'bai-hoc', 'lam-bai-tap', 'tro-choi', 'ban-bong', 'dua-xe', 'kho-bau', 'rung-chuong', 'xay-lau-dai', 'thu-thach', 'ai-gia-su'];
+  function _localDay() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  // Ghi thêm `seconds` giây học vào ngày hôm nay (làm tròn). Im lặng nếu chưa đăng nhập.
+  async function addStudyTime(seconds) {
+    if (!sb) return;
+    const s = Math.round(seconds || 0);
+    if (s <= 0) return;
+    try { await sb.rpc('add_study_time', { p_seconds: s, p_day: _localDay() }); } catch (e) {}
+  }
+  // Bộ đếm: tích luỹ thời gian "đang học" rồi flush định kỳ + khi rời trang.
+  function startStudyTimer() {
+    if (window.__tvknStudyTimer) return; window.__tvknStudyTimer = true;
+    let acc = 0, last = Date.now(), lastAct = Date.now();
+    function tick() {
+      const now = Date.now();
+      const idle = now - lastAct;
+      if (!document.hidden && idle < 60000) {       // đang hiện + còn tương tác trong 60s
+        const dt = (now - last) / 1000;
+        if (dt > 0 && dt < 120) acc += dt;          // bỏ qua nhảy lớn (máy ngủ / treo tab)
+      }
+      last = now;
+    }
+    function flush() { tick(); if (acc >= 15) { const s = acc; acc = 0; addStudyTime(s); } }
+    setInterval(tick, 5000);
+    setInterval(flush, 30000);
+    ['click', 'keydown', 'pointerdown', 'touchstart', 'scroll', 'mousemove'].forEach(function (ev) {
+      window.addEventListener(ev, function () { lastAct = Date.now(); }, { passive: true });
+    });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) flush(); });
+    window.addEventListener('pagehide', function () { tick(); if (acc > 0) { const s = acc; acc = 0; addStudyTime(s); } });
+  }
+  // Gộp các dòng study_time → { total, last7, byDay } (giây). today tính theo giờ ĐỊA PHƯƠNG.
+  function _aggStudy(rows) {
+    rows = rows || [];
+    let total = 0, last7 = 0; const byDay = {};
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    rows.forEach(function (r) {
+      const s = r.seconds || 0; total += s; byDay[r.day] = s;
+      const d = new Date(r.day + 'T00:00:00');
+      const diff = Math.round((today - d) / 86400000);
+      if (diff >= 0 && diff < 7) last7 += s;
+    });
+    return { total: total, last7: last7, byDay: byDay };
+  }
+  // Thời gian học CỦA MÌNH
+  async function getStudyTime() {
+    ensure(); const user = await getUser(); if (!user) return _aggStudy([]);
+    try { const { data } = await sb.from('study_time').select('day,seconds').eq('user_id', user.id); return _aggStudy(data); }
+    catch (e) { return _aggStudy([]); }
+  }
+  // Thời gian học CỦA CON (phụ huynh đã liên kết → RLS cho phép SELECT)
+  async function childStudyTime(childId) {
+    ensure(); if (!childId) return _aggStudy([]);
+    try { const { data } = await sb.from('study_time').select('day,seconds').eq('user_id', childId); return _aggStudy(data); }
+    catch (e) { return _aggStudy([]); }
+  }
+  // Định dạng giây → "2 giờ 15 phút" / "30 phút" / "< 1 phút"
+  function fmtDuration(sec) {
+    sec = Math.max(0, Math.round(sec || 0));
+    const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60);
+    if (h > 0) return h + ' giờ' + (m ? ' ' + m + ' phút' : '');
+    if (m > 0) return m + ' phút';
+    return sec > 0 ? '< 1 phút' : '0 phút';
+  }
+
+  function tvknOnReady() {
+    injectResponsiveCSS(); initBell();
+    try {
+      const here = (location.pathname.split('/').pop() || '').replace(/\.html$/, '');
+      if (STUDY_PAGES.indexOf(here) >= 0 && sb) {
+        sb.auth.getSession().then(function (r) { if (r && r.data && r.data.session) startStudyTimer(); }).catch(function () {});
+      }
+    } catch (e) {}
+  }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tvknOnReady);
   else tvknOnReady();
 
@@ -743,6 +824,7 @@ window.TVKN = (function () {
     getProgress, addXp, bumpStreak, setLesson,
     getActivity, getLessons, getBadges, getLeaderboard, getMyRank, getCohortStats,
     adminOverview, adminUsers,
-    checkBadges, recordGameWin, platformStats, badges: BADGES, initBell, trialPage, getGameStats, gamePlays
+    checkBadges, recordGameWin, platformStats, badges: BADGES, initBell, trialPage, getGameStats, gamePlays,
+    addStudyTime, getStudyTime, childStudyTime, fmtDuration, startStudyTimer
   };
 })();
