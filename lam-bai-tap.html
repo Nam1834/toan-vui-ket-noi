@@ -251,8 +251,10 @@
       const Q = questions[idx]; if (!Q) return;
       let t = String(Q.q || '');
       t = t.replace(/<[^>]+>/g, ' ');                    // bỏ thẻ HTML
-      t = t.replace(/[×x✕*]/g, ' nhân ')
-           .replace(/[÷:]/g, ' chia ')
+      t = t.replace(/[×✕]/g, ' nhân ')                   // dấu nhân chuẩn
+           .replace(/÷/g, ' chia ')                      // dấu chia chuẩn
+           .replace(/(\d)\s*[x*]\s*(\d)/g, '$1 nhân $2') // x/* CHỈ khi giữa 2 số (tránh phá từ "xanh, xếp"...)
+           .replace(/(\d)\s*:\s*(\d)/g, '$1 chia $2')    // ":" CHỈ khi giữa 2 số (giữ nhãn "Câu 1:", "Điền số...:")
            .replace(/\+/g, ' cộng ')
            .replace(/(\d)\s*[-–]\s*(\d)/g, '$1 trừ $2')  // dấu trừ giữa hai số
            .replace(/=/g, ' bằng ')
