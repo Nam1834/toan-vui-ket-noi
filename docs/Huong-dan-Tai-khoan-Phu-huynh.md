@@ -21,13 +21,17 @@ Lần đầu, trang sẽ hiện ô **"Nhập mã của con để liên kết"** 
 
 ## 2. Con đưa mã cho bố/mẹ
 
-Trên tài khoản của **con**:
+Mã nằm trong **trang Hồ sơ của con**. Làm theo các bước sau trên **tài khoản của con**:
 
-1. Con đăng nhập rồi vào mục **Hồ sơ** (biểu tượng 👤).
-2. Tìm khung **"👨‍👩‍👧 Mã phụ huynh"** — sẽ có một mã, ví dụ: **`ANH-4F2A`**.
-3. Bấm **📋 Sao chép** rồi đưa mã này cho bố/mẹ (nhắn tin hoặc đọc cho bố/mẹ).
+1. **Con đăng nhập** bằng tài khoản học sinh của mình.
+2. Bấm vào mục **Hồ sơ** — biểu tượng **👤** ở thanh menu (ở dưới cùng màn hình trên điện thoại, hoặc ở góc trên bên phải / ảnh đại diện trên máy tính).
+3. Trang Hồ sơ mở ra: trên cùng là **ảnh đại diện, tên và lớp** của con. **Ngay bên dưới** khối đó là khung **"👨‍👩‍👧 Mã phụ huynh"**.
+4. Trong khung này có một mã, ví dụ: **`ANH-4F2A`**.
+5. Bấm **📋 Sao chép** rồi gửi/đọc mã đó cho bố/mẹ.
 
-> Nếu muốn đổi mã khác, con bấm **🔄 Đổi mã**. (Bố/mẹ đã liên kết trước đó vẫn xem được bình thường.)
+> 📌 Mã này **chỉ hiện trên tài khoản học sinh** (không có ở tài khoản phụ huynh).
+>
+> 🔄 Muốn đổi mã khác, con bấm **Đổi mã** ngay trong khung đó. Bố/mẹ đã liên kết trước đó vẫn xem được bình thường.
 
 ---
 
