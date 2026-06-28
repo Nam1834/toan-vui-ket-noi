@@ -7,7 +7,7 @@
 //  GIỮ ĐỒNG BỘ danh sách SHELL_PAGES này với app.html.
 // ============================================================
 (function tvknShell() {
-  var SHELL_PAGES = ['trang-lop', 'ho-so', 'huy-hieu', 'bang-xep-hang', 'thu-thach', 'tro-choi', 'phu-huynh', 'ai-gia-su'];
+  var SHELL_PAGES = ['trang-lop', 'ho-so', 'huy-hieu', 'bang-xep-hang', 'thu-thach', 'tro-choi', 'ai-gia-su'];   // phu-huynh = trang RIÊNG (phụ huynh không vào shell học sinh)
   function fileOf(p) { return ((p || '').split('?')[0].split('#')[0].split('/').pop() || '').replace(/\.html$/, ''); }
   var framed = false;
   try { framed = (window.self !== window.top); } catch (e) { framed = true; }
@@ -104,13 +104,15 @@ window.TVKN = (function () {
   else paintCachedBindings();
 
   // ---------- ĐĂNG KÝ ----------
-  // info = { email, password, name, avatar, grade }
+  // info = { email, password, name, avatar, grade, role? }  role='parent' → tài khoản phụ huynh
   async function signUp(info) {
     ensure();
+    const meta = { name: info.name, avatar: info.avatar || '👧', grade: info.grade || 1 };
+    if (info.role === 'parent') meta.role = 'parent';   // 'admin' KHÔNG bao giờ nhận từ client (chỉ qua admin_emails)
     const { data, error } = await sb.auth.signUp({
       email: info.email,
       password: info.password,
-      options: { data: { name: info.name, avatar: info.avatar || '👧', grade: info.grade || 1 } }
+      options: { data: meta }
     });
     if (error) throw error;
     return data;
@@ -149,6 +151,69 @@ window.TVKN = (function () {
     if (!user) return null;
     const { data } = await sb.from('profiles').select('*').eq('id', user.id).single();
     return data;
+  }
+
+  // ============================================================
+  //  PHỤ HUYNH ↔ CON  (liên kết bằng mã — xem sql/supabase-parent.sql)
+  // ============================================================
+  // Danh sách con đã liên kết (hồ sơ). Trả [] nếu chưa có / lỗi.
+  async function listChildren() {
+    ensure();
+    const user = await getUser();
+    if (!user) return [];
+    const { data, error } = await sb.rpc('list_children');
+    if (error) { console.warn('list_children:', error.message || error); return []; }
+    return data || [];
+  }
+
+  // Phụ huynh nhập MÃ của con để liên kết. Trả { ok, child_id, name } hoặc throw lỗi (mã sai...).
+  async function linkChild(code) {
+    ensure();
+    const { data, error } = await sb.rpc('link_child', { p_code: code });
+    if (error) throw error;
+    return data;
+  }
+
+  // Huỷ liên kết 1 con
+  async function unlinkChild(childId) {
+    ensure();
+    const { error } = await sb.rpc('unlink_child', { p_child: childId });
+    if (error) throw error;
+  }
+
+  // Học sinh tự đổi mã liên kết (thu hồi). Trả về mã mới.
+  async function regenLinkCode() {
+    ensure();
+    const { data, error } = await sb.rpc('regenerate_link_code');
+    if (error) throw error;
+    return data;
+  }
+
+  // Lấy dữ liệu THẬT của 1 con (phụ huynh đã liên kết → RLS parent_read_* cho phép SELECT).
+  // Trả { profile, progress, lessons, badges } — cùng dạng renderProfile để tái dùng thống kê.
+  async function childData(childId) {
+    ensure();
+    if (!childId) return null;
+    const safe = function (p) { return p.then(function (r) { return r.data; }).catch(function () { return null; }); };
+    const safeArr = function (p) { return p.then(function (r) { return r.data || []; }).catch(function () { return []; }); };
+    const r = await Promise.all([
+      safe(sb.from('profiles').select('*').eq('id', childId).single()),
+      safe(sb.from('progress').select('*').eq('user_id', childId).single()),
+      safeArr(sb.from('lesson_progress').select('*').eq('user_id', childId)),
+      safeArr(sb.from('user_badges').select('*').eq('user_id', childId))
+    ]);
+    return { profile: r[0], progress: r[1], lessons: r[2], badges: r[3] };
+  }
+
+  // Hoạt động gần đây của 1 con
+  async function childActivity(childId, limit) {
+    ensure();
+    if (!childId) return [];
+    const { data } = await sb.from('activity_log').select('*')
+      .eq('user_id', childId)
+      .order('created_at', { ascending: false })
+      .limit(limit || 10);
+    return data || [];
   }
 
   // ---------- CHẶN TRANG: chưa đăng nhập → về trang đăng nhập ----------
@@ -674,6 +739,7 @@ window.TVKN = (function () {
     configured: typeof TVKN_CONFIGURED !== 'undefined' ? TVKN_CONFIGURED : false,
     signUp, signIn, signOut, getUser, getProfile,
     requireAuth, applyToDOM, guardPage, guardPageSoft, applyProfile, isLoggedIn, requireAdmin, bindCommon,
+    listChildren, linkChild, unlinkChild, regenLinkCode, childData, childActivity,
     getProgress, addXp, bumpStreak, setLesson,
     getActivity, getLessons, getBadges, getLeaderboard, getMyRank, getCohortStats,
     adminOverview, adminUsers,

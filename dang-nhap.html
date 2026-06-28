@@ -75,10 +75,13 @@
     document.getElementById('btn').disabled = true;
   } else {
     // đã đăng nhập sẵn thì vào thẳng
-    TVKN.getProfile().then(function (p) { if (p) window.location.replace(p.role === 'admin' ? 'admin.html' : 'index.html'); }).catch(function () {});
+    TVKN.getProfile().then(function (p) { if (p) window.location.replace(homeFor(p.role)); }).catch(function () {});
   }
 
   function setMsg(t, ok) { const m = document.getElementById('msg'); m.textContent = t; m.className = 'msg ' + (ok ? 'ok' : 'err'); }
+
+  // Trang chủ theo vai trò: admin → quản trị, parent → trang phụ huynh, còn lại → app học sinh
+  function homeFor(role) { return role === 'admin' ? 'admin.html' : role === 'parent' ? 'phu-huynh.html' : 'index.html'; }
 
   async function doLogin() {
     const email = document.getElementById('email').value.trim();
@@ -91,7 +94,7 @@
       await TVKN.signIn(email, pass);
       setMsg('🎉 Đăng nhập thành công!', true);
       const prof = await TVKN.getProfile();
-      window.location.href = (prof && prof.role === 'admin') ? 'admin.html' : 'index.html';
+      window.location.href = homeFor(prof && prof.role);
     } catch (err) {
       let m = err.message || 'Đăng nhập thất bại';
       if (/Invalid login/i.test(m)) m = 'Email hoặc mật khẩu chưa đúng.';

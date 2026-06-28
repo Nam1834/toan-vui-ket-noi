@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <!-- Trang con dùng chung với shell app.html. Chạy TRƯỚC khi vẽ: mở thẳng -> vào shell; trong iframe -> ẩn ngay header riêng để khỏi nháy. GIỮ ĐỒNG BỘ SHELL_PAGES với app.html + assets/js/auth.js -->
-<script>(function(){try{var P=['trang-lop','ho-so','huy-hieu','bang-xep-hang','thu-thach','tro-choi','phu-huynh','ai-gia-su'];if(window.self===window.top){var p=(location.pathname.split('/').pop()||'').replace(/\.html$/,'')||'index';if(P.indexOf(p)>=0){var x=location.search?('&'+location.search.slice(1)):'';location.replace('app.html?page='+p+x);}}else{var s=document.createElement('style');s.id='tvkn-framed-css';s.textContent='.header,.footer-nav{display:none!important}';(document.head||document.documentElement).appendChild(s);document.documentElement.className+=' tvkn-framed';}}catch(e){}})();</script>
+<script>(function(){try{var P=['trang-lop','ho-so','huy-hieu','bang-xep-hang','thu-thach','tro-choi','ai-gia-su'];if(window.self===window.top){var p=(location.pathname.split('/').pop()||'').replace(/\.html$/,'')||'index';if(P.indexOf(p)>=0){var x=location.search?('&'+location.search.slice(1)):'';location.replace('app.html?page='+p+x);}}else{var s=document.createElement('style');s.id='tvkn-framed-css';s.textContent='.header,.footer-nav{display:none!important}';(document.head||document.documentElement).appendChild(s);document.documentElement.className+=' tvkn-framed';}}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Trang Phụ huynh - TOÁN VUI KẾT NỐI</title>
@@ -407,6 +407,25 @@
 
 <div class="wrap">
 
+  <!-- ============ THANH CHỌN CON (chỉ phụ huynh) ============ -->
+  <div id="childBar" style="display:none;align-items:center;gap:12px;flex-wrap:wrap;background:#fff;border-radius:18px;padding:14px 18px;box-shadow:var(--shadow);margin-bottom:22px">
+    <span style="font-weight:700">👶 Đang xem:</span>
+    <select id="childSelect" style="flex:1;min-width:160px;padding:10px 12px;border:2px solid #E8ECF4;border-radius:12px;font-family:inherit;font-size:15px"></select>
+    <button id="addChildBtn" style="padding:10px 16px;border:none;border-radius:12px;background:var(--blue);color:#fff;font-family:inherit;font-weight:700;cursor:pointer">+ Liên kết con</button>
+    <button id="unlinkBtn" title="Gỡ liên kết con đang xem" style="padding:10px 14px;border:none;border-radius:12px;background:var(--bg-soft);color:var(--text-soft);font-family:inherit;font-weight:700;cursor:pointer">Gỡ</button>
+  </div>
+
+  <!-- ============ NHẬP MÃ LIÊN KẾT (chỉ phụ huynh) ============ -->
+  <div id="linkPanel" style="display:none;background:#fff;border-radius:18px;padding:24px;box-shadow:var(--shadow);margin-bottom:22px">
+    <h2 class="section-title">🔗 Liên kết với con</h2>
+    <p class="section-sub">Nhập <b>mã phụ huynh</b> mà con thấy trong Hồ sơ của con (ví dụ: <code>ANH-4F2A</code>).</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <input id="codeInput" placeholder="Nhập mã của con..." style="flex:1;min-width:180px;padding:12px 14px;border:2px solid #E8ECF4;border-radius:12px;font-family:inherit;font-size:16px;text-transform:uppercase">
+      <button id="linkBtn" style="padding:12px 22px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--green),#4DBE5C);color:#fff;font-family:inherit;font-weight:700;cursor:pointer">Liên kết</button>
+    </div>
+    <div id="linkMsg" style="margin-top:10px;font-size:14px;font-weight:600;min-height:18px"></div>
+  </div>
+
   <!-- ============ THÔNG TIN HỌC SINH ============ -->
   <div class="student-card">
     <div class="student-avatar">👧</div>
@@ -693,63 +712,150 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
+<script src="assets/js/lessons.js"></script>
+<script src="assets/js/lessons-lop1.js"></script>
+<script src="assets/js/lessons-lop2.js"></script>
+<script src="assets/js/lessons-lop3.js"></script>
+<script src="assets/js/lessons-lop4.js"></script>
+<script src="assets/js/lessons-lop5.js"></script>
 <script>
-  /* Chặn trang + hiển thị đúng người đăng nhập (Supabase) */
+  /* TRANG PHỤ HUYNH — xem dữ liệu THẬT của con (chỉ đọc). Liên kết con bằng mã. */
   window.tvknLogout = function(){ TVKN.signOut(); };
 
-  (async function () {
-    const data = await TVKN.guardPageSoft('trang Phụ huynh');   // khách → tường đăng nhập (không redirect)
-    if (!data) return;                      // khách: dừng render nội dung cá nhân (đã hiện tường đăng nhập)
-
+  (function(){
+    const $ = function(id){ return document.getElementById(id); };
     const fmtDate = function (iso) {
       if (!iso) return '';
       try { return new Date(iso).toLocaleDateString('vi-VN'); } catch (e) { return ''; }
     };
-
-    // Ngày tham gia thật (từ hồ sơ)
-    const joinEl = document.getElementById('join-date');
-    const created = data.profile && (data.profile.created_at || data.profile.joined_at);
-    if (joinEl && created) joinEl.textContent = fmtDate(created);
-
-    // Lượt trò chơi thật (đếm hoạt động có dấu 🎮)
-    const gameEl = document.getElementById('game-count');
-    if (gameEl) {
-      try {
-        const all = await TVKN.getActivity(100);
-        const games = (all || []).filter(function (a) {
-          return (a.text || '').indexOf('🎮') >= 0;
-        }).length;
-        gameEl.textContent = games;
-      } catch (e) { gameEl.textContent = 0; }
+    function setBindAll(key, val){
+      document.querySelectorAll('[data-bind="'+key+'"]').forEach(function(el){ el.textContent = val; });
+    }
+    function gradeIds(grade){
+      if (!window.TVKN_LESSONS || !TVKN_LESSONS.lessons) return null;
+      const g = Number(grade);
+      return Object.keys(TVKN_LESSONS.lessons).filter(function(k){ return Number(TVKN_LESSONS.lessons[k].grade) === g; });
+    }
+    function setContentVisible(v){
+      document.querySelectorAll('.wrap > .student-card, .wrap > .block').forEach(function(el){ el.style.display = v ? '' : 'none'; });
     }
 
-    // Hoạt động gần đây thật (5 mục mới nhất)
-    const list = document.getElementById('recent-list');
-    if (list) {
+    // Đổ dữ liệu 1 "con" (hoặc chính mình) vào giao diện
+    async function renderChild(d){
+      const profile = d.profile || {}, progress = d.progress || {}, lessons = d.lessons || [], badges = d.badges || [];
+      const grade = Number(profile.grade) || 1;
+      const ids = gradeIds(grade);
+      const total = ids ? ids.length : 10;
+      const completed = (lessons || []).filter(function(l){
+        return l.status === 'completed' && (!ids || ids.indexOf(l.lesson_id) >= 0);
+      }).length;
+      setBindAll('completed', Math.min(completed, total));
+      setBindAll('total', total);
+      setBindAll('xp', progress.xp || 0);
+      setBindAll('badges', (badges || []).length);
+      setBindAll('streak', progress.streak_days || 0);
+      setBindAll('coins', progress.coins || 0);
+      setBindAll('grade', grade);
+      const nameEl = document.querySelector('.student-info h2'); if (nameEl) nameEl.textContent = profile.name || 'Con';
+      const avEl = document.querySelector('.student-avatar'); if (avEl && profile.avatar) avEl.textContent = profile.avatar;
+      const joinEl = $('join-date'); const created = profile.created_at || profile.joined_at;
+      if (joinEl) joinEl.textContent = created ? fmtDate(created) : '—';
+
+      // Lượt chơi + hoạt động gần đây THẬT của con
+      const cid = profile.id;
       try {
-        const acts = await TVKN.getActivity(5);
-        if (!acts || !acts.length) {
-          list.innerHTML = '<div class="recent-row"><div class="recent-main">'
-            + '<div class="recent-type">Chưa có hoạt động</div></div></div>';
-        } else {
-          list.innerHTML = acts.map(function (a) {
-            const text = (a.text || '').replace(/[<>&]/g, function (c) {
-              return c === '<' ? '&lt;' : c === '>' ? '&gt;' : '&amp;';
-            });
-            const xp = (a.xp_delta != null && a.xp_delta !== 0)
-              ? '<div class="recent-xp">' + (a.xp_delta > 0 ? '+' : '') + a.xp_delta + '</div>' : '';
-            return '<div class="recent-row">'
-              + '<div class="recent-date">' + fmtDate(a.created_at) + '</div>'
-              + '<div class="recent-ico">📘</div>'
-              + '<div class="recent-main"><div class="recent-name">' + text + '</div></div>'
-              + xp + '</div>';
-          }).join('');
+        const acts = cid ? await TVKN.childActivity(cid, 100) : [];
+        const gameEl = $('game-count');
+        if (gameEl) gameEl.textContent = (acts || []).filter(function(a){ return (a.text||'').indexOf('🎮') >= 0; }).length;
+        const list = $('recent-list');
+        if (list) {
+          const recent = (acts || []).slice(0, 5);
+          if (!recent.length) {
+            list.innerHTML = '<div class="recent-row"><div class="recent-main"><div class="recent-type">Chưa có hoạt động</div></div></div>';
+          } else {
+            list.innerHTML = recent.map(function(a){
+              const text = (a.text||'').replace(/[<>&]/g, function(c){ return c==='<'?'&lt;':c==='>'?'&gt;':'&amp;'; });
+              const xp = (a.xp_delta != null && a.xp_delta !== 0) ? '<div class="recent-xp">'+(a.xp_delta>0?'+':'')+a.xp_delta+'</div>' : '';
+              return '<div class="recent-row"><div class="recent-date">'+fmtDate(a.created_at)+'</div><div class="recent-ico">📘</div><div class="recent-main"><div class="recent-name">'+text+'</div></div>'+xp+'</div>';
+            }).join('');
+          }
         }
-      } catch (e) {
-        list.innerHTML = '<div class="recent-row"><div class="recent-main">'
-          + '<div class="recent-type">Chưa có hoạt động</div></div></div>';
+      } catch(e){}
+    }
+
+    // ===== Phụ huynh: danh sách con / chọn / liên kết / gỡ =====
+    let children = [];
+    function buildSelect(){
+      const sel = $('childSelect'); if (!sel) return;
+      sel.innerHTML = children.map(function(c){ return '<option value="'+c.id+'">'+((c.name||'Con'))+' · Lớp '+(c.grade||1)+'</option>'; }).join('');
+    }
+    async function selectChild(id){
+      const c = children.find(function(x){ return x.id === id; }) || children[0];
+      if (!c) return;
+      const d = await TVKN.childData(c.id);
+      if (d) await renderChild(d);
+    }
+    function showLinkPanel(show){ const p = $('linkPanel'); if (p) p.style.display = show ? '' : 'none'; }
+    async function refreshChildren(selectId){
+      children = await TVKN.listChildren();
+      const bar = $('childBar');
+      if (!children.length) {
+        if (bar) bar.style.display = 'none';
+        setContentVisible(false);
+        showLinkPanel(true);
+        return;
+      }
+      buildSelect();
+      const sel = $('childSelect');
+      const target = (selectId && children.some(function(c){return c.id===selectId;})) ? selectId : children[0].id;
+      if (sel) sel.value = target;
+      if (bar) bar.style.display = 'flex';
+      setContentVisible(true);
+      showLinkPanel(false);
+      await selectChild(target);
+    }
+    async function doLink(){
+      const ci = $('codeInput'); const msg = $('linkMsg');
+      const code = (ci ? ci.value : '').trim();
+      if (!code) { if(msg){ msg.textContent='Hãy nhập mã của con.'; msg.style.color='#FF6B9D'; } return; }
+      if (msg){ msg.textContent='⏳ Đang liên kết...'; msg.style.color='#6B7280'; }
+      try {
+        const r = await TVKN.linkChild(code);
+        if (msg){ msg.textContent='✓ Đã liên kết với '+(r && r.name ? r.name : 'con')+'!'; msg.style.color='#2F8F3E'; }
+        if (ci) ci.value='';
+        await refreshChildren(r && r.child_id);
+      } catch(e){
+        const raw = (e && e.message) || '';
+        if (msg){ msg.textContent='❌ '+(raw.indexOf('Mã không đúng')>=0 ? 'Mã không đúng. Kiểm tra lại nhé.' : (raw || 'Liên kết thất bại')); msg.style.color='#FF6B9D'; }
       }
     }
+    async function initParent(){
+      const sel = $('childSelect'); if (sel) sel.addEventListener('change', function(){ selectChild(this.value); });
+      const addBtn = $('addChildBtn'); if (addBtn) addBtn.addEventListener('click', function(){ showLinkPanel(true); const ci=$('codeInput'); if(ci) ci.focus(); });
+      const unBtn = $('unlinkBtn'); if (unBtn) unBtn.addEventListener('click', async function(){
+        const sel2 = $('childSelect'); if (!sel2 || !sel2.value) return;
+        const c = children.find(function(x){ return x.id===sel2.value; });
+        if (!confirm('Gỡ liên kết với '+((c&&c.name)||'con này')+'? Bạn sẽ không xem được dữ liệu của con nữa.')) return;
+        try { await TVKN.unlinkChild(sel2.value); await refreshChildren(); } catch(e){ alert('Không gỡ được: '+((e&&e.message)||e)); }
+      });
+      const linkBtn = $('linkBtn'); if (linkBtn) linkBtn.addEventListener('click', doLink);
+      const ci = $('codeInput'); if (ci) ci.addEventListener('keydown', function(e){ if(e.key==='Enter') doLink(); });
+      await refreshChildren();
+    }
+
+    (async function(){
+      const data = await TVKN.guardPageSoft('trang Phụ huynh');
+      if (!data) return;                 // khách → tường đăng nhập
+      const me = data.profile || {};
+      if (me.role === 'parent') {
+        const pn = document.querySelector('.parent-name'); if (pn && me.name) pn.textContent = 'Chào, ' + me.name + ' 👋';
+        await initParent();
+      } else {
+        // Học sinh/khác tự xem dữ liệu của mình (ẩn thanh chọn con)
+        const bar = $('childBar'); if (bar) bar.style.display = 'none';
+        await renderChild(data);
+      }
+    })();
   })();
 </script>
 </body>

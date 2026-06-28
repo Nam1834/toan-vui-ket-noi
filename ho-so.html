@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <!-- Trang con dùng chung với shell app.html. Chạy TRƯỚC khi vẽ: mở thẳng -> vào shell; trong iframe -> ẩn ngay header riêng để khỏi nháy. GIỮ ĐỒNG BỘ SHELL_PAGES với app.html + assets/js/auth.js -->
-<script>(function(){try{var P=['trang-lop','ho-so','huy-hieu','bang-xep-hang','thu-thach','tro-choi','phu-huynh','ai-gia-su'];if(window.self===window.top){var p=(location.pathname.split('/').pop()||'').replace(/\.html$/,'')||'index';if(P.indexOf(p)>=0){var x=location.search?('&'+location.search.slice(1)):'';location.replace('app.html?page='+p+x);}}else{var s=document.createElement('style');s.id='tvkn-framed-css';s.textContent='.header,.footer-nav{display:none!important}';(document.head||document.documentElement).appendChild(s);document.documentElement.className+=' tvkn-framed';}}catch(e){}})();</script>
+<script>(function(){try{var P=['trang-lop','ho-so','huy-hieu','bang-xep-hang','thu-thach','tro-choi','ai-gia-su'];if(window.self===window.top){var p=(location.pathname.split('/').pop()||'').replace(/\.html$/,'')||'index';if(P.indexOf(p)>=0){var x=location.search?('&'+location.search.slice(1)):'';location.replace('app.html?page='+p+x);}}else{var s=document.createElement('style');s.id='tvkn-framed-css';s.textContent='.header,.footer-nav{display:none!important}';(document.head||document.documentElement).appendChild(s);document.documentElement.className+=' tvkn-framed';}}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Hồ sơ học tập của em - TOÁN VUI KẾT NỐI</title>
@@ -424,6 +424,18 @@
     </div>
   </div>
 
+  <!-- ============ MÃ PHỤ HUYNH (chỉ học sinh) ============ -->
+  <section class="block" id="linkCodeBox" style="display:none">
+    <h2 class="section-title">👨‍👩‍👧 Mã phụ huynh</h2>
+    <p class="section-sub">Đưa mã này cho bố/mẹ để bố/mẹ liên kết và theo dõi việc học của em nhé!</p>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <code id="linkCode" style="font-family:'Baloo 2',monospace;font-size:24px;font-weight:800;letter-spacing:2px;background:var(--bg-soft);padding:12px 20px;border-radius:14px;color:var(--blue)">—</code>
+      <button class="btn btn-ghost" id="copyCodeBtn">📋 Sao chép</button>
+      <button class="btn btn-ghost" id="regenCodeBtn">🔄 Đổi mã</button>
+    </div>
+    <p class="section-sub" style="margin-top:10px;font-size:13px">Đổi mã khi muốn cấp mã mới. Phụ huynh đã liên kết trước đó vẫn xem được — muốn gỡ thì bố/mẹ bấm “Gỡ” ở trang phụ huynh.</p>
+  </section>
+
   <!-- ============ THỐNG KÊ TỔNG QUAN ============ -->
   <div class="stats-section">
     <div class="stat-grid">
@@ -752,6 +764,34 @@
     } catch (err) {
       console.error('populateBadgesAndLessons', err);
     }
+  })();
+
+  /* Mã phụ huynh — chỉ hiện cho HỌC SINH (có link_code). Cho phép sao chép + đổi mã. */
+  (async function linkCodeBox(){
+    if (!window.TVKN || !TVKN.configured) return;
+    try {
+      const p = await TVKN.getProfile();
+      if (!p || p.role !== 'student' || !p.link_code) return;
+      const box = document.getElementById('linkCodeBox');
+      const codeEl = document.getElementById('linkCode');
+      if (!box || !codeEl) return;
+      codeEl.textContent = p.link_code;
+      box.style.display = '';
+      const copyBtn = document.getElementById('copyCodeBtn');
+      copyBtn.addEventListener('click', function(){
+        try { navigator.clipboard.writeText(codeEl.textContent); } catch(e){}
+        const self = this; self.textContent = '✓ Đã chép';
+        setTimeout(function(){ self.textContent = '📋 Sao chép'; }, 1500);
+      });
+      const regenBtn = document.getElementById('regenCodeBtn');
+      regenBtn.addEventListener('click', async function(){
+        if (!confirm('Đổi sang mã mới? Mã cũ sẽ không dùng để liên kết được nữa.')) return;
+        this.disabled = true;
+        try { const nc = await TVKN.regenLinkCode(); if (nc) codeEl.textContent = nc; }
+        catch(e){ alert('Không đổi được mã: ' + (e.message || e)); }
+        this.disabled = false;
+      });
+    } catch(e){}
   })();
 </script>
 </body>
