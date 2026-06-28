@@ -191,6 +191,8 @@
   /* ===== RESPONSIVE — theo index.html ===== */
   @media (max-width: 1024px) {
     .nav-menu { display: none; }
+    /* nav-menu ẩn → mất lực đẩy; ghim nhóm nút (chuông/XP/avatar) về sát phải */
+    .header-right { margin-left: auto; }
     .app-tabbar {
       flex: 0 0 auto; display: flex; justify-content: space-around;
       background: var(--white); box-shadow: 0 -4px 20px rgba(79,140,255,.08); padding: 6px 4px;
@@ -225,7 +227,7 @@
     <li><a data-nav="tro-choi">🎮 Trò chơi</a></li>
     <li><a data-nav="bang-xep-hang">🏆 Bảng xếp hạng</a></li>
     <li><a data-nav="ai-gia-su">🤖 AI Gia sư</a></li>
-    <li><a data-nav="phu-huynh">👨‍👩‍👧 Phụ huynh</a></li>
+    <li><a data-top="phu-huynh.html">👨‍👩‍👧 Phụ huynh</a></li>
   </ul>
 
   <div class="header-right">
@@ -253,7 +255,7 @@
 <script>
   (function () {
     // GIỮ ĐỒNG BỘ với SHELL_PAGES trong assets/js/auth.js
-    const SHELL_PAGES = ['trang-lop', 'ho-so', 'huy-hieu', 'bang-xep-hang', 'thu-thach', 'tro-choi', 'phu-huynh', 'ai-gia-su'];
+    const SHELL_PAGES = ['trang-lop', 'ho-so', 'huy-hieu', 'bang-xep-hang', 'thu-thach', 'tro-choi', 'ai-gia-su'];
     const DEFAULT_PAGE = 'trang-lop';
     const iframe = document.getElementById('view');
 
@@ -292,8 +294,8 @@
       try { if (window.TVKN && TVKN.applyProfile) TVKN.applyProfile().catch(function () {}); } catch (e) {}
     });
 
-    // Đổ dữ liệu header + bắt buộc đăng nhập (chưa login → tự về trang đăng nhập toàn màn hình)
-    if (window.TVKN && TVKN.guardPage) TVKN.guardPage().catch(function () {});
+    // Đổ dữ liệu header (KHÔNG ép login — khách vẫn dùng được; trang cá nhân như Hồ sơ/Phụ huynh tự chặn riêng)
+    if (window.TVKN && TVKN.applyProfile) TVKN.applyProfile().catch(function () {});
 
     // Mở trang khởi đầu
     navTo(wantPage());

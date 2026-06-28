@@ -1073,6 +1073,8 @@
   /* ============== RESPONSIVE ============== */
   @media (max-width: 1024px) {
     .nav-menu { display: none; }
+    /* nav-menu ẩn → mất lực đẩy; ghim nhóm nút header về sát phải */
+    .header-right { margin-left: auto; }
     .class-grid { grid-template-columns: repeat(3, 1fr); }
     .profile-stats { grid-template-columns: repeat(2, 1fr); }
     .two-col { grid-template-columns: 1fr; }
@@ -1099,6 +1101,10 @@
     .ch-title { font-size: 26px; }
     .ai-section { padding: 40px 24px; }
     .ai-title { font-size: 26px; }
+    /* Chống cắt nội dung ở mobile: bỏ min-width cứng + thu nhỏ linh vật AI */
+    .ai-content { min-width: 0; }
+    .ai-bunny { width: 120px; height: 120px; font-size: 72px; }
+    .ch-info { min-width: 0; }
     .footer-grid { grid-template-columns: 1fr; gap: 28px; }
   }
 

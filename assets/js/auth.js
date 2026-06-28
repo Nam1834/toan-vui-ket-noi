@@ -7,7 +7,7 @@
 //  GIỮ ĐỒNG BỘ danh sách SHELL_PAGES này với app.html.
 // ============================================================
 (function tvknShell() {
-  var SHELL_PAGES = ['trang-lop', 'ho-so', 'huy-hieu', 'bang-xep-hang', 'thu-thach', 'tro-choi', 'phu-huynh', 'ai-gia-su'];
+  var SHELL_PAGES = ['trang-lop', 'ho-so', 'huy-hieu', 'bang-xep-hang', 'thu-thach', 'tro-choi', 'ai-gia-su'];   // phu-huynh = trang RIÊNG (phụ huynh không vào shell học sinh)
   function fileOf(p) { return ((p || '').split('?')[0].split('#')[0].split('/').pop() || '').replace(/\.html$/, ''); }
   var framed = false;
   try { framed = (window.self !== window.top); } catch (e) { framed = true; }
@@ -104,13 +104,15 @@ window.TVKN = (function () {
   else paintCachedBindings();
 
   // ---------- ĐĂNG KÝ ----------
-  // info = { email, password, name, avatar, grade }
+  // info = { email, password, name, avatar, grade, role? }  role='parent' → tài khoản phụ huynh
   async function signUp(info) {
     ensure();
+    const meta = { name: info.name, avatar: info.avatar || '👧', grade: info.grade || 1 };
+    if (info.role === 'parent') meta.role = 'parent';   // 'admin' KHÔNG bao giờ nhận từ client (chỉ qua admin_emails)
     const { data, error } = await sb.auth.signUp({
       email: info.email,
       password: info.password,
-      options: { data: { name: info.name, avatar: info.avatar || '👧', grade: info.grade || 1 } }
+      options: { data: meta }
     });
     if (error) throw error;
     return data;
@@ -149,6 +151,69 @@ window.TVKN = (function () {
     if (!user) return null;
     const { data } = await sb.from('profiles').select('*').eq('id', user.id).single();
     return data;
+  }
+
+  // ============================================================
+  //  PHỤ HUYNH ↔ CON  (liên kết bằng mã — xem sql/supabase-parent.sql)
+  // ============================================================
+  // Danh sách con đã liên kết (hồ sơ). Trả [] nếu chưa có / lỗi.
+  async function listChildren() {
+    ensure();
+    const user = await getUser();
+    if (!user) return [];
+    const { data, error } = await sb.rpc('list_children');
+    if (error) { console.warn('list_children:', error.message || error); return []; }
+    return data || [];
+  }
+
+  // Phụ huynh nhập MÃ của con để liên kết. Trả { ok, child_id, name } hoặc throw lỗi (mã sai...).
+  async function linkChild(code) {
+    ensure();
+    const { data, error } = await sb.rpc('link_child', { p_code: code });
+    if (error) throw error;
+    return data;
+  }
+
+  // Huỷ liên kết 1 con
+  async function unlinkChild(childId) {
+    ensure();
+    const { error } = await sb.rpc('unlink_child', { p_child: childId });
+    if (error) throw error;
+  }
+
+  // Học sinh tự đổi mã liên kết (thu hồi). Trả về mã mới.
+  async function regenLinkCode() {
+    ensure();
+    const { data, error } = await sb.rpc('regenerate_link_code');
+    if (error) throw error;
+    return data;
+  }
+
+  // Lấy dữ liệu THẬT của 1 con (phụ huynh đã liên kết → RLS parent_read_* cho phép SELECT).
+  // Trả { profile, progress, lessons, badges } — cùng dạng renderProfile để tái dùng thống kê.
+  async function childData(childId) {
+    ensure();
+    if (!childId) return null;
+    const safe = function (p) { return p.then(function (r) { return r.data; }).catch(function () { return null; }); };
+    const safeArr = function (p) { return p.then(function (r) { return r.data || []; }).catch(function () { return []; }); };
+    const r = await Promise.all([
+      safe(sb.from('profiles').select('*').eq('id', childId).single()),
+      safe(sb.from('progress').select('*').eq('user_id', childId).single()),
+      safeArr(sb.from('lesson_progress').select('*').eq('user_id', childId)),
+      safeArr(sb.from('user_badges').select('*').eq('user_id', childId))
+    ]);
+    return { profile: r[0], progress: r[1], lessons: r[2], badges: r[3] };
+  }
+
+  // Hoạt động gần đây của 1 con
+  async function childActivity(childId, limit) {
+    ensure();
+    if (!childId) return [];
+    const { data } = await sb.from('activity_log').select('*')
+      .eq('user_id', childId)
+      .order('created_at', { ascending: false })
+      .limit(limit || 10);
+    return data || [];
   }
 
   // ---------- CHẶN TRANG: chưa đăng nhập → về trang đăng nhập ----------
@@ -297,9 +362,9 @@ window.TVKN = (function () {
     var bar = document.createElement('div');
     bar.id = 'tvkn-trial';
     bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:9998;background:linear-gradient(135deg,#FF9F43,#FFD93D);color:#3a2a00;padding:11px 16px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;font-family:inherit;font-weight:600;font-size:14px;box-shadow:0 -6px 20px rgba(0,0,0,.15)';
-    bar.innerHTML = '🎁 Em đang <b>học thử miễn phí</b> — đăng nhập để lưu tiến độ &amp; mở khoá tất cả bài học!' +
-      '<a href="dang-nhap.html" style="background:#fff;color:#FF7A00;padding:7px 16px;border-radius:999px;font-weight:800;text-decoration:none">Đăng nhập</a>' +
-      '<a href="dang-ky.html" style="background:#2D3748;color:#fff;padding:7px 16px;border-radius:999px;font-weight:800;text-decoration:none">Đăng ký miễn phí</a>';
+    bar.innerHTML = '🎁 Em đang <b>xem thử miễn phí</b> — đăng nhập để lưu tiến độ &amp; mở đầy đủ tính năng!' +
+      '<a href="dang-nhap.html" target="_top" style="background:#fff;color:#FF7A00;padding:7px 16px;border-radius:999px;font-weight:800;text-decoration:none">Đăng nhập</a>' +
+      '<a href="dang-ky.html" target="_top" style="background:#2D3748;color:#fff;padding:7px 16px;border-radius:999px;font-weight:800;text-decoration:none">Đăng ký miễn phí</a>';
     document.body.appendChild(bar);
   }
 
@@ -544,7 +609,7 @@ window.TVKN = (function () {
 
     var panel = document.createElement('div');
     panel.id = 'tvkn-notif';
-    panel.style.cssText = 'position:fixed;z-index:9999;width:300px;max-height:60vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.18);display:none;font-family:inherit;color:#2D3748';
+    panel.style.cssText = 'position:fixed;z-index:9999;width:300px;max-width:calc(100vw - 16px);max-height:60vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.18);display:none;font-family:inherit;color:#2D3748';
     document.body.appendChild(panel);
     var open = false;
     function hide() { open = false; panel.style.display = 'none'; }
@@ -577,8 +642,15 @@ window.TVKN = (function () {
         e.stopPropagation();
         if (open) { hide(); return; }
         var r = bell.getBoundingClientRect();
+        var pad = 8;
+        // Bề rộng panel co theo màn hình (tối đa 300px, chừa lề 2 bên)
+        var w = Math.min(300, window.innerWidth - pad * 2);
+        panel.style.width = w + 'px';
+        // Neo phải theo nút chuông, nhưng KẸP lại để mép trái không bao giờ âm (tràn ra ngoài)
+        var right = Math.max(pad, window.innerWidth - r.right);
+        right = Math.min(right, window.innerWidth - w - pad);
         panel.style.top = (r.bottom + 8) + 'px';
-        panel.style.right = Math.max(8, window.innerWidth - r.right) + 'px';
+        panel.style.right = right + 'px';
         panel.style.left = 'auto';
         panel.style.display = 'block';
         open = true;
@@ -589,8 +661,26 @@ window.TVKN = (function () {
       if (open && !panel.contains(e.target) && !bells.some(function (b) { return b.contains(e.target); })) hide();
     });
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initBell);
-  else initBell();
+  // ---------- LƯỚI AN TOÀN RESPONSIVE (áp cho MỌI trang vì auth.js nạp khắp nơi) ----------
+  // Chặn tràn ngang trên màn hình nhỏ + ghim ảnh/bảng/dropdown trong khung nhìn.
+  function injectResponsiveCSS() {
+    if (document.getElementById('tvkn-responsive')) return;
+    var st = document.createElement('style');
+    st.id = 'tvkn-responsive';
+    // Tránh đặt overflow-x:hidden lên html/body toàn cục vì sẽ làm hỏng header position:sticky.
+    st.textContent =
+      'img,svg,video,canvas{max-width:100%}' +
+      'table{max-width:100%;display:block;overflow-x:auto}' +
+      '#tvkn-notif{max-width:calc(100vw - 16px)}' +
+      '#tvkn-loginwall,#tvkn-trial{max-width:100vw}' +
+      // Mobile từng ẩn nhầm CẢ số XP (rule .xp-pill span:last-child). Luôn hiện số XP lại.
+      '.xp-pill span{display:inline !important}';
+    (document.head || document.documentElement).appendChild(st);
+  }
+
+  function tvknOnReady() { injectResponsiveCSS(); initBell(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tvknOnReady);
+  else tvknOnReady();
 
   // ---------- THỐNG KÊ LƯỢT CHƠI GAME (đếm thật từ nhật ký 🎮) ----------
   // Trả về { played: số lượt thắng game, favorite: tên game chơi nhiều nhất }
@@ -612,10 +702,44 @@ window.TVKN = (function () {
     return { played: rows.length, favorite: fav };
   }
 
+  // ---------- Tường đăng nhập: trang CÁ NHÂN cho khách → hiện thông báo thay vì redirect ----------
+  function showLoginWall(label) {
+    if (document.getElementById('tvkn-loginwall')) return;
+    var ov = document.createElement('div');
+    ov.id = 'tvkn-loginwall';
+    ov.style.cssText = 'position:fixed;inset:0;z-index:9997;background:rgba(244,248,255,.96);display:flex;align-items:center;justify-content:center;padding:24px;font-family:inherit';
+    ov.innerHTML =
+      '<div style="max-width:420px;width:100%;background:#fff;border-radius:26px;padding:36px 30px;text-align:center;box-shadow:0 16px 40px rgba(79,140,255,.22)">' +
+        '<div style="font-size:60px;margin-bottom:10px">🔒</div>' +
+        '<h2 style="font-family:\'Baloo 2\',sans-serif;font-size:24px;font-weight:800;color:#2D3748;margin-bottom:8px">Cần đăng nhập</h2>' +
+        '<p style="color:#6B7280;font-size:15px;margin-bottom:22px">Em hãy đăng nhập để xem ' + (label || 'trang này') + ' nhé!</p>' +
+        '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
+          '<a href="dang-nhap.html" target="_top" style="background:linear-gradient(135deg,#4F8CFF,#9B72FF);color:#fff;padding:13px 26px;border-radius:14px;font-weight:800;text-decoration:none;box-shadow:0 8px 20px rgba(79,140,255,.35)">Đăng nhập</a>' +
+          '<a href="dang-ky.html" target="_top" style="background:#F4F8FF;color:#2D3748;padding:13px 26px;border-radius:14px;font-weight:800;text-decoration:none">Đăng ký miễn phí</a>' +
+        '</div>' +
+        '<a href="index.html" target="_top" style="display:inline-block;margin-top:18px;color:#6B7280;font-size:13px;font-weight:600;text-decoration:none">← Về trang chủ</a>' +
+      '</div>';
+    document.body.appendChild(ov);
+  }
+
+  // Trang CÁ NHÂN: đã login → render dữ liệu thật; khách → hiện tường đăng nhập (KHÔNG redirect)
+  async function guardPageSoft(label) {
+    if (sb) {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session) {
+        const profile = await getProfile();
+        return await renderProfile(profile);
+      }
+    }
+    showLoginWall(label);
+    return null;
+  }
+
   return {
     configured: typeof TVKN_CONFIGURED !== 'undefined' ? TVKN_CONFIGURED : false,
     signUp, signIn, signOut, getUser, getProfile,
-    requireAuth, applyToDOM, guardPage, applyProfile, isLoggedIn, requireAdmin, bindCommon,
+    requireAuth, applyToDOM, guardPage, guardPageSoft, applyProfile, isLoggedIn, requireAdmin, bindCommon,
+    listChildren, linkChild, unlinkChild, regenLinkCode, childData, childActivity,
     getProgress, addXp, bumpStreak, setLesson,
     getActivity, getLessons, getBadges, getLeaderboard, getMyRank, getCohortStats,
     adminOverview, adminUsers,

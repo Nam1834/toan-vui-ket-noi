@@ -280,7 +280,9 @@
   }
   @media (max-width: 560px) {
     .content { padding: 18px 14px 50px; }
-    .topbar { padding: 0 14px; }
+    .topbar { padding: 0 12px; gap: 10px; }
+    /* Chống tràn ngang topbar: ẩn nút "← Về website" (dài nhất, không cần trên mobile) */
+    .back-site { display: none; }
     .stat-grid { grid-template-columns: 1fr; }
     .role-grid { grid-template-columns: 1fr; }
     .topbar-title { font-size: 17px; }

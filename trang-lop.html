@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <!-- Trang con dùng chung với shell app.html. Chạy TRƯỚC khi vẽ: mở thẳng -> vào shell; trong iframe -> ẩn ngay header riêng để khỏi nháy. GIỮ ĐỒNG BỘ SHELL_PAGES với app.html + assets/js/auth.js -->
-<script>(function(){try{var P=['trang-lop','ho-so','huy-hieu','bang-xep-hang','thu-thach','tro-choi','phu-huynh','ai-gia-su'];if(window.self===window.top){var p=(location.pathname.split('/').pop()||'').replace(/\.html$/,'')||'index';if(P.indexOf(p)>=0){var x=location.search?('&'+location.search.slice(1)):'';location.replace('app.html?page='+p+x);}}else{var s=document.createElement('style');s.id='tvkn-framed-css';s.textContent='.header,.footer-nav{display:none!important}';(document.head||document.documentElement).appendChild(s);document.documentElement.className+=' tvkn-framed';}}catch(e){}})();</script>
+<script>(function(){try{var P=['trang-lop','ho-so','huy-hieu','bang-xep-hang','thu-thach','tro-choi','ai-gia-su'];if(window.self===window.top){var p=(location.pathname.split('/').pop()||'').replace(/\.html$/,'')||'index';if(P.indexOf(p)>=0){var x=location.search?('&'+location.search.slice(1)):'';location.replace('app.html?page='+p+x);}}else{var s=document.createElement('style');s.id='tvkn-framed-css';s.textContent='.header,.footer-nav{display:none!important}';(document.head||document.documentElement).appendChild(s);document.documentElement.className+=' tvkn-framed';}}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Hành trình Toán - TOÁN VUI KẾT NỐI</title>
@@ -213,6 +213,19 @@
   .filter-btn:hover { color: var(--theme); }
   .filter-btn.active { background: var(--theme); color: var(--white); box-shadow: 0 6px 14px rgba(107, 203, 119, 0.4); }
 
+  /* ============== TAB CHỌN LỚP ============== */
+  .grade-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+  .grade-tab {
+    padding: 9px 18px; border-radius: 999px;
+    background: var(--white); border: 2px solid transparent;
+    font-family: inherit; font-weight: 700; font-size: 14px;
+    color: var(--text-soft); cursor: pointer; transition: all .2s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+  .grade-tab:hover { color: var(--theme); }
+  .grade-tab.active { background: var(--theme); color: var(--white); box-shadow: 0 6px 14px rgba(0,0,0,0.12); }
+  .grade-tab .home-mark { font-size: 11px; opacity: .85; font-weight: 600; }
+
   /* ============== DANH SÁCH BÀI HỌC ============== */
   .lesson-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
   .lesson-card {
@@ -367,6 +380,8 @@
     .lesson-grid { grid-template-columns: 1fr; }
     .banner { padding: 28px; }
     .banner-mascot { width: 130px; height: 130px; font-size: 80px; }
+    .suggest { padding: 24px; gap: 18px; }
+    .suggest-text { min-width: 0; }
   }
 </style>
 </head>
@@ -419,14 +434,16 @@
   <!-- ============ DANH SÁCH BÀI HỌC ============ -->
   <section class="block" id="lessons">
     <h2 class="section-title">📚 Danh sách bài học</h2>
-    <p class="section-sub">Bản đồ hành trình học Toán của em. Hoàn thành từng bài để mở khóa bài tiếp theo!</p>
+    <p class="section-sub">Bản đồ hành trình học Toán của em. Chọn lớp bất kỳ và học bài nào trước cũng được nhé!</p>
+
+    <!-- Tabs chọn lớp: HS có thể xem & học bài của MỌI lớp -->
+    <div class="grade-tabs" id="gradeTabs"></div>
 
     <div class="filters" id="filters">
       <button class="filter-btn active" data-filter="all">Tất cả</button>
       <button class="filter-btn" data-filter="not_started">Chưa học</button>
       <button class="filter-btn" data-filter="in_progress">Đang học</button>
       <button class="filter-btn" data-filter="completed">Đã hoàn thành</button>
-      <button class="filter-btn" data-filter="locked">Bị khóa</button>
     </div>
 
     <!-- Danh sách bài render động theo lớp của học sinh (engine) -->
@@ -551,13 +568,13 @@
 <script src="assets/js/lessons-lop4.js"></script>
 <script src="assets/js/lessons-lop5.js"></script>
 <script>
-  /* Trang danh sách bài — render động theo LỚP của học sinh (data-driven) */
+  /* Trang danh sách bài — render động; HS xem & học bài của MỌI lớp (tabs), KHÔNG khóa tuần tự */
   window.tvknLogout = function () { TVKN.signOut(); };
 
   const TL_CACHE_KEY = 'tvkn_trang_lop';
   const setText = (id, v) => { const el = document.getElementById(id); if (el != null && v != null) el.textContent = v; };
 
-  // VẼ NGAY từ cache (banner + danh sách bài + bộ đếm) trước khi chờ mạng → không nháy
+  // VẼ NGAY từ cache (lớp nhà) trước khi chờ mạng → không nháy
   (function paintTLCache() {
     try {
       const c = JSON.parse(localStorage.getItem(TL_CACHE_KEY) || 'null');
@@ -574,104 +591,129 @@
   (async function renderClassPage() {
     if (!window.TVKN) return;
     const U = window.TVKN_UI, DATA = window.TVKN_LESSONS;
-    const data = await TVKN.guardPage();   // chưa đăng nhập → tự chuyển về trang đăng nhập
-    if (!data) return;                      // guardPage đã chuyển trang
+    // Khách (chưa login) vẫn xem được mọi lớp + hiện banner mời đăng nhập; đã login → dữ liệu thật.
+    const data = (await TVKN.trialPage()) || { profile: {}, lessons: [] };
 
     const esc = U ? U.esc : (s => s);
     const profile = data.profile || {};
-    const grade = profile.grade || 1;
-    const G = (DATA.grades[grade]) || DATA.grades[1];
-    if (U) U.applyTheme(G.theme);
+    const homeGrade = Number(profile.grade) || 1;
 
-    // ---- Banner ----
-    setText('bnTag', G.tag); setText('bnTitle', G.title); setText('bnIntro', G.intro); setText('bnMascot', G.mascot);
-
-    // ---- Map tiến độ thật ----
+    // ---- Map tiến độ THẬT (toàn tài khoản — gồm mọi lớp) ----
     const lp = {};
     (data.lessons || []).forEach(l => { if (l && l.lesson_id) lp[l.lesson_id] = l.status; });
-
-    // ---- Thứ tự bài (suy từ grade + no) + quy tắc mở khóa ----
-    const order = Object.keys(DATA.lessons)
-      .filter(k => DATA.lessons[k].grade === grade)
-      .sort((a, b) => (DATA.lessons[a].no || 0) - (DATA.lessons[b].no || 0));
-    const states = {}; let completed = 0;
-    order.forEach((id, i) => {
-      let st = lp[id] || 'not_started';
-      if (st !== 'completed' && st !== 'in_progress') st = 'not_started';
-      if (st === 'not_started' && i > 0 && states[order[i - 1]] !== 'completed') st = 'locked';
-      states[id] = st; if (st === 'completed') completed++;
-    });
 
     const VIEW = {
       completed:   { badge: '✓ Đã hoàn thành', btn: 'Ôn lại' },
       in_progress: { badge: '⏳ Đang học',     btn: 'Học tiếp' },
-      not_started: { badge: '● Chưa học',      btn: 'Bắt đầu' },
-      locked:      { badge: '🔒 Bị khóa',      btn: '🔒 Chưa mở' }
+      not_started: { badge: '● Chưa học',      btn: 'Bắt đầu' }
     };
     const linkOf = id => DATA.lessons[id] ? ('hoc-bai.html?id=' + encodeURIComponent(id)) : (id + '.html');
 
-    // ---- Render danh sách bài ----
-    const cont = document.getElementById('lessonSections');
-    if (!order.length) {
-      cont.innerHTML = '<div class="lesson-card" style="grid-column:1/-1;text-align:center;padding:40px">' +
-        '<div class="lesson-name" style="font-size:20px">🚧 Lớp ' + grade + ' đang được xây dựng</div>' +
-        '<div class="lesson-desc" style="margin-top:8px">Nội dung sắp ra mắt. Em quay lại sau nhé!</div></div>';
-    } else {
-      let html = '';
-      let curTopic = null;
-      order.forEach(id => {
-        const L = DATA.lessons[id]; const st = states[id]; const v = VIEW[st];
-        const locked = st === 'locked';
-        const topic = (L && L.topic) || '📚 Danh sách bài học';
-        if (topic !== curTopic) {
-          if (curTopic !== null) html += '</div>';
-          html += '<h3 class="topic-head">' + esc(topic) + '</h3><div class="lesson-grid">';
-          curTopic = topic;
-        }
-        html += '<div class="lesson-card ' + st + '" data-status="' + st + '" data-lesson="' + id + '">' +
-          '<span class="badge-status">' + v.badge + '</span>' +
-          '<div class="lesson-top"><div class="lesson-icon">' + (L ? L.icon : '📘') + '</div>' +
-          '<div><div class="lesson-no">Bài ' + (L ? L.no : '') + '</div>' +
-          '<div class="lesson-name">' + esc(L ? L.title : id) + '</div></div></div>' +
-          '<div class="lesson-desc">' + esc(L ? L.desc : '') + '</div>' +
-          (locked ? '<div class="lesson-note">Hoàn thành bài trước để mở khóa</div>' : '') +
-          (locked
-            ? '<span class="lesson-btn">' + v.btn + '</span>'
-            : '<a href="' + linkOf(id) + '" class="lesson-btn">' + v.btn + '</a>') +
-          '</div>';
+    // ---- Dựng tabs chọn lớp (1..5), mặc định mở lớp của em ----
+    const grades = Object.keys(DATA.grades).map(Number).sort((a, b) => a - b);
+    const tabsEl = document.getElementById('gradeTabs');
+    if (tabsEl) {
+      tabsEl.innerHTML = grades.map(g =>
+        '<button class="grade-tab" data-grade="' + g + '">Lớp ' + g +
+        (g === homeGrade ? ' <span class="home-mark">• lớp của em</span>' : '') + '</button>'
+      ).join('');
+      tabsEl.addEventListener('click', e => {
+        const b = e.target.closest('.grade-tab'); if (!b) return;
+        showGrade(Number(b.dataset.grade));
       });
-      if (curTopic !== null) html += '</div>';
-      cont.innerHTML = html;
     }
 
-    // ---- Thống kê tiến độ ----
-    const total = order.length;
-    const pct = total ? Math.round(completed / total * 100) : 0;
-    setText('lessonsDoneNum', completed + '/' + total);
-    setText('progressPct', pct + '%');
-    const fill = document.getElementById('progressFill'); if (fill) fill.style.width = pct + '%';
+    // ---- Render 1 lớp (KHÔNG khóa tuần tự — mọi bài đều mở) ----
+    function showGrade(grade) {
+      const G = DATA.grades[grade] || DATA.grades[1];
+      if (U) U.applyTheme(G.theme);
+      setText('bnTag', G.tag); setText('bnTitle', G.title); setText('bnIntro', G.intro); setText('bnMascot', G.mascot);
+      document.querySelectorAll('#gradeTabs .grade-tab').forEach(b =>
+        b.classList.toggle('active', Number(b.dataset.grade) === Number(grade)));
 
-    // ---- Nút "Học tiếp" + gợi ý ----
-    const nextId = order.find(id => states[id] === 'in_progress')
-                || order.find(id => states[id] === 'not_started')
-                || order[0];
-    if (nextId) {
-      const L = DATA.lessons[nextId];
-      const href = linkOf(nextId);
+      const order = Object.keys(DATA.lessons)
+        .filter(k => DATA.lessons[k].grade === grade)
+        .sort((a, b) => (DATA.lessons[a].no || 0) - (DATA.lessons[b].no || 0));
+      const states = {}; let completed = 0;
+      order.forEach(id => {
+        let st = lp[id] || 'not_started';
+        if (st !== 'completed' && st !== 'in_progress') st = 'not_started';
+        states[id] = st; if (st === 'completed') completed++;
+      });
+
+      const cont = document.getElementById('lessonSections');
+      if (!order.length) {
+        cont.innerHTML = '<div class="lesson-card" style="grid-column:1/-1;text-align:center;padding:40px">' +
+          '<div class="lesson-name" style="font-size:20px">🚧 Lớp ' + grade + ' đang được xây dựng</div>' +
+          '<div class="lesson-desc" style="margin-top:8px">Nội dung sắp ra mắt. Em quay lại sau nhé!</div></div>';
+      } else {
+        let html = '';
+        let curTopic = null;
+        order.forEach(id => {
+          const L = DATA.lessons[id]; const st = states[id]; const v = VIEW[st];
+          const topic = (L && L.topic) || '📚 Danh sách bài học';
+          if (topic !== curTopic) {
+            if (curTopic !== null) html += '</div>';
+            html += '<h3 class="topic-head">' + esc(topic) + '</h3><div class="lesson-grid">';
+            curTopic = topic;
+          }
+          html += '<div class="lesson-card ' + st + '" data-status="' + st + '" data-lesson="' + id + '">' +
+            '<span class="badge-status">' + v.badge + '</span>' +
+            '<div class="lesson-top"><div class="lesson-icon">' + (L ? L.icon : '📘') + '</div>' +
+            '<div><div class="lesson-no">Bài ' + (L ? L.no : '') + '</div>' +
+            '<div class="lesson-name">' + esc(L ? L.title : id) + '</div></div></div>' +
+            '<div class="lesson-desc">' + esc(L ? L.desc : '') + '</div>' +
+            '<a href="' + linkOf(id) + '" class="lesson-btn">' + v.btn + '</a>' +
+            '</div>';
+        });
+        if (curTopic !== null) html += '</div>';
+        cont.innerHTML = html;
+      }
+
+      // Áp lại bộ lọc trạng thái đang chọn cho danh sách vừa dựng
+      const af = document.querySelector('.filter-btn.active');
+      const f = af ? af.dataset.filter : 'all';
+      if (f && f !== 'all') {
+        document.querySelectorAll('.lesson-card').forEach(c => {
+          c.style.display = (c.dataset.status === f) ? '' : 'none';
+        });
+      }
+
+      // Thống kê tiến độ THEO LỚP đang xem
+      const total = order.length;
+      const pct = total ? Math.round(completed / total * 100) : 0;
+      setText('lessonsDoneNum', completed + '/' + total);
+      setText('progressPct', pct + '%');
+      const fill = document.getElementById('progressFill'); if (fill) fill.style.width = pct + '%';
+
+      // Gợi ý "Học tiếp" trong lớp đang xem (chỉ gợi ý, không bắt buộc thứ tự)
+      const nextId = order.find(id => states[id] === 'in_progress')
+                  || order.find(id => states[id] === 'not_started')
+                  || order[0];
+      const href = nextId ? linkOf(nextId) : '#lessons';
       const learn = document.getElementById('bnLearn'); if (learn) learn.href = href;
       const sBtn = document.getElementById('suggestBtn'); if (sBtn) sBtn.href = href;
       const sTxt = document.getElementById('suggestText');
-      if (sTxt && L) sTxt.textContent = 'Em đang học đến Bài ' + L.no + ': ' + L.title + '. Hãy tiếp tục để nhận thêm XP nhé!';
+      if (sTxt) {
+        const L = nextId ? DATA.lessons[nextId] : null;
+        sTxt.textContent = L
+          ? ('Em đang học đến Bài ' + L.no + ': ' + L.title + ' (Lớp ' + grade + '). Hãy tiếp tục để nhận thêm XP nhé!')
+          : 'Hãy chọn một bài để bắt đầu nhé!';
+      }
+
+      // Cache LỚP NHÀ để lần sau vẽ ngay (không nháy)
+      if (grade === homeGrade) {
+        try {
+          localStorage.setItem(TL_CACHE_KEY, JSON.stringify({
+            theme: G.theme, tag: G.tag, title: G.title, intro: G.intro, mascot: G.mascot,
+            sections: cont.innerHTML, done: completed + '/' + total, pct: pct + '%', pctNum: pct,
+            learnHref: href
+          }));
+        } catch (e) {}
+      }
     }
 
-    // ---- Lưu cache để lần sau VẼ NGAY (không nháy) ----
-    try {
-      localStorage.setItem(TL_CACHE_KEY, JSON.stringify({
-        theme: G.theme, tag: G.tag, title: G.title, intro: G.intro, mascot: G.mascot,
-        sections: cont.innerHTML, done: completed + '/' + total, pct: pct + '%', pctNum: pct,
-        learnHref: nextId ? linkOf(nextId) : '#lessons'
-      }));
-    } catch (e) {}
+    showGrade(homeGrade);
   })();
 </script>
 </body>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <!-- Trang con dùng chung với shell app.html. Chạy TRƯỚC khi vẽ: mở thẳng -> vào shell; trong iframe -> ẩn ngay header riêng để khỏi nháy. GIỮ ĐỒNG BỘ SHELL_PAGES với app.html + assets/js/auth.js -->
-<script>(function(){try{var P=['trang-lop','ho-so','huy-hieu','bang-xep-hang','thu-thach','tro-choi','phu-huynh','ai-gia-su'];if(window.self===window.top){var p=(location.pathname.split('/').pop()||'').replace(/\.html$/,'')||'index';if(P.indexOf(p)>=0){var x=location.search?('&'+location.search.slice(1)):'';location.replace('app.html?page='+p+x);}}else{var s=document.createElement('style');s.id='tvkn-framed-css';s.textContent='.header,.footer-nav{display:none!important}';(document.head||document.documentElement).appendChild(s);document.documentElement.className+=' tvkn-framed';}}catch(e){}})();</script>
+<script>(function(){try{var P=['trang-lop','ho-so','huy-hieu','bang-xep-hang','thu-thach','tro-choi','ai-gia-su'];if(window.self===window.top){var p=(location.pathname.split('/').pop()||'').replace(/\.html$/,'')||'index';if(P.indexOf(p)>=0){var x=location.search?('&'+location.search.slice(1)):'';location.replace('app.html?page='+p+x);}}else{var s=document.createElement('style');s.id='tvkn-framed-css';s.textContent='.header,.footer-nav{display:none!important}';(document.head||document.documentElement).appendChild(s);document.documentElement.className+=' tvkn-framed';}}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Bảng xếp hạng - TOÁN VUI KẾT NỐI</title>
@@ -399,19 +399,18 @@
     .podium-base { display: none; }
     .p1, .p2, .p3 { order: 0; }
 
-    /* list rows become cards */
+    /* list rows become cards — dùng FLEX để 2 ô "⭐ XP" và "🔥 Chuỗi" không đè lên nhau */
     .rank-row {
-      grid-template-columns: 48px 48px 1fr;
-      grid-template-areas:
-        "no avatar info"
-        "stats stats stats";
-      row-gap: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 16px;
+      grid-template-columns: none;
+      grid-template-areas: none;
     }
-    .rank-no { grid-area: no; }
-    .rank-avatar { grid-area: avatar; }
-    .rank-info { grid-area: info; }
-    .rank-stat { grid-area: stats; display: inline-block; margin-right: 18px; }
-    .rank-stats-wrap { grid-area: stats; display: flex; gap: 18px; flex-wrap: wrap; }
+    .rank-no, .rank-avatar { flex: 0 0 auto; }
+    .rank-info { flex: 1 1 45%; min-width: 0; }
+    .rank-stat { flex: 0 0 auto; margin: 0; }
   }
   @media (max-width: 560px) {
     .header { padding: 0 14px; gap: 10px; }
@@ -686,9 +685,9 @@
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
 <script>
-  /* Chặn trang + hiển thị đúng người đăng nhập (Supabase) */
+  /* Cho khách XEM (không ép login). Đã đăng nhập → bind dữ liệu thật. */
   window.tvknLogout = function(){ TVKN.signOut(); };
-  TVKN.guardPage();
+  TVKN.trialPage();   // khách → banner mời đăng nhập; bảng xếp hạng là view public nên vẫn hiển thị
 </script>
 <script>
   /* ============ ĐỔ DỮ LIỆU THẬT TỪ SUPABASE VÀO BẢNG XẾP HẠNG ============ */

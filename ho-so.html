@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <!-- Trang con dùng chung với shell app.html. Chạy TRƯỚC khi vẽ: mở thẳng -> vào shell; trong iframe -> ẩn ngay header riêng để khỏi nháy. GIỮ ĐỒNG BỘ SHELL_PAGES với app.html + assets/js/auth.js -->
-<script>(function(){try{var P=['trang-lop','ho-so','huy-hieu','bang-xep-hang','thu-thach','tro-choi','phu-huynh','ai-gia-su'];if(window.self===window.top){var p=(location.pathname.split('/').pop()||'').replace(/\.html$/,'')||'index';if(P.indexOf(p)>=0){var x=location.search?('&'+location.search.slice(1)):'';location.replace('app.html?page='+p+x);}}else{var s=document.createElement('style');s.id='tvkn-framed-css';s.textContent='.header,.footer-nav{display:none!important}';(document.head||document.documentElement).appendChild(s);document.documentElement.className+=' tvkn-framed';}}catch(e){}})();</script>
+<script>(function(){try{var P=['trang-lop','ho-so','huy-hieu','bang-xep-hang','thu-thach','tro-choi','ai-gia-su'];if(window.self===window.top){var p=(location.pathname.split('/').pop()||'').replace(/\.html$/,'')||'index';if(P.indexOf(p)>=0){var x=location.search?('&'+location.search.slice(1)):'';location.replace('app.html?page='+p+x);}}else{var s=document.createElement('style');s.id='tvkn-framed-css';s.textContent='.header,.footer-nav{display:none!important}';(document.head||document.documentElement).appendChild(s);document.documentElement.className+=' tvkn-framed';}}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Hồ sơ học tập của em - TOÁN VUI KẾT NỐI</title>
@@ -381,6 +381,9 @@
     .wrap { padding: 0 14px; }
     .profile-card { padding: 28px; }
     .profile-avatar { width: 120px; height: 120px; font-size: 70px; }
+    .suggest { padding: 24px; gap: 18px; }
+    .suggest-text { min-width: 0; }
+    .profile-info { min-width: 0; }
   }
 </style>
 </head>
@@ -421,6 +424,18 @@
     </div>
   </div>
 
+  <!-- ============ MÃ PHỤ HUYNH (chỉ học sinh) ============ -->
+  <section class="block" id="linkCodeBox" style="display:none">
+    <h2 class="section-title">👨‍👩‍👧 Mã phụ huynh</h2>
+    <p class="section-sub">Đưa mã này cho bố/mẹ để bố/mẹ liên kết và theo dõi việc học của em nhé!</p>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <code id="linkCode" style="font-family:'Baloo 2',monospace;font-size:24px;font-weight:800;letter-spacing:2px;background:var(--bg-soft);padding:12px 20px;border-radius:14px;color:var(--blue)">—</code>
+      <button class="btn btn-ghost" id="copyCodeBtn">📋 Sao chép</button>
+      <button class="btn btn-ghost" id="regenCodeBtn">🔄 Đổi mã</button>
+    </div>
+    <p class="section-sub" style="margin-top:10px;font-size:13px">Đổi mã khi muốn cấp mã mới. Phụ huynh đã liên kết trước đó vẫn xem được — muốn gỡ thì bố/mẹ bấm “Gỡ” ở trang phụ huynh.</p>
+  </section>
+
   <!-- ============ THỐNG KÊ TỔNG QUAN ============ -->
   <div class="stats-section">
     <div class="stat-grid">
@@ -447,130 +462,11 @@
 
   <!-- ============ TIẾN ĐỘ BÀI HỌC THEO LỚP ============ -->
   <section class="block">
-    <h2 class="section-title">📖 Tiến độ Toán Lớp 1</h2>
-    <p class="section-sub">Xem em đã học tới đâu rồi nhé! Hoàn thành từng bài để mở khóa thành tích mới.</p>
+    <h2 class="section-title" id="lessonSecTitle">📖 Tiến độ bài học</h2>
+    <p class="section-sub">Xem em đã học tới đâu rồi nhé! Học bài nào trước cũng được.</p>
 
-    <div class="lesson-list">
-      <!-- Bài 1 - Đã hoàn thành -->
-      <div class="lesson-row completed">
-        <div class="lesson-icon">🔢</div>
-        <div class="lesson-main">
-          <div class="lesson-no">Bài 1</div>
-          <div class="lesson-name">Các số 0, 1, 2, 3, 4, 5</div>
-          <span class="lesson-status-tag">✓ Đã hoàn thành</span>
-        </div>
-        <div class="lesson-score"><div class="score-num">95%</div><div class="score-label">Điểm cao nhất</div></div>
-        <a href="hoc-bai.html?id=bai-1" class="lesson-btn" onclick="celebrate(event)">Ôn lại</a>
-      </div>
-
-      <!-- Bài 2 - Đã hoàn thành -->
-      <div class="lesson-row completed">
-        <div class="lesson-icon">🔢</div>
-        <div class="lesson-main">
-          <div class="lesson-no">Bài 2</div>
-          <div class="lesson-name">Các số 6, 7, 8, 9, 10</div>
-          <span class="lesson-status-tag">✓ Đã hoàn thành</span>
-        </div>
-        <div class="lesson-score"><div class="score-num">90%</div><div class="score-label">Điểm cao nhất</div></div>
-        <a href="hoc-bai.html?id=bai-2" class="lesson-btn" onclick="celebrate(event)">Ôn lại</a>
-      </div>
-
-      <!-- Bài 3 - Đã hoàn thành -->
-      <div class="lesson-row completed">
-        <div class="lesson-icon">⚖️</div>
-        <div class="lesson-main">
-          <div class="lesson-no">Bài 3</div>
-          <div class="lesson-name">Nhiều hơn, ít hơn, bằng nhau</div>
-          <span class="lesson-status-tag">✓ Đã hoàn thành</span>
-        </div>
-        <div class="lesson-score"><div class="score-num">85%</div><div class="score-label">Điểm cao nhất</div></div>
-        <a href="hoc-bai.html?id=bai-3" class="lesson-btn" onclick="celebrate(event)">Ôn lại</a>
-      </div>
-
-      <!-- Bài 4 - Đang học -->
-      <div class="lesson-row in_progress">
-        <div class="lesson-icon">⚖️</div>
-        <div class="lesson-main">
-          <div class="lesson-no">Bài 4</div>
-          <div class="lesson-name">So sánh các số (&gt;, &lt;)</div>
-          <span class="lesson-status-tag">⏳ Đang học</span>
-        </div>
-        <div class="lesson-score"><div class="score-num">60%</div><div class="score-label">Điểm cao nhất</div></div>
-        <a href="hoc-bai.html?id=bai-4" class="lesson-btn" onclick="celebrate(event)">Học tiếp</a>
-      </div>
-
-      <!-- Bài 5 - Chưa học -->
-      <div class="lesson-row not_started">
-        <div class="lesson-icon">🧩</div>
-        <div class="lesson-main">
-          <div class="lesson-no">Bài 5</div>
-          <div class="lesson-name">Mấy và mấy (tách - gộp số)</div>
-          <span class="lesson-status-tag">● Chưa học</span>
-        </div>
-        <div class="lesson-score"><div class="score-num">—</div><div class="score-label">Chưa có điểm</div></div>
-        <a href="hoc-bai.html?id=bai-5" class="lesson-btn" onclick="celebrate(event)">Bắt đầu</a>
-      </div>
-
-      <!-- Bài 6 - Chưa học -->
-      <div class="lesson-row not_started">
-        <div class="lesson-icon">📝</div>
-        <div class="lesson-main">
-          <div class="lesson-no">Bài 6</div>
-          <div class="lesson-name">Luyện tập chung</div>
-          <span class="lesson-status-tag">● Chưa học</span>
-        </div>
-        <div class="lesson-score"><div class="score-num">—</div><div class="score-label">Chưa có điểm</div></div>
-        <a href="hoc-bai.html?id=bai-6" class="lesson-btn" onclick="celebrate(event)">Bắt đầu</a>
-      </div>
-
-      <!-- Bài 7 - Chưa học -->
-      <div class="lesson-row not_started">
-        <div class="lesson-icon">🔷</div>
-        <div class="lesson-main">
-          <div class="lesson-no">Bài 7</div>
-          <div class="lesson-name">Hình vuông, hình tròn, hình tam giác, hình chữ nhật</div>
-          <span class="lesson-status-tag">● Chưa học</span>
-        </div>
-        <div class="lesson-score"><div class="score-num">—</div><div class="score-label">Chưa có điểm</div></div>
-        <a href="hoc-bai.html?id=bai-7" class="lesson-btn" onclick="celebrate(event)">Bắt đầu</a>
-      </div>
-
-      <!-- Bài 8 - Chưa học -->
-      <div class="lesson-row not_started">
-        <div class="lesson-icon">🧱</div>
-        <div class="lesson-main">
-          <div class="lesson-no">Bài 8</div>
-          <div class="lesson-name">Thực hành lắp ghép, xếp hình</div>
-          <span class="lesson-status-tag">● Chưa học</span>
-        </div>
-        <div class="lesson-score"><div class="score-num">—</div><div class="score-label">Chưa có điểm</div></div>
-        <a href="hoc-bai.html?id=bai-8" class="lesson-btn" onclick="celebrate(event)">Bắt đầu</a>
-      </div>
-
-      <!-- Bài 9 - Chưa học -->
-      <div class="lesson-row not_started">
-        <div class="lesson-icon">📐</div>
-        <div class="lesson-main">
-          <div class="lesson-no">Bài 9</div>
-          <div class="lesson-name">Luyện tập chung về hình phẳng</div>
-          <span class="lesson-status-tag">● Chưa học</span>
-        </div>
-        <div class="lesson-score"><div class="score-num">—</div><div class="score-label">Chưa có điểm</div></div>
-        <a href="hoc-bai.html?id=bai-9" class="lesson-btn" onclick="celebrate(event)">Bắt đầu</a>
-      </div>
-
-      <!-- Bài 10 - Chưa học -->
-      <div class="lesson-row not_started">
-        <div class="lesson-icon">➕</div>
-        <div class="lesson-main">
-          <div class="lesson-no">Bài 10</div>
-          <div class="lesson-name">Phép cộng trong phạm vi 10</div>
-          <span class="lesson-status-tag">● Chưa học</span>
-        </div>
-        <div class="lesson-score"><div class="score-num">—</div><div class="score-label">Chưa có điểm</div></div>
-        <a href="hoc-bai.html?id=bai-10" class="lesson-btn" onclick="celebrate(event)">Bắt đầu</a>
-      </div>
-    </div>
+    <!-- Danh sách bài render ĐỘNG theo lớp đăng ký (engine) -->
+    <div class="lesson-list" id="lessonList"></div>
   </section>
 
   <!-- ============ HUY HIỆU ĐÃ ĐẠT ============ -->
@@ -641,10 +537,16 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
+<script src="assets/js/lessons.js"></script>
+<script src="assets/js/lessons-lop1.js"></script>
+<script src="assets/js/lessons-lop2.js"></script>
+<script src="assets/js/lessons-lop3.js"></script>
+<script src="assets/js/lessons-lop4.js"></script>
+<script src="assets/js/lessons-lop5.js"></script>
 <script>
-  /* Chặn trang + hiển thị đúng người đăng nhập (Supabase) */
+  /* Trang cá nhân: khách → hiện tường đăng nhập (không redirect); đã login → dữ liệu thật */
   window.tvknLogout = function(){ TVKN.signOut(); };
-  TVKN.guardPage();
+  TVKN.guardPageSoft('Hồ sơ của em');
 </script>
 <script>
   /* Đổ dữ liệu thật từ Supabase vào các phần tổng hợp */
@@ -705,17 +607,8 @@
       } catch (err) { console.error('activity', err); }
 
       // ===== Bài học hoàn thành =====
-      try {
-        var lessons = await TVKN.getLessons();
-        if (lessons) {
-          var completed = lessons.filter(function(l){ return l.status === 'completed'; }).length;
-          var statNums = document.querySelectorAll('.stat-card .stat-num');
-          if (statNums[0]) statNums[0].textContent = completed + '/10';
-          var pct = Math.round(completed / 10 * 100);
-          var fill = document.querySelector('.progress-fill');
-          if (fill) fill.style.width = pct + '%';
-        }
-      } catch (err) { console.error('lessons', err); }
+      // Thẻ "Bài học đã hoàn thành" dùng data-bind (auth.js tự đổ ĐÚNG theo lớp đăng ký).
+      // Thanh tiến độ + danh sách bài do khối render động phía dưới xử lý theo lớp.
 
       // ===== Huy hiệu =====
       try {
@@ -807,102 +700,98 @@
         }
       } catch (err) { console.error('badge grid', err); }
 
-      // ===== 2) TIẾN ĐỘ BÀI HỌC =====
+      // ===== 2) TIẾN ĐỘ BÀI HỌC — render ĐỘNG theo LỚP đăng ký =====
       try {
-        var lessons = await TVKN.getLessons();        // [{ lesson_id, status, best_score }]
+        var DATA = window.TVKN_LESSONS;
+        var listEl = document.getElementById('lessonList');
+        if (DATA && DATA.lessons && listEl) {
+          function esc(t){ return (t == null ? '' : String(t)).replace(/[<>&]/g, function(c){ return { '<':'&lt;', '>':'&gt;', '&':'&amp;' }[c]; }); }
 
-        // Map lesson_id -> bản ghi
-        var byId = {};
-        (lessons || []).forEach(function(l){ byId[l.lesson_id] = l; });
+          var profile = await TVKN.getProfile();
+          var grade = Number(profile && profile.grade) || 1;
 
-        var STATUS_CLASSES = ['completed', 'in_progress', 'not_started', 'need_review'];
-        var STATUS_LABEL = {
-          completed:   '✓ Đã hoàn thành',
-          in_progress: '⏳ Đang học',
-          not_started: '● Chưa học',
-          need_review: '⚠ Cần ôn lại'
-        };
-        var BTN_LABEL = {
-          completed:   'Ôn lại',
-          in_progress: 'Học tiếp',
-          not_started: 'Bắt đầu',
-          need_review: 'Ôn lại'
-        };
+          var lessons = await TVKN.getLessons();        // [{ lesson_id, status, best_score }]
+          var byId = {};
+          (lessons || []).forEach(function(l){ byId[l.lesson_id] = l; });
 
-        // Xác định lesson_id của một hàng: ưu tiên link bai-N.html, sau đó nhãn "Bài N"
-        function rowLessonId(row){
-          var lid = null;
-          var link = row.querySelector('a[href*="bai-"]');
-          if (link) {
-            var m = (link.getAttribute('href') || '').match(/bai-([0-9]+|luyen-tap)\.html/i);
-            if (m) lid = 'bai-' + m[1];
+          var titleEl = document.getElementById('lessonSecTitle');
+          if (titleEl) titleEl.textContent = '📖 Tiến độ Toán Lớp ' + grade;
+
+          var STATUS_LABEL = { completed: '✓ Đã hoàn thành', in_progress: '⏳ Đang học', not_started: '● Chưa học' };
+          var BTN_LABEL    = { completed: 'Ôn lại',          in_progress: 'Học tiếp',    not_started: 'Bắt đầu' };
+
+          // Danh sách bài của lớp, sắp theo số thứ tự bài
+          var ids = Object.keys(DATA.lessons)
+            .filter(function(k){ return Number(DATA.lessons[k].grade) === grade; })
+            .sort(function(a, b){ return (DATA.lessons[a].no || 0) - (DATA.lessons[b].no || 0); });
+
+          if (!ids.length) {
+            listEl.innerHTML = '<div class="lesson-row not_started"><div class="lesson-main">' +
+              '<div class="lesson-name">🚧 Lớp ' + grade + ' đang được xây dựng</div>' +
+              '<span class="lesson-status-tag">Sắp ra mắt</span></div></div>';
+          } else {
+            var html = '';
+            ids.forEach(function(id){
+              var L = DATA.lessons[id];
+              var rec = byId[id];
+              var status = (rec && rec.status) || 'not_started';
+              if (['completed', 'in_progress', 'not_started'].indexOf(status) < 0) status = 'not_started';
+              var score = (rec && rec.best_score > 0)
+                ? '<div class="score-num">' + rec.best_score + '%</div><div class="score-label">Điểm cao nhất</div>'
+                : '<div class="score-num">—</div><div class="score-label">Chưa có điểm</div>';
+              html += '<div class="lesson-row ' + status + '">' +
+                  '<div class="lesson-icon">' + (L.icon || '📘') + '</div>' +
+                  '<div class="lesson-main">' +
+                    '<div class="lesson-no">Bài ' + (L.no || '') + '</div>' +
+                    '<div class="lesson-name">' + esc(L.title) + '</div>' +
+                    '<span class="lesson-status-tag">' + STATUS_LABEL[status] + '</span>' +
+                  '</div>' +
+                  '<div class="lesson-score">' + score + '</div>' +
+                  '<a href="hoc-bai.html?id=' + encodeURIComponent(id) + '" class="lesson-btn" onclick="celebrate(event)">' + BTN_LABEL[status] + '</a>' +
+                '</div>';
+            });
+            listEl.innerHTML = html;
+
+            // Thanh tiến độ (level-wrap) phản ánh % hoàn thành của LỚP đang xem
+            var completed = ids.filter(function(id){ return byId[id] && byId[id].status === 'completed'; }).length;
+            var pct = ids.length ? Math.round(completed / ids.length * 100) : 0;
+            var fill = document.querySelector('.progress-fill');
+            if (fill) fill.style.width = pct + '%';
           }
-          if (!lid) {
-            var noEl = row.querySelector('.lesson-no');
-            if (noEl) {
-              var mn = (noEl.textContent || '').match(/Bài\s*([0-9]+)/i);
-              if (mn) lid = 'bai-' + mn[1];
-            }
-          }
-          // href có thể là luyen-tap.html -> lesson_id 'luyen-tap'
-          if (link && /luyen-tap\.html/i.test(link.getAttribute('href') || '')) lid = 'luyen-tap';
-          return lid;
         }
-
-        var rows = document.querySelectorAll('.lesson-list .lesson-row');
-        rows.forEach(function(row){
-          // BƯỚC 1: Đặt lại MỌI hàng về trạng thái "chưa học" để không hiển thị
-          // tiến độ giả từ HTML tĩnh khi chưa có dữ liệu thật.
-          STATUS_CLASSES.forEach(function(c){ row.classList.remove(c); });
-          row.classList.add('not_started');
-
-          var tag = row.querySelector('.lesson-status-tag');
-          if (tag) tag.textContent = STATUS_LABEL.not_started;
-
-          var scoreNum = row.querySelector('.lesson-score .score-num');
-          var scoreLabel = row.querySelector('.lesson-score .score-label');
-          if (scoreNum) scoreNum.textContent = '—';
-          if (scoreLabel) scoreLabel.textContent = 'Chưa có điểm';
-
-          var btn = row.querySelector('.lesson-btn');
-          if (btn) btn.textContent = BTN_LABEL.not_started;
-
-          // BƯỚC 2: Áp trạng thái THẬT từ DB nếu bài này có bản ghi.
-          var lid = rowLessonId(row);
-          if (!lid) return;
-
-          var rec = byId[lid];
-          if (!rec || !rec.status) return;          // không có trong DB -> giữ "chưa học"
-
-          var status = rec.status;
-          if (STATUS_CLASSES.indexOf(status) < 0) return; // trạng thái lạ -> bỏ qua
-
-          // Cập nhật class trạng thái
-          STATUS_CLASSES.forEach(function(c){ row.classList.remove(c); });
-          row.classList.add(status);
-
-          // Cập nhật nhãn trạng thái
-          if (tag && STATUS_LABEL[status]) tag.textContent = STATUS_LABEL[status];
-
-          // Cập nhật điểm
-          if (scoreNum) {
-            if (rec.best_score && rec.best_score > 0) {
-              scoreNum.textContent = rec.best_score + '%';
-              if (scoreLabel) scoreLabel.textContent = 'Điểm cao nhất';
-            } else if (status === 'not_started') {
-              scoreNum.textContent = '—';
-              if (scoreLabel) scoreLabel.textContent = 'Chưa có điểm';
-            }
-          }
-
-          // Cập nhật nhãn nút
-          if (btn && BTN_LABEL[status]) btn.textContent = BTN_LABEL[status];
-        });
       } catch (err) { console.error('lesson list', err); }
 
     } catch (err) {
       console.error('populateBadgesAndLessons', err);
     }
+  })();
+
+  /* Mã phụ huynh — chỉ hiện cho HỌC SINH (có link_code). Cho phép sao chép + đổi mã. */
+  (async function linkCodeBox(){
+    if (!window.TVKN || !TVKN.configured) return;
+    try {
+      const p = await TVKN.getProfile();
+      if (!p || p.role !== 'student' || !p.link_code) return;
+      const box = document.getElementById('linkCodeBox');
+      const codeEl = document.getElementById('linkCode');
+      if (!box || !codeEl) return;
+      codeEl.textContent = p.link_code;
+      box.style.display = '';
+      const copyBtn = document.getElementById('copyCodeBtn');
+      copyBtn.addEventListener('click', function(){
+        try { navigator.clipboard.writeText(codeEl.textContent); } catch(e){}
+        const self = this; self.textContent = '✓ Đã chép';
+        setTimeout(function(){ self.textContent = '📋 Sao chép'; }, 1500);
+      });
+      const regenBtn = document.getElementById('regenCodeBtn');
+      regenBtn.addEventListener('click', async function(){
+        if (!confirm('Đổi sang mã mới? Mã cũ sẽ không dùng để liên kết được nữa.')) return;
+        this.disabled = true;
+        try { const nc = await TVKN.regenLinkCode(); if (nc) codeEl.textContent = nc; }
+        catch(e){ alert('Không đổi được mã: ' + (e.message || e)); }
+        this.disabled = false;
+      });
+    } catch(e){}
   })();
 </script>
 </body>

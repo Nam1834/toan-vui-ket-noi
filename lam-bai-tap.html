@@ -140,6 +140,13 @@
   }
   @media (max-width: 560px) {
     .header-title { display: none; }
+    /* Header không bị chật/cắt: rút gọn nút và cho xuống dòng nếu cần */
+    .header { height: auto; min-height: 56px; flex-wrap: wrap; padding: 10px 14px; gap: 8px; }
+    .back-btn { font-size: 0; }
+    .back-btn::after { content: '← Quay lại'; font-size: 13px; }
+    .exit-btn { font-size: 0; }
+    .exit-btn::after { content: '✕'; font-size: 15px; }
+    .match-box { gap: 12px; }
     .qcard { padding: 24px; }
     .qtext { font-size: 22px; }
     .answers, .tf-box { grid-template-columns: 1fr; }
@@ -494,45 +501,8 @@
     const profile = data.profile || {};
     const DATA = window.TVKN_LESSONS;
 
-    function blockPractice(msg) {
-      const lay = document.querySelector('.layout');
-      if (lay) lay.innerHTML =
-        '<div class="qcard" style="grid-column:1/-1;text-align:center">' +
-        '<div class="qtext">🔒 Phần luyện tập chưa mở</div>' +
-        '<p style="color:var(--text-soft);margin:0 0 18px">' + msg + '</p>' +
-        '<a href="trang-lop.html" class="btn btn-next" style="text-decoration:none">📚 Về danh sách bài của em</a></div>';
-    }
-    // Bài này có bị KHÓA theo quy tắc mở khóa tuần tự không? (giống hệt trang-lop.html)
-    function isLessonLocked(targetId, grade) {
-      const g = Number(grade);
-      const lp = {};
-      (data.lessons || []).forEach(function (l) { if (l && l.lesson_id) lp[l.lesson_id] = l.status; });
-      const ord = Object.keys(DATA.lessons)
-        .filter(function (k) { return Number(DATA.lessons[k].grade) === g; })
-        .sort(function (a, b) { return (DATA.lessons[a].no || 0) - (DATA.lessons[b].no || 0); });
-      const states = {};
-      for (var i = 0; i < ord.length; i++) {
-        var lid = ord[i];
-        var st = lp[lid] || 'not_started';
-        if (st !== 'completed' && st !== 'in_progress') st = 'not_started';
-        if (st === 'not_started' && i > 0 && states[ord[i - 1]] !== 'completed') st = 'locked';
-        states[lid] = st;
-      }
-      return states[targetId] === 'locked';
-    }
-
-    // Chỉ chặn khi luyện tập GẮN với 1 bài cụ thể; "luyện tập nhanh" (không có ?lesson) thì cho làm.
-    // admin/giáo viên/phụ huynh được làm thử mọi bài.
-    if (_LDATA && (!profile.role || profile.role === 'student')) {
-      if (_LDATA.grade && profile.grade && Number(_LDATA.grade) !== Number(profile.grade)) {
-        blockPractice('Bài luyện tập này thuộc Lớp ' + _LDATA.grade + ' — không thuộc lớp của em (Lớp ' + profile.grade + ').');
-        return;
-      }
-      if (isLessonLocked(_lessonId, profile.grade)) {
-        blockPractice('Em cần hoàn thành bài học trước đó để mở khóa phần luyện tập này nhé!');
-        return;
-      }
-    }
+    // KHÔNG chặn theo lớp và KHÔNG khóa tuần tự: học sinh được luyện tập bài của
+    // bất kỳ lớp nào, theo thứ tự tùy ý. (Vẫn yêu cầu đăng nhập ở guardPage phía trên.)
 
     if (data.progress) {
       baseXp = data.progress.xp || 0;
