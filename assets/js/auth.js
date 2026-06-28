@@ -751,6 +751,49 @@ window.TVKN = (function () {
     return sec > 0 ? '< 1 phút' : '0 phút';
   }
 
+  // ============================================================
+  //  ĐỌC TO (Web Speech API) — bền với lỗi giọng & lỗi "nuốt câu" của Chromium
+  //  Dùng chung: TVKN.speak(text). Các trang/engine khác nên gọi hàm này.
+  // ============================================================
+  let _voices = [];
+  function _loadVoices() {
+    try { _voices = (window.speechSynthesis && window.speechSynthesis.getVoices()) || []; } catch (e) { _voices = []; }
+    return _voices;
+  }
+  try {
+    if (window.speechSynthesis) {
+      _loadVoices();   // nhiều trình duyệt nạp danh sách giọng BẤT ĐỒNG BỘ → lắng nghe để cập nhật
+      if (typeof window.speechSynthesis.addEventListener === 'function') window.speechSynthesis.addEventListener('voiceschanged', _loadVoices);
+      else window.speechSynthesis.onvoiceschanged = _loadVoices;
+    }
+  } catch (e) {}
+  function _pickVietVoice() {
+    const vs = (_voices && _voices.length) ? _voices : _loadVoices();
+    if (!vs || !vs.length) return null;
+    return vs.find(function (v) { return /vi[-_]?VN/i.test(v.lang || ''); })
+        || vs.find(function (v) { return /^vi([-_]|$)/i.test(v.lang || '') || /vi[eệ]t.?nam/i.test(v.name || ''); })
+        || null;
+  }
+  // Đọc to một đoạn văn bản. Trả về true nếu đã yêu cầu đọc.
+  function speak(text) {
+    try {
+      if (!('speechSynthesis' in window) || text == null) return false;
+      const s = String(text).trim();
+      if (!s) return false;
+      const synth = window.speechSynthesis;
+      synth.cancel();                                   // dừng câu đang đọc (nếu có)
+      const u = new SpeechSynthesisUtterance(s);
+      const v = _pickVietVoice();
+      if (v) { u.voice = v; u.lang = v.lang || 'vi-VN'; }
+      else { u.lang = 'vi-VN'; }                        // không có giọng Việt → vẫn đọc bằng giọng mặc định (vẫn có tiếng)
+      u.rate = 0.85; u.pitch = 1; u.volume = 1;
+      window.__tvknUtter = u;                           // giữ tham chiếu — tránh vài trình duyệt thu hồi sớm làm mất tiếng
+      // Vá lỗi Chromium: cancel() NGAY trước speak() đôi khi "nuốt" câu → tách bằng setTimeout + resume()
+      setTimeout(function () { try { synth.resume(); synth.speak(u); } catch (e) {} }, 60);
+      return true;
+    } catch (e) { return false; }
+  }
+
   function tvknOnReady() {
     injectResponsiveCSS(); initBell();
     try {
@@ -825,6 +868,7 @@ window.TVKN = (function () {
     getActivity, getLessons, getBadges, getLeaderboard, getMyRank, getCohortStats,
     adminOverview, adminUsers,
     checkBadges, recordGameWin, platformStats, badges: BADGES, initBell, trialPage, getGameStats, gamePlays,
-    addStudyTime, getStudyTime, childStudyTime, fmtDuration, startStudyTimer
+    addStudyTime, getStudyTime, childStudyTime, fmtDuration, startStudyTimer,
+    speak
   };
 })();

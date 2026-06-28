@@ -590,6 +590,7 @@
   function ding(good) {
     try {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') { try { audioCtx.resume(); } catch (e) {} }   // gỡ trạng thái câm khi tab bị treo
       const o = audioCtx.createOscillator();
       const g = audioCtx.createGain();
       o.connect(g); g.connect(audioCtx.destination);

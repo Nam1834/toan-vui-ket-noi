@@ -38,13 +38,17 @@ window.TVKN_UI = (function () {
   }
 
   // ---------- Phát âm (Web Speech API) ----------
+  // Ưu tiên dùng hàm đọc chuẩn ở auth.js (TVKN.speak) — đã vá lỗi giọng & lỗi "nuốt câu".
   function speak(text) {
     try {
+      if (window.TVKN && typeof TVKN.speak === 'function') { TVKN.speak(text); return; }
       if ('speechSynthesis' in window) {
-        const u = new SpeechSynthesisUtterance(text);
+        const synth = window.speechSynthesis;
+        synth.cancel();
+        const u = new SpeechSynthesisUtterance(String(text));
         u.lang = 'vi-VN'; u.rate = 0.85;
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(u);
+        window.__tvknUtter = u;
+        setTimeout(function () { try { synth.resume(); synth.speak(u); } catch (e) {} }, 60);
       }
     } catch (e) { /* trình duyệt không hỗ trợ */ }
   }
