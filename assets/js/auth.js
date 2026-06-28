@@ -628,7 +628,7 @@ window.TVKN = (function () {
       try {
         var logged = false;
         if (sb) { var s = await sb.auth.getSession(); logged = !!s.data.session; }
-        if (!logged) body = note('Hãy đăng nhập để xem thông báo của em nhé!');
+        if (!logged) body = note('Vui lòng đăng nhập để xem thông báo.');
         else {
           var items = await getActivity(12);
           body = items.length ? items.map(row).join('') : note('📭 Chưa có hoạt động nào.');
@@ -712,7 +712,7 @@ window.TVKN = (function () {
       '<div style="max-width:420px;width:100%;background:#fff;border-radius:26px;padding:36px 30px;text-align:center;box-shadow:0 16px 40px rgba(79,140,255,.22)">' +
         '<div style="font-size:60px;margin-bottom:10px">🔒</div>' +
         '<h2 style="font-family:\'Baloo 2\',sans-serif;font-size:24px;font-weight:800;color:#2D3748;margin-bottom:8px">Cần đăng nhập</h2>' +
-        '<p style="color:#6B7280;font-size:15px;margin-bottom:22px">Em hãy đăng nhập để xem ' + (label || 'trang này') + ' nhé!</p>' +
+        '<p style="color:#6B7280;font-size:15px;margin-bottom:22px">Vui lòng đăng nhập để xem ' + (label || 'trang này') + '.</p>' +
         '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
           '<a href="dang-nhap.html" target="_top" style="background:linear-gradient(135deg,#4F8CFF,#9B72FF);color:#fff;padding:13px 26px;border-radius:14px;font-weight:800;text-decoration:none;box-shadow:0 8px 20px rgba(79,140,255,.35)">Đăng nhập</a>' +
           '<a href="dang-ky.html" target="_top" style="background:#F4F8FF;color:#2D3748;padding:13px 26px;border-radius:14px;font-weight:800;text-decoration:none">Đăng ký miễn phí</a>' +

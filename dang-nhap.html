@@ -48,7 +48,7 @@
   <div class="login-card">
     <div class="logo-icon">🐰</div>
     <div class="brand">TOÁN VUI KẾT NỐI</div>
-    <div class="welcome">Chào em! Đăng nhập để tiếp tục học Toán nhé 🎉</div>
+    <div class="welcome">Đăng nhập để tiếp tục nhé! 🎉</div>
 
     <div class="banner" id="cfgBanner">
       ⚠️ <b>Chưa kết nối Supabase.</b> Hãy điền <code>SUPABASE_URL</code> + key vào <code>supabase-config.js</code> và chạy <code>supabase-schema.sql</code>.
@@ -86,8 +86,8 @@
   async function doLogin() {
     const email = document.getElementById('email').value.trim();
     const pass = document.getElementById('pass').value;
-    if (!email) return setMsg('📧 Em hãy nhập email.');
-    if (!pass) return setMsg('🔒 Em hãy nhập mật khẩu.');
+    if (!email) return setMsg('📧 Vui lòng nhập email.');
+    if (!pass) return setMsg('🔒 Vui lòng nhập mật khẩu.');
     const btn = document.getElementById('btn');
     btn.disabled = true; setMsg('⏳ Đang đăng nhập...', true);
     try {
@@ -98,7 +98,7 @@
     } catch (err) {
       let m = err.message || 'Đăng nhập thất bại';
       if (/Invalid login/i.test(m)) m = 'Email hoặc mật khẩu chưa đúng.';
-      if (/Email not confirmed/i.test(m)) m = 'Email chưa xác nhận. Em kiểm tra hộp thư, hoặc tắt "Confirm email" trong Supabase.';
+      if (/Email not confirmed/i.test(m)) m = 'Email chưa xác nhận. Vui lòng kiểm tra hộp thư, hoặc tắt "Confirm email" trong Supabase.';
       setMsg('❌ ' + m);
       btn.disabled = false;
     }
