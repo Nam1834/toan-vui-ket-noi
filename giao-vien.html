@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<title>Trang Giáo viên - TOÁN VUI KẾT NỐI</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #4F8CFF; --yellow: #FFD93D; --green: #6BCB77; --orange: #FF9F43;
+    --pink: #FF6B9D; --purple: #9B72FF; --white: #FFFFFF; --bg-soft: #F4F8FF;
+    --text-dark: #2D3748; --text-soft: #6B7280;
+    --shadow: 0 8px 24px rgba(79,140,255,.15); --shadow-lg: 0 16px 40px rgba(79,140,255,.22);
+    --theme: var(--blue); --theme-soft: #E5EFFF;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Fredoka','Baloo 2',system-ui,sans-serif; background: var(--bg-soft); color: var(--text-dark); overflow-x: hidden; line-height: 1.6; }
+  a { text-decoration: none; color: inherit; }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; height: 68px; background: var(--white); box-shadow: 0 4px 20px rgba(79,140,255,.08); display: flex; align-items: center; padding: 0 24px; gap: 18px; }
+  .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 12px; background: var(--bg-soft); font-weight: 700; font-size: 14px; color: var(--text-dark); transition: all .2s; border:none; cursor:pointer; font-family:inherit; }
+  .back-btn:hover { background: var(--theme); color: var(--white); }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 42px; height: 42px; background: linear-gradient(135deg,var(--blue),var(--purple)); border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 6px 16px rgba(79,140,255,.35); }
+  .logo-name { font-weight: 800; font-size: 16px; background: linear-gradient(90deg,var(--blue),var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .header-title { font-family: 'Baloo 2',sans-serif; font-weight: 800; font-size: 18px; margin-left: 6px; white-space: nowrap; }
+  .header-right { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+  .teacher-name { font-weight: 700; font-size: 14px; color: var(--text-dark); }
+  .icon-btn { position: relative; width: 42px; height: 42px; border-radius: 12px; background: var(--bg-soft); border: none; cursor: pointer; font-size: 19px; transition: all .2s; }
+  .icon-btn:hover { background: var(--blue); transform: translateY(-2px); }
+  .badge-dot { position: absolute; top: 7px; right: 7px; width: 9px; height: 9px; background: var(--orange); border-radius: 50%; border: 2px solid var(--white); }
+  .avatar { width: 42px; height: 42px; border-radius: 13px; background: linear-gradient(135deg,var(--green),var(--blue)); display: flex; align-items: center; justify-content: center; font-size: 21px; border: 3px solid var(--white); box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* SECTION */
+  section.block { margin-top: 40px; }
+  .section-title { font-family: 'Baloo 2',sans-serif; font-size: 24px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+  .section-sub { color: var(--text-soft); font-size: 15px; margin-bottom: 20px; }
+  .card { background: var(--white); border-radius: 22px; padding: 26px 28px; box-shadow: var(--shadow); }
+
+  /* THANH QUẢN LÝ LỚP */
+  .class-bar { margin-top: 28px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; background: #fff; border-radius: 18px; padding: 16px 18px; box-shadow: var(--shadow); }
+  .class-bar select, .class-bar input { padding: 10px 12px; border: 2px solid #E8ECF4; border-radius: 12px; font-family: inherit; font-size: 15px; }
+  .class-bar select { flex: 1; min-width: 160px; }
+  .codepill { display:inline-flex; align-items:center; gap:8px; background: var(--theme-soft); color: var(--blue); font-weight:800; font-family:'Baloo 2',monospace; letter-spacing:1px; padding:9px 14px; border-radius:12px; }
+  .tbtn { padding: 10px 16px; border: none; border-radius: 12px; font-family: inherit; font-weight: 700; cursor: pointer; transition: all .2s; }
+  .tbtn-primary { background: var(--blue); color: #fff; }
+  .tbtn-soft { background: var(--bg-soft); color: var(--text-soft); }
+  .tbtn-danger { background: #FFE9EE; color: var(--pink); }
+  .tbtn:hover { transform: translateY(-2px); }
+
+  /* PANEL TẠO LỚP */
+  .create-panel { margin-top: 18px; background: #fff; border-radius: 18px; padding: 24px; box-shadow: var(--shadow); }
+
+  /* STAT GRID */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .stat-card { background: var(--white); border-radius: 20px; padding: 22px; text-align: center; box-shadow: var(--shadow); transition: transform .25s; border-top: 4px solid transparent; }
+  .stat-card:hover { transform: translateY(-4px); }
+  .stat-card:nth-child(1){border-top-color:var(--blue)} .stat-card:nth-child(2){border-top-color:var(--yellow)}
+  .stat-card:nth-child(3){border-top-color:var(--orange)} .stat-card:nth-child(4){border-top-color:var(--green)}
+  .stat-card:nth-child(5){border-top-color:var(--purple)} .stat-card:nth-child(6){border-top-color:var(--pink)}
+  .stat-icon { font-size: 30px; margin-bottom: 6px; }
+  .stat-num { font-family: 'Baloo 2',sans-serif; font-size: 26px; font-weight: 800; }
+  .stat-label { font-size: 13px; color: var(--text-soft); }
+
+  /* BẢNG HỌC SINH */
+  .table-wrap { overflow-x: auto; }
+  table.stu { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  table.stu th, table.stu td { padding: 13px 12px; text-align: left; border-bottom: 1px solid #EEF2F9; white-space: nowrap; }
+  table.stu th { font-size: 12.5px; color: var(--text-soft); font-weight: 700; text-transform: uppercase; letter-spacing: .3px; }
+  table.stu tbody tr { cursor: pointer; transition: background .15s; }
+  table.stu tbody tr:hover { background: var(--bg-soft); }
+  .mini-av { font-size: 20px; }
+  .pill { display: inline-block; padding: 3px 11px; border-radius: 999px; font-size: 12.5px; font-weight: 700; }
+  .pill-green { background:#E6F8EA; color:#2F8F3E } .pill-soft { background:var(--bg-soft); color:var(--text-soft) }
+  .pbar { height: 9px; width: 90px; background: var(--bg-soft); border-radius: 999px; overflow: hidden; display:inline-block; vertical-align: middle; }
+  .pbar > div { height: 100%; background: linear-gradient(90deg,var(--green),#4DBE5C); border-radius:999px; }
+  .x-rm { background:none; border:none; color:var(--pink); cursor:pointer; font-size:16px; }
+
+  /* STUDENT CARD (chi tiết) */
+  .student-card { margin-top: 8px; background: linear-gradient(135deg,var(--theme-soft),#EAFBEF); border-radius: 28px; padding: 30px 34px; display: flex; align-items: center; gap: 26px; position: relative; overflow: hidden; box-shadow: var(--shadow); flex-wrap: wrap; }
+  .student-card::before { content:''; position:absolute; width:300px; height:300px; border-radius:50%; background: radial-gradient(circle,rgba(255,255,255,.5),transparent 70%); top:-120px; right:-60px; }
+  .student-avatar { width: 100px; height: 100px; flex-shrink: 0; z-index: 1; background: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 58px; box-shadow: 0 12px 30px rgba(79,140,255,.25); }
+  .student-info { flex: 1; min-width: 240px; z-index: 1; }
+  .student-info h2 { font-family: 'Baloo 2',sans-serif; font-size: 28px; font-weight: 800; line-height: 1.1; margin-bottom: 10px; }
+  .student-meta { display: flex; gap: 22px; flex-wrap: wrap; margin-bottom: 14px; }
+  .student-meta .m-label { font-size: 12px; color: var(--text-soft); font-weight: 600; }
+  .student-meta .m-value { font-size: 15px; font-weight: 700; }
+  .student-tags { display: flex; gap: 12px; flex-wrap: wrap; }
+  .chip { display: inline-flex; align-items: center; gap: 7px; padding: 8px 16px; border-radius: 999px; font-weight: 700; font-size: 14px; background: var(--white); box-shadow: 0 4px 12px rgba(0,0,0,.06); }
+  .chip.title-chip { color: var(--orange); } .chip.streak-chip { color: var(--pink); }
+
+  /* CHART */
+  .chart-wrap { width: 100%; overflow: hidden; }
+  .chart-legend { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: 14px; color: var(--text-soft); font-weight: 600; }
+  .legend-line { width: 26px; height: 4px; border-radius: 2px; background: var(--blue); }
+
+  /* RECENT */
+  .recent-list { display: flex; flex-direction: column; }
+  .recent-row { display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid #EEF2F9; }
+  .recent-row:last-child { border-bottom: none; }
+  .recent-date { font-size: 12px; font-weight: 700; color: var(--text-soft); width: 88px; flex-shrink: 0; }
+  .recent-ico { width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 22px; background: var(--theme-soft); }
+  .recent-main { flex: 1; min-width: 0; }
+  .recent-name { font-weight: 700; font-size: 15px; }
+  .recent-xp { color: var(--orange); font-weight: 700; font-size: 14px; width: 60px; text-align: right; flex-shrink: 0; }
+
+  /* MẠNH / YẾU */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .strength-card { border-left: 5px solid var(--green); }
+  .improve-card { border-left: 5px solid var(--orange); }
+  .mini-title { font-family: 'Baloo 2',sans-serif; font-size: 19px; font-weight: 800; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .strength-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  .strength-item { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; }
+  .strength-item .ok { color: var(--green); font-size: 18px; }
+  .acc-big { display: inline-flex; align-items: baseline; gap: 6px; padding: 10px 18px; border-radius: 14px; background: #EEFBF1; }
+  .acc-big .num { font-family: 'Baloo 2',sans-serif; font-size: 28px; font-weight: 800; color: var(--green); }
+  .acc-big .lbl { font-size: 13px; color: var(--text-soft); font-weight: 600; }
+  .improve-item { margin-bottom: 16px; } .improve-item:last-child { margin-bottom: 0; }
+  .improve-head { display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 15px; margin-bottom: 7px; }
+  .improve-head .warn { color: var(--orange); } .improve-head .pct { font-family: 'Baloo 2',sans-serif; font-weight: 800; color: var(--orange); }
+  .bar { height: 12px; background: var(--bg-soft); border-radius: 999px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,.05); }
+  .bar > div { height: 100%; border-radius: 999px; background: linear-gradient(90deg,var(--yellow),var(--orange)); }
+
+  /* TUẦN */
+  .week-card { background: linear-gradient(135deg,var(--blue),var(--purple)); color: var(--white); border-radius: 24px; padding: 30px 34px; box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }
+  .week-card::before { content:'📄'; position:absolute; font-size:180px; right:-10px; bottom:-40px; opacity:.12; }
+  .week-card .mini-title { color: var(--white); }
+  .week-stats { display: grid; grid-template-columns: repeat(5,1fr); gap: 14px; margin-bottom: 22px; z-index: 1; position: relative; }
+  .week-stat { background: rgba(255,255,255,.16); border-radius: 16px; padding: 16px 10px; text-align: center; }
+  .week-stat .wn { font-family: 'Baloo 2',sans-serif; font-size: 24px; font-weight: 800; }
+  .week-stat .wl { font-size: 12px; opacity: .9; }
+  .week-btns { display: flex; gap: 14px; flex-wrap: wrap; z-index: 1; position: relative; }
+  .btn { display: inline-flex; align-items: center; gap: 9px; padding: 13px 26px; border-radius: 14px; font-family: inherit; font-weight: 700; font-size: 15px; border: none; cursor: pointer; transition: all .25s; }
+  .btn-white { background: var(--white); color: var(--blue); box-shadow: 0 8px 20px rgba(0,0,0,.18); }
+  .btn-white:hover { transform: translateY(-3px); }
+
+  /* CHƯƠNG */
+  .chapter-item { margin-bottom: 20px; } .chapter-item:last-child { margin-bottom: 0; }
+  .chapter-head { display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 16px; margin-bottom: 8px; }
+  .chapter-head .cpct { font-family: 'Baloo 2',sans-serif; font-weight: 800; }
+  .chapter-bar { height: 18px; background: var(--bg-soft); border-radius: 999px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,.05); }
+  .chapter-bar > div { height: 100%; border-radius: 999px; }
+  .fill-blue { background: linear-gradient(90deg,var(--green),#4DBE5C); }
+  .fill-mid { background: linear-gradient(90deg,var(--blue),#4DBE5C); }
+  .fill-low { background: linear-gradient(90deg,var(--yellow),var(--orange)); }
+
+  .empty { text-align: center; color: var(--text-soft); padding: 28px; }
+  .footer-copy { text-align: center; padding: 28px 18px; color: var(--text-soft); font-size: 13px; margin-top: 30px; }
+
+  /* Tiêu đề có thể xuống dòng (vd nút Đóng ở "Chi tiết học sinh") */
+  .section-title { flex-wrap: wrap; }
+  /* Hàng yêu cầu chờ duyệt: cho 2 nút Duyệt/Từ chối xuống dòng khi hẹp */
+  #pendingBox .recent-row { flex-wrap: wrap; }
+
+  @media (max-width: 900px) {
+    .stat-grid { grid-template-columns: repeat(2,1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .week-stats { grid-template-columns: repeat(3,1fr); }
+    .header-title { display: none; }
+  }
+  @media (max-width: 560px) {
+    .header { padding: 0 12px; gap: 8px; } .logo-name { display:none; } .teacher-name { display:none; }
+    .header > .back-btn { display: none; }                 /* ẩn "← Trang chủ" (đã có logo dẫn về) */
+    .header-right { gap: 8px; }
+    .header-right .back-btn { padding: 9px 12px; font-size: 0; }  /* nút Đăng xuất chỉ còn icon 🚪 */
+    .header-right .back-btn::before { content: '🚪'; font-size: 16px; }
+    .wrap { padding: 0 14px; } .week-stats { grid-template-columns: repeat(2,1fr); }
+    .class-bar { padding: 14px; }
+    .student-card { padding: 24px; } .student-avatar { width: 84px; height: 84px; font-size: 46px; }
+    .section-title { font-size: 21px; }
+  }
+  @media (max-width: 380px) {
+    .stat-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stat-num { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER GIÁO VIÊN ============ -->
+<header class="header">
+  <a href="index.html" class="back-btn">← Trang chủ</a>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">🐰</div>
+    <span class="logo-name">TOÁN VUI KẾT NỐI</span>
+  </a>
+  <span class="header-title">👩‍🏫 TRANG GIÁO VIÊN</span>
+  <div class="header-right">
+    <span class="teacher-name" id="teacherName">Chào, Giáo viên 👋</span>
+    <button class="icon-btn" title="Thông báo">🔔<span class="badge-dot"></span></button>
+    <div class="avatar" title="Giáo viên">👩‍🏫</div>
+    <button class="back-btn" onclick="tvknLogout()">🚪 Đăng xuất</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ============ THANH QUẢN LÝ LỚP ============ -->
+  <div class="class-bar" id="classBar" style="display:none">
+    <span style="font-weight:700">🏫 Lớp đang xem:</span>
+    <select id="classSelect"></select>
+    <span class="codepill" id="codePill" title="Mã lớp — đọc cho học sinh để các em tham gia">— <button class="tbtn tbtn-soft" id="copyCodeBtn" style="padding:4px 10px">📋</button></span>
+    <button class="tbtn tbtn-primary" id="newClassBtn">+ Tạo lớp</button>
+    <button class="tbtn tbtn-danger" id="delClassBtn" title="Xóa lớp đang xem">🗑️ Xóa lớp</button>
+  </div>
+
+  <!-- ============ PANEL TẠO LỚP ============ -->
+  <div class="create-panel" id="createPanel" style="display:none">
+    <h2 class="section-title">➕ Tạo lớp mới</h2>
+    <p class="section-sub">Đặt tên lớp (vd: <b>Lớp 3A</b>). Hệ thống sẽ sinh <b>mã lớp</b> để bạn đọc cho học sinh tham gia.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <input id="className" placeholder="Tên lớp, vd: Lớp 3A" style="flex:1;min-width:200px;padding:12px 14px;border:2px solid #E8ECF4;border-radius:12px;font-family:inherit;font-size:16px">
+      <button class="tbtn tbtn-primary" id="createBtn" style="padding:12px 22px">Tạo lớp</button>
+    </div>
+    <div id="createMsg" style="margin-top:10px;font-size:14px;font-weight:600;min-height:18px"></div>
+  </div>
+
+  <!-- ============ HƯỚNG DẪN HS THAM GIA ============ -->
+  <div class="card" id="howto" style="margin-top:18px;display:none;border-left:5px solid var(--yellow)">
+    💡 <b>Cách thêm học sinh:</b> đọc <b>mã lớp</b> ở trên cho học sinh. Mỗi em đăng nhập tài khoản học sinh → vào <b>Hồ sơ</b> → mục <b>“Tham gia lớp”</b> → nhập mã. Yêu cầu của em sẽ vào mục <b>“Yêu cầu tham gia”</b> để bạn <b>duyệt</b> — duyệt xong em mới vào danh sách lớp.
+  </div>
+
+  <!-- ============ YÊU CẦU CHỜ DUYỆT ============ -->
+  <section class="block" id="pendingBlock" style="display:none">
+    <h2 class="section-title">⏳ Yêu cầu tham gia <span id="pendingCount" style="font-size:15px;background:var(--orange);color:#fff;padding:2px 12px;border-radius:999px"></span></h2>
+    <p class="section-sub">Học sinh đã nhập mã lớp và đang chờ bạn duyệt. Duyệt thì em mới chính thức vào lớp và bạn mới xem được dữ liệu học của em.</p>
+    <div class="card">
+      <div id="pendingBox"></div>
+    </div>
+  </section>
+
+  <!-- ============ TỔNG QUAN LỚP ============ -->
+  <section class="block" id="overviewBlock" style="display:none">
+    <h2 class="section-title">📊 Tổng quan lớp</h2>
+    <p class="section-sub">Nhìn nhanh tình hình học tập chung của cả lớp.</p>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-num" id="ov-count">0</div><div class="stat-label">Sĩ số</div></div>
+      <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num" id="ov-xp">0</div><div class="stat-label">Tổng XP cả lớp</div></div>
+      <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-num" id="ov-active">0</div><div class="stat-label">HS hoạt động hôm nay</div></div>
+      <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num" id="ov-pct">0%</div><div class="stat-label">Hoàn thành trung bình</div></div>
+    </div>
+  </section>
+
+  <!-- ============ DANH SÁCH HỌC SINH ============ -->
+  <section class="block" id="listBlock" style="display:none">
+    <h2 class="section-title">👦 Danh sách học sinh</h2>
+    <p class="section-sub">Bấm vào một học sinh để xem chi tiết tiến độ học tập.</p>
+    <div class="card">
+      <div class="table-wrap">
+        <table class="stu">
+          <thead><tr>
+            <th>Học sinh</th><th>Lớp</th><th>XP</th><th>Cấp</th><th>Chuỗi</th><th>Huy hiệu</th><th>Tiến độ</th><th>Hôm nay</th><th></th>
+          </tr></thead>
+          <tbody id="stuBody">
+            <tr><td colspan="9" class="empty">Đang tải…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHI TIẾT 1 HỌC SINH ============ -->
+  <div id="studentDetail" style="display:none">
+
+    <section class="block">
+      <h2 class="section-title">🧑‍🎓 Chi tiết học sinh
+        <button class="tbtn tbtn-soft" onclick="document.getElementById('studentDetail').style.display='none'" style="margin-left:auto;font-size:13px">✕ Đóng</button>
+      </h2>
+      <div class="student-card">
+        <div class="student-avatar">👧</div>
+        <div class="student-info">
+          <h2>—</h2>
+          <div class="student-meta">
+            <div><div class="m-label">Lớp</div><div class="m-value">Lớp <span data-bind="grade">1</span></div></div>
+            <div><div class="m-label">Ngày tham gia</div><div class="m-value" id="join-date">—</div></div>
+          </div>
+          <div class="student-tags">
+            <span class="chip title-chip">🏅 Học sinh TOÁN VUI</span>
+            <span class="chip streak-chip">🔥 <span data-bind="streak">0</span> ngày liên tiếp</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">📊 Tổng quan học tập</h2>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num"><span data-bind="completed">0</span>/<span data-bind="total">10</span></div><div class="stat-label">Bài hoàn thành</div></div>
+        <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-num" data-bind="xp">0</div><div class="stat-label">Tổng điểm XP</div></div>
+        <div class="stat-card"><div class="stat-icon">🏅</div><div class="stat-num" data-bind="badges">0</div><div class="stat-label">Huy hiệu</div></div>
+        <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-num" data-bind="streak">0</div><div class="stat-label">Ngày liên tiếp</div></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">📈 Thời gian học 7 ngày qua</h2>
+      <p class="section-sub">Số phút em thực sự ngồi học mỗi ngày (tự ghi nhận khi học, luyện tập, chơi).</p>
+      <div class="card">
+        <div class="chart-wrap" id="studyChart"><div class="empty">Đang tải…</div></div>
+        <div class="chart-legend"><span class="legend-line"></span> Thời gian học theo ngày</div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">📝 Hoạt động gần đây</h2>
+      <div class="card">
+        <div class="recent-list" id="recent-list"><div class="recent-row"><div class="recent-main"><div class="recent-name">Đang tải…</div></div></div></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">🔍 Em giỏi phần nào, cần luyện thêm phần nào</h2>
+      <p class="section-sub">Hệ thống tự phân tích từ điểm các bài đã làm.</p>
+      <div class="two-col">
+        <div class="card strength-card">
+          <div class="mini-title">🌟 Điểm mạnh</div>
+          <div class="strength-list" id="strengthList"><div class="strength-item">Đang tải…</div></div>
+          <div class="acc-big" id="accBig" style="display:none"><span class="num">—</span><span class="lbl">tỷ lệ chính xác trung bình</span></div>
+        </div>
+        <div class="card improve-card">
+          <div class="mini-title">📚 Nội dung cần luyện thêm</div>
+          <div id="improveList"><div class="improve-item"><div class="improve-head"><span>Đang tải…</span></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">📄 Tuần này của em</h2>
+      <div class="week-card">
+        <div class="mini-title">📄 Tổng kết 7 ngày</div>
+        <div class="week-stats">
+          <div class="week-stat"><div class="wn" id="wk-lessons">—</div><div class="wl">Bài đã học</div></div>
+          <div class="week-stat"><div class="wn" id="wk-xp">—</div><div class="wl">Điểm XP</div></div>
+          <div class="week-stat"><div class="wn" id="wk-time">—</div><div class="wl">Thời gian học</div></div>
+          <div class="week-stat"><div class="wn" id="wk-badges">—</div><div class="wl">Huy hiệu mới</div></div>
+          <div class="week-stat"><div class="wn" data-bind="streak">0</div><div class="wl">Ngày chuỗi</div></div>
+        </div>
+        <div class="week-btns"><button class="btn btn-white" onclick="window.print()">🖨️ In / Lưu PDF</button></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">📊 Tiến độ theo chương</h2>
+      <div class="card" id="chapterBox"><div class="chapter-item"><div class="chapter-head"><span>Đang tải…</span></div></div></div>
+    </section>
+
+  </div>
+
+</div>
+
+<div class="footer-copy">© 2026 TOÁN VUI KẾT NỐI · Trang giáo viên — theo dõi việc học của lớp 💙</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/lessons.js"></script>
+<script src="assets/js/lessons-lop1.js"></script>
+<script src="assets/js/lessons-lop2.js"></script>
+<script src="assets/js/lessons-lop3.js"></script>
+<script src="assets/js/lessons-lop4.js"></script>
+<script src="assets/js/lessons-lop5.js"></script>
+<script>
+  /* TRANG GIÁO VIÊN — quản lý lớp bằng mã lớp; xem dữ liệu THẬT của HS (chỉ đọc). */
+  window.tvknLogout = function(){ TVKN.signOut(); };
+
+  (function(){
+    const $ = function(id){ return document.getElementById(id); };
+    const esc = function(t){ return (t==null?'':String(t)).replace(/[<>&]/g, function(c){ return c==='<'?'&lt;':c==='>'?'&gt;':'&amp;'; }); };
+    const fmtDate = function(iso){ if(!iso) return ''; try { return new Date(iso).toLocaleDateString('vi-VN'); } catch(e){ return ''; } };
+    function localDay(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+    function setBindAll(key, val){ document.querySelectorAll('[data-bind="'+key+'"]').forEach(function(el){ el.textContent = val; }); }
+    function gradeIds(grade){
+      if (!window.TVKN_LESSONS || !TVKN_LESSONS.lessons) return null;
+      const g = Number(grade);
+      return Object.keys(TVKN_LESSONS.lessons).filter(function(k){ return Number(TVKN_LESSONS.lessons[k].grade) === g; });
+    }
+    const stripEmoji = function(s){ try { return (s||'').replace(/^[^\p{L}\p{N}]+/u,'').trim(); } catch(e){ return (s||'').replace(/^[^A-Za-zÀ-ỹ0-9]+/,'').trim(); } };
+    const chapterLabel = function(t){ return stripEmoji(t) || 'Khác'; };
+    const shortLabel = function(t){ return chapterLabel(t).replace(/^Chủ đề\s*\d+\s*:\s*/i,'').trim() || chapterLabel(t); };
+
+    // ---- stat 1 học sinh (từ childData) ----
+    function studentStats(d){
+      const profile = d.profile || {}, progress = d.progress || {}, lessons = d.lessons || [], badges = d.badges || [];
+      const grade = Number(profile.grade) || 1;
+      const ids = gradeIds(grade);
+      const total = ids ? ids.length : 10;
+      const completed = (lessons||[]).filter(function(l){ return l.status==='completed' && (!ids || ids.indexOf(l.lesson_id)>=0); }).length;
+      const cap = Math.min(completed, total);
+      return { grade: grade, total: total, completed: cap, xp: progress.xp||0, level: progress.level||1,
+               streak: progress.streak_days||0, badges: (badges||[]).length,
+               active: progress.last_active === localDay(), pct: total ? Math.round(cap/total*100) : 0 };
+    }
+
+    // ---- biểu đồ cột thời gian học 7 ngày ----
+    function renderStudyChart(byDay){
+      const box = $('studyChart'); if (!box) return;
+      const wd = ['CN','T2','T3','T4','T5','T6','T7']; const days = [];
+      for (let i=6;i>=0;i--){
+        const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-i);
+        const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+        days.push({ sec: (byDay[key]||0), label: wd[d.getDay()] });
+      }
+      const maxSec = Math.max(60, Math.max.apply(null, days.map(function(x){ return x.sec; })));
+      box.innerHTML = '<div style="display:flex;align-items:flex-end;gap:8px;height:200px;padding:8px 2px">' +
+        days.map(function(x){
+          const h = Math.round(x.sec/maxSec*160); const mins = Math.round(x.sec/60);
+          return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px">' +
+            '<div style="font-size:12px;font-weight:700;color:#2D3748">'+(mins>0?mins+'′':'')+'</div>' +
+            '<div title="'+mins+' phút" style="width:100%;max-width:46px;height:'+Math.max(4,h)+'px;border-radius:8px 8px 4px 4px;background:linear-gradient(180deg,#4F8CFF,#9B72FF)"></div>' +
+            '<div style="font-size:12px;color:#6B7280;font-weight:600">'+x.label+'</div></div>';
+        }).join('') + '</div>';
+    }
+
+    // ---- render chi tiết 1 học sinh (port từ trang phụ huynh) ----
+    async function renderChild(d){
+      const profile = d.profile || {}, progress = d.progress || {}, lessons = d.lessons || [], badges = d.badges || [];
+      const grade = Number(profile.grade) || 1;
+      const ids = gradeIds(grade);
+      const total = ids ? ids.length : 10;
+      const byId = {}; (lessons||[]).forEach(function(l){ byId[l.lesson_id] = l; });
+      const completed = (lessons||[]).filter(function(l){ return l.status==='completed' && (!ids || ids.indexOf(l.lesson_id)>=0); }).length;
+      setBindAll('completed', Math.min(completed,total)); setBindAll('total', total);
+      setBindAll('xp', progress.xp||0); setBindAll('badges', (badges||[]).length);
+      setBindAll('streak', progress.streak_days||0); setBindAll('grade', grade);
+      const nameEl = document.querySelector('#studentDetail .student-info h2'); if (nameEl) nameEl.textContent = profile.name || 'Học sinh';
+      const avEl = document.querySelector('#studentDetail .student-avatar'); if (avEl && profile.avatar) avEl.textContent = profile.avatar;
+      const joinEl = $('join-date'); const created = profile.created_at; if (joinEl) joinEl.textContent = created ? fmtDate(created) : '—';
+
+      const cid = profile.id;
+
+      let study = { total:0, last7:0, byDay:{} };
+      try { study = cid ? await TVKN.childStudyTime(cid) : study; } catch(e){}
+      renderStudyChart(study.byDay);
+
+      let acts = [];
+      try { acts = cid ? await TVKN.childActivity(cid, 100) : []; } catch(e){ acts = []; }
+      const list = $('recent-list');
+      if (list){
+        const recent = (acts||[]).slice(0,6);
+        list.innerHTML = recent.length ? recent.map(function(a){
+          const xp = (a.xp_delta!=null && a.xp_delta!==0) ? '<div class="recent-xp">'+(a.xp_delta>0?'+':'')+a.xp_delta+'</div>' : '';
+          return '<div class="recent-row"><div class="recent-date">'+fmtDate(a.created_at)+'</div><div class="recent-ico">📘</div><div class="recent-main"><div class="recent-name">'+esc(a.text)+'</div></div>'+xp+'</div>';
+        }).join('') : '<div class="recent-row"><div class="recent-main"><div class="recent-name" style="color:var(--text-soft)">Chưa có hoạt động</div></div></div>';
+      }
+
+      // Báo cáo tuần
+      const weekAgo = Date.now() - 7*86400000; let wkXp = 0;
+      (acts||[]).forEach(function(a){ if (new Date(a.created_at).getTime() >= weekAgo){ const x=a.xp_delta||0; if (x>0) wkXp+=x; } });
+      const wkLessons = (lessons||[]).filter(function(l){ return l.status==='completed' && l.updated_at && new Date(l.updated_at).getTime()>=weekAgo && (!ids || ids.indexOf(l.lesson_id)>=0); }).length;
+      const wkBadges = (badges||[]).filter(function(b){ return b.unlocked_at && new Date(b.unlocked_at).getTime()>=weekAgo; }).length;
+      if ($('wk-lessons')) $('wk-lessons').textContent = wkLessons;
+      if ($('wk-xp'))      $('wk-xp').textContent = wkXp;
+      if ($('wk-time'))    $('wk-time').textContent = TVKN.fmtDuration(study.last7);
+      if ($('wk-badges'))  $('wk-badges').textContent = wkBadges;
+
+      // Gom theo chủ đề
+      const LMAP = (window.TVKN_LESSONS && TVKN_LESSONS.lessons) || {}; const topics = {};
+      (ids||[]).forEach(function(id){
+        const L = LMAP[id]; if (!L) return; const t = L.topic || 'Khác';
+        if (!topics[t]) topics[t] = { full:t, total:0, completed:0, scoreSum:0, scoreN:0, order:L.no||999 };
+        const T = topics[t]; T.total++; if (L.no && L.no < T.order) T.order = L.no;
+        const rec = byId[id];
+        if (rec){ if (rec.status==='completed') T.completed++; if (rec.best_score>0){ T.scoreSum+=rec.best_score; T.scoreN++; } }
+      });
+      const topicArr = Object.keys(topics).map(function(k){ const T=topics[k]; return { full:T.full, total:T.total, completed:T.completed, order:T.order, avg: T.scoreN ? Math.round(T.scoreSum/T.scoreN) : null }; });
+
+      const strengths = topicArr.filter(function(t){ return t.avg!=null && t.avg>=80; }).sort(function(a,b){ return b.avg-a.avg; }).slice(0,3);
+      const sEl = $('strengthList');
+      if (sEl) sEl.innerHTML = strengths.length
+        ? strengths.map(function(t){ return '<div class="strength-item"><span class="ok">✅</span> '+esc(shortLabel(t.full))+' <span style="color:var(--green);font-weight:700;margin-left:auto">'+t.avg+'%</span></div>'; }).join('')
+        : '<div class="strength-item" style="color:var(--text-soft)">Chưa đủ bài đạt điểm cao để nhận xét.</div>';
+      let accSum=0, accN=0; topicArr.forEach(function(t){ if (t.avg!=null){ accSum+=t.avg; accN++; } });
+      const accEl = $('accBig');
+      if (accEl){ if (accN){ accEl.style.display=''; const n=accEl.querySelector('.num'); if(n) n.textContent=Math.round(accSum/accN)+'%'; } else accEl.style.display='none'; }
+
+      const improve = topicArr.filter(function(t){ return t.avg!=null && t.avg<70; }).sort(function(a,b){ return a.avg-b.avg; }).slice(0,3);
+      const iEl = $('improveList');
+      if (iEl) iEl.innerHTML = improve.length
+        ? improve.map(function(t){ return '<div class="improve-item"><div class="improve-head"><span class="warn">⚠ '+esc(shortLabel(t.full))+'</span><span class="pct">'+t.avg+'%</span></div><div class="bar"><div style="width:'+t.avg+'%"></div></div></div>'; }).join('')
+        : '<div class="improve-item" style="color:var(--text-soft)">Hiện chưa có phần nào điểm thấp. 🎉</div>';
+
+      const chapters = topicArr.slice().sort(function(a,b){ return a.order-b.order; });
+      const cEl = $('chapterBox');
+      if (cEl) cEl.innerHTML = chapters.length
+        ? chapters.map(function(t){
+            const pct = t.total ? Math.round(t.completed/t.total*100) : 0;
+            const cls = pct>=80?'fill-blue':(pct>=40?'fill-mid':'fill-low');
+            const col = pct>=80?'var(--green)':(pct>=40?'var(--blue)':'var(--orange)');
+            return '<div class="chapter-item"><div class="chapter-head"><span>'+esc(chapterLabel(t.full))+'</span><span class="cpct" style="color:'+col+'">'+pct+'%</span></div><div class="chapter-bar"><div class="'+cls+'" style="width:'+pct+'%"></div></div></div>';
+          }).join('')
+        : '<div class="chapter-item"><div class="chapter-head"><span style="color:var(--text-soft)">Chưa có dữ liệu chương cho lớp này.</span></div></div>';
+    }
+
+    // ===== Trạng thái giáo viên =====
+    let classes = [];          // [{id,name,class_code,student_count}]
+    let curClassId = null;
+    let curStudents = [];      // [{ profile, data, stats }]
+
+    function fillClassSelect(){
+      const sel = $('classSelect'); if (!sel) return;
+      sel.innerHTML = classes.map(function(c){
+        const pend = c.pending_count ? ' · ⏳'+c.pending_count+' chờ' : '';
+        return '<option value="'+c.id+'">'+esc(c.name)+' · '+c.student_count+' HS'+pend+'</option>';
+      }).join('');
+    }
+
+    // Render danh sách yêu cầu chờ duyệt
+    function renderPending(list){
+      const block = $('pendingBlock'), box = $('pendingBox'), cnt = $('pendingCount');
+      if (!list.length){ if (block) block.style.display='none'; return; }
+      if (block) block.style.display='';
+      if (cnt) cnt.textContent = list.length;
+      box.innerHTML = list.map(function(r){
+        return '<div class="recent-row" data-pid="'+r.student_id+'">' +
+          '<div class="recent-ico">'+(r.avatar||'👧')+'</div>' +
+          '<div class="recent-main"><div class="recent-name">'+esc(r.name||'Học sinh')+'</div>' +
+            '<div style="font-size:13px;color:var(--text-soft)">Lớp '+(r.grade||1)+' · xin vào '+fmtDate(r.joined_at)+'</div></div>' +
+          '<button class="tbtn tbtn-primary" data-approve="'+r.student_id+'" style="padding:8px 16px">✓ Duyệt</button>' +
+          '<button class="tbtn tbtn-danger" data-reject="'+r.student_id+'" style="padding:8px 14px;margin-left:8px">✕ Từ chối</button>' +
+        '</div>';
+      }).join('');
+    }
+
+    function renderOverviewAndTable(){
+      const n = curStudents.length;
+      const totXp = curStudents.reduce(function(s,x){ return s + (x.stats.xp||0); }, 0);
+      const active = curStudents.filter(function(x){ return x.stats.active; }).length;
+      const avgPct = n ? Math.round(curStudents.reduce(function(s,x){ return s + x.stats.pct; }, 0) / n) : 0;
+      $('ov-count').textContent = n;
+      $('ov-xp').textContent = totXp.toLocaleString('vi-VN');
+      $('ov-active').textContent = active;
+      $('ov-pct').textContent = avgPct + '%';
+
+      const body = $('stuBody');
+      if (!n){
+        body.innerHTML = '<tr><td colspan="9" class="empty">Lớp chưa có học sinh nào. Hãy đọc <b>mã lớp</b> ở trên cho các em tham gia nhé!</td></tr>';
+        return;
+      }
+      body.innerHTML = curStudents.map(function(x){
+        const p = x.profile, s = x.stats;
+        return '<tr data-id="'+p.id+'">' +
+          '<td><span class="mini-av">'+(p.avatar||'👧')+'</span> <b>'+esc(p.name||'Học sinh')+'</b></td>' +
+          '<td>Lớp '+s.grade+'</td>' +
+          '<td>'+ (s.xp||0).toLocaleString('vi-VN') +'</td>' +
+          '<td>'+ s.level +'</td>' +
+          '<td>🔥 '+ s.streak +'</td>' +
+          '<td>'+ s.badges +'</td>' +
+          '<td><span class="pbar"><div style="width:'+s.pct+'%"></div></span> '+s.completed+'/'+s.total+'</td>' +
+          '<td>'+ (s.active ? '<span class="pill pill-green">Có học</span>' : '<span class="pill pill-soft">—</span>') +'</td>' +
+          '<td><button class="x-rm" title="Gỡ khỏi lớp" data-rm="'+p.id+'">✕</button></td>' +
+        '</tr>';
+      }).join('');
+    }
+
+    async function loadClass(classId){
+      curClassId = classId;
+      const c = classes.find(function(x){ return x.id===classId; });
+      if ($('codePill')) $('codePill').firstChild.textContent = (c ? c.class_code : '—') + ' ';
+      $('stuBody').innerHTML = '<tr><td colspan="9" class="empty">Đang tải danh sách…</td></tr>';
+      // Yêu cầu chờ duyệt (song song)
+      const pendingP = TVKN.listPendingRequests(classId).catch(function(){ return []; });
+      const profiles = await TVKN.listClassStudents(classId);
+      // Nạp dữ liệu chi tiết từng HS song song (chỉ đọc)
+      const datas = await Promise.all(profiles.map(function(p){ return TVKN.childData(p.id).catch(function(){ return { profile:p }; }); }));
+      curStudents = datas.map(function(d, i){
+        const data = d || { profile: profiles[i] };
+        if (!data.profile) data.profile = profiles[i];
+        return { profile: data.profile, data: data, stats: studentStats(data) };
+      });
+      renderOverviewAndTable();
+      renderPending(await pendingP);
+    }
+
+    async function refreshClasses(selectId){
+      classes = await TVKN.listMyClasses();
+      const bar = $('classBar'), howto = $('howto'), ov = $('overviewBlock'), lb = $('listBlock');
+      if (!classes.length){
+        if (bar) bar.style.display = 'none';
+        if (howto) howto.style.display = 'none';
+        if (ov) ov.style.display = 'none';
+        if (lb) lb.style.display = 'none';
+        $('createPanel').style.display = '';     // chưa có lớp → mở thẳng panel tạo lớp
+        return;
+      }
+      fillClassSelect();
+      const target = (selectId && classes.some(function(c){ return c.id===selectId; })) ? selectId : classes[0].id;
+      const sel = $('classSelect'); if (sel) sel.value = target;
+      if (bar) bar.style.display = 'flex';
+      if (howto) howto.style.display = '';
+      if (ov) ov.style.display = '';
+      if (lb) lb.style.display = '';
+      await loadClass(target);
+    }
+
+    async function doCreate(){
+      const inp = $('className'), msg = $('createMsg');
+      const name = (inp ? inp.value : '').trim();
+      if (!name){ if(msg){ msg.textContent='Hãy nhập tên lớp.'; msg.style.color='#FF6B9D'; } return; }
+      if (msg){ msg.textContent='⏳ Đang tạo lớp…'; msg.style.color='#6B7280'; }
+      try {
+        const r = await TVKN.createClass(name);
+        if (msg){ msg.textContent='✓ Đã tạo lớp "'+name+'" — mã lớp: '+(r && r.class_code)+''; msg.style.color='#2F8F3E'; }
+        if (inp) inp.value='';
+        $('createPanel').style.display='none';
+        await refreshClasses(r && r.id);
+      } catch(e){
+        if (msg){ msg.textContent='❌ '+((e && e.message) || 'Tạo lớp thất bại'); msg.style.color='#FF6B9D'; }
+      }
+    }
+
+    function bindUI(){
+      const sel = $('classSelect'); if (sel) sel.addEventListener('change', function(){ loadClass(this.value); });
+      const nb = $('newClassBtn'); if (nb) nb.addEventListener('click', function(){ const p=$('createPanel'); p.style.display = p.style.display==='none' ? '' : 'none'; const i=$('className'); if(i) i.focus(); });
+      const cb = $('createBtn'); if (cb) cb.addEventListener('click', doCreate);
+      const ci = $('className'); if (ci) ci.addEventListener('keydown', function(e){ if(e.key==='Enter') doCreate(); });
+      const cp = $('copyCodeBtn'); if (cp) cp.addEventListener('click', function(e){
+        e.stopPropagation();
+        const c = classes.find(function(x){ return x.id===curClassId; }); if (!c) return;
+        try { navigator.clipboard.writeText(c.class_code); } catch(err){}
+        const self = this; self.textContent='✓'; setTimeout(function(){ self.textContent='📋'; }, 1500);
+      });
+      const db = $('delClassBtn'); if (db) db.addEventListener('click', async function(){
+        const c = classes.find(function(x){ return x.id===curClassId; }); if (!c) return;
+        if (!confirm('Xóa lớp "'+c.name+'"? Học sinh sẽ rời lớp (dữ liệu học tập của các em KHÔNG bị xóa).')) return;
+        try { await TVKN.deleteClass(c.id); $('studentDetail').style.display='none'; await refreshClasses(); }
+        catch(e){ alert('Không xóa được: '+((e&&e.message)||e)); }
+      });
+      // Bấm 1 dòng HS → xem chi tiết; bấm nút ✕ → gỡ khỏi lớp
+      $('stuBody').addEventListener('click', async function(e){
+        const rm = e.target.closest('[data-rm]');
+        if (rm){
+          e.stopPropagation();
+          const id = rm.getAttribute('data-rm');
+          const st = curStudents.find(function(x){ return x.profile.id===id; });
+          if (!confirm('Gỡ '+((st&&st.profile.name)||'học sinh này')+' khỏi lớp?')) return;
+          try { await TVKN.removeStudent(curClassId, id); await loadClass(curClassId); }
+          catch(err){ alert('Không gỡ được: '+((err&&err.message)||err)); }
+          return;
+        }
+        const tr = e.target.closest('tr[data-id]'); if (!tr) return;
+        const st = curStudents.find(function(x){ return x.profile.id===tr.getAttribute('data-id'); });
+        if (!st) return;
+        $('studentDetail').style.display='';
+        await renderChild(st.data);
+        $('studentDetail').scrollIntoView({ behavior:'smooth', block:'start' });
+      });
+      // Duyệt / Từ chối yêu cầu chờ
+      $('pendingBox').addEventListener('click', async function(e){
+        const ap = e.target.closest('[data-approve]');
+        const rj = e.target.closest('[data-reject]');
+        if (!ap && !rj) return;
+        const id = (ap || rj).getAttribute(ap ? 'data-approve' : 'data-reject');
+        try {
+          if (ap) await TVKN.approveStudent(curClassId, id);
+          else { if (!confirm('Từ chối yêu cầu này?')) return; await TVKN.removeStudent(curClassId, id); }
+          await refreshClasses(curClassId);   // cập nhật cả sĩ số + danh sách + chờ duyệt
+        } catch(err){ alert('Thao tác thất bại: '+((err&&err.message)||err)); }
+      });
+    }
+
+    // ===== Khởi động: chỉ GIÁO VIÊN mới vào =====
+    (async function(){
+      if (!window.TVKN || !TVKN.configured){
+        document.querySelector('.wrap').innerHTML = '<div class="card" style="margin-top:40px">⚠️ Chưa kết nối Supabase. Hãy điền cấu hình trong <code>supabase-config.js</code> và chạy các file trong <code>sql/</code> (gồm <code>supabase-teacher.sql</code>).</div>';
+        return;
+      }
+      const profile = await TVKN.requireAuth();   // khách → tự về trang đăng nhập
+      if (!profile) return;
+      if (profile.role !== 'teacher'){
+        alert('⛔ Trang này dành cho tài khoản giáo viên.');
+        window.location.href = profile.role==='admin' ? 'admin.html' : profile.role==='parent' ? 'phu-huynh.html' : 'index.html';
+        return;
+      }
+      const tn = $('teacherName'); if (tn && profile.name) tn.textContent = 'Chào, ' + profile.name + ' 👋';
+      bindUI();
+      await refreshClasses();
+    })();
+  })();
+</script>
+</body>
+</html>

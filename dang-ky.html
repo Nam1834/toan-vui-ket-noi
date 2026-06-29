@@ -53,6 +53,7 @@
     <div class="acctype" id="acctype">
       <button type="button" class="acctype-btn active" data-role="student">🧒 Học sinh</button>
       <button type="button" class="acctype-btn" data-role="parent">👨‍👩‍👧 Phụ huynh</button>
+      <button type="button" class="acctype-btn" data-role="teacher">👩‍🏫 Giáo viên</button>
     </div>
 
     <div class="banner" id="cfgBanner">
@@ -111,20 +112,23 @@
     o.classList.add('active'); avatar = o.dataset.av;
   });
 
-  // Loại tài khoản: Học sinh (mặc định) / Phụ huynh. Phụ huynh không cần chọn nhân vật & lớp.
+  // Loại tài khoản: Học sinh (mặc định) / Phụ huynh / Giáo viên.
+  // Phụ huynh & Giáo viên không cần chọn nhân vật & lớp.
   let role = 'student';
   document.getElementById('acctype').addEventListener('click', e => {
     const b = e.target.closest('.acctype-btn'); if (!b) return;
     role = b.dataset.role;
     document.querySelectorAll('.acctype-btn').forEach(x => x.classList.toggle('active', x === b));
-    const parent = role === 'parent';
-    document.getElementById('avatarLabel').classList.toggle('hide', parent);
-    document.getElementById('avatarGrid').classList.toggle('hide', parent);
-    document.getElementById('gradeWrap').classList.toggle('hide', parent);
-    document.getElementById('welcome').textContent = parent
-      ? 'Tạo tài khoản phụ huynh để theo dõi việc học của con 👨‍👩‍👧'
-      : 'Tạo tài khoản để lưu tiến độ học của em 🎉';
-    if (parent) avatar = '👩';
+    const isStudent = role === 'student';
+    document.getElementById('avatarLabel').classList.toggle('hide', !isStudent);
+    document.getElementById('avatarGrid').classList.toggle('hide', !isStudent);
+    document.getElementById('gradeWrap').classList.toggle('hide', !isStudent);
+    document.getElementById('welcome').textContent =
+      role === 'parent'  ? 'Tạo tài khoản phụ huynh để theo dõi việc học của con 👨‍👩‍👧' :
+      role === 'teacher' ? 'Tạo tài khoản giáo viên để quản lý lớp & theo dõi học sinh 👩‍🏫' :
+                           'Tạo tài khoản để lưu tiến độ học của em 🎉';
+    if (role === 'parent')  avatar = '👩';
+    if (role === 'teacher') avatar = '👩‍🏫';
   });
 
   if (!TVKN.configured) {
@@ -161,7 +165,7 @@
         setMsg('🎉 Đăng ký thành công! Đang vào...', true);
         const prof = await TVKN.getProfile();
         const r = (prof && prof.role) || role;
-        window.location.href = r === 'admin' ? 'admin.html' : r === 'parent' ? 'phu-huynh.html' : 'index.html';
+        window.location.href = r === 'admin' ? 'admin.html' : r === 'parent' ? 'phu-huynh.html' : r === 'teacher' ? 'giao-vien.html' : 'index.html';
       } else {
         // Confirm email đang BẬT
         setMsg('📩 Đã gửi email xác nhận. Hãy mở email để kích hoạt rồi đăng nhập.', true);

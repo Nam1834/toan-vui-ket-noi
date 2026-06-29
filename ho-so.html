@@ -436,6 +436,18 @@
     <p class="section-sub" style="margin-top:10px;font-size:13px">Đổi mã khi muốn cấp mã mới. Phụ huynh đã liên kết trước đó vẫn xem được — muốn gỡ thì bố/mẹ bấm “Gỡ” ở trang phụ huynh.</p>
   </section>
 
+  <!-- ============ THAM GIA LỚP (chỉ học sinh) ============ -->
+  <section class="block" id="joinClassBox" style="display:none">
+    <h2 class="section-title">🏫 Tham gia lớp học</h2>
+    <p class="section-sub">Nhập <b>mã lớp</b> cô/thầy đọc cho em (vd: <code>LOP3A-2K7</code>) để cô/thầy theo dõi việc học của em nhé!</p>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <input id="classCodeInput" placeholder="Nhập mã lớp..." style="flex:1;min-width:180px;padding:12px 14px;border:2px solid #E8ECF4;border-radius:14px;font-family:inherit;font-size:16px;text-transform:uppercase">
+      <button class="btn btn-ghost" id="joinClassBtn">Tham gia</button>
+    </div>
+    <div id="joinClassMsg" style="margin-top:10px;font-size:14px;font-weight:600;min-height:18px"></div>
+    <div id="myClassList" style="margin-top:10px;font-size:14px;color:var(--text-soft)"></div>
+  </section>
+
   <!-- ============ THỐNG KÊ TỔNG QUAN ============ -->
   <div class="stats-section">
     <div class="stat-grid">
@@ -792,6 +804,68 @@
         catch(e){ alert('Không đổi được mã: ' + (e.message || e)); }
         this.disabled = false;
       });
+    } catch(e){}
+  })();
+
+  /* Tham gia lớp — chỉ hiện cho HỌC SINH. Nhập mã lớp do giáo viên cấp. */
+  (async function joinClassBox(){
+    if (!window.TVKN || !TVKN.configured) return;
+    try {
+      const p = await TVKN.getProfile();
+      if (!p || p.role !== 'student') return;
+      const box = document.getElementById('joinClassBox');
+      const inp = document.getElementById('classCodeInput');
+      const btn = document.getElementById('joinClassBtn');
+      const msg = document.getElementById('joinClassMsg');
+      if (!box || !inp || !btn) return;
+      box.style.display = '';
+      const listEl = document.getElementById('myClassList');
+      const escc = function(t){ return (t==null?'':String(t)).replace(/[<>&]/g, function(c){ return c==='<'?'&lt;':c==='>'?'&gt;':'&amp;'; }); };
+      async function renderMyClasses(){
+        if (!listEl) return;
+        let rows = [];
+        try { rows = await TVKN.listMyClassesStudent(); } catch(e){ rows = []; }
+        if (!rows.length){ listEl.innerHTML = '<span style="color:var(--text-soft)">Em chưa tham gia lớp nào.</span>'; return; }
+        listEl.innerHTML = '<div style="font-weight:700;margin-bottom:8px">🏫 Lớp của em:</div>' + rows.map(function(r){
+          const ok = r.status === 'approved';
+          const badge = ok
+            ? '<span style="background:#E6F8EA;color:#2F8F3E;font-weight:700;font-size:12.5px;padding:3px 11px;border-radius:999px">✓ Đã vào lớp</span>'
+            : '<span style="background:#FFF0DC;color:#B5650B;font-weight:700;font-size:12.5px;padding:3px 11px;border-radius:999px">⏳ Chờ giáo viên duyệt</span>';
+          const teacher = r.teacher_name ? ' · GV: ' + escc(r.teacher_name) : '';
+          return '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 0;border-bottom:1px solid #EEF2F9">' +
+            '<b>' + escc(r.class_name || 'Lớp') + '</b>' + badge +
+            '<span style="font-size:13px;color:var(--text-soft)">' + teacher + '</span>' +
+            '<button class="btn btn-ghost" data-leave="' + r.class_id + '" style="margin-left:auto;padding:6px 14px;font-size:13px">' + (ok ? 'Rời lớp' : 'Huỷ') + '</button>' +
+          '</div>';
+        }).join('');
+      }
+      async function doJoin(){
+        const code = (inp.value || '').trim();
+        if (!code){ msg.textContent = 'Hãy nhập mã lớp.'; msg.style.color = 'var(--pink)'; return; }
+        msg.textContent = '⏳ Đang gửi yêu cầu...'; msg.style.color = 'var(--text-soft)';
+        btn.disabled = true;
+        try {
+          const r = await TVKN.joinClass(code);
+          msg.textContent = '✓ Đã gửi yêu cầu vào lớp: ' + (r && r.class_name ? r.class_name : 'lớp') + ' — chờ giáo viên duyệt nhé!';
+          msg.style.color = '#2F8F3E';
+          inp.value = '';
+          await renderMyClasses();
+        } catch(e){
+          const raw = (e && e.message) || '';
+          msg.textContent = '❌ ' + (raw.indexOf('Mã lớp không đúng') >= 0 ? 'Mã lớp không đúng. Kiểm tra lại nhé.' : (raw || 'Gửi yêu cầu thất bại'));
+          msg.style.color = 'var(--pink)';
+        }
+        btn.disabled = false;
+      }
+      btn.addEventListener('click', doJoin);
+      inp.addEventListener('keydown', function(e){ if (e.key === 'Enter') doJoin(); });
+      if (listEl) listEl.addEventListener('click', async function(e){
+        const lv = e.target.closest('[data-leave]'); if (!lv) return;
+        if (!confirm('Rời/huỷ lớp này?')) return;
+        try { await TVKN.leaveClass(lv.getAttribute('data-leave')); await renderMyClasses(); }
+        catch(err){ alert('Không rời được: ' + ((err && err.message) || err)); }
+      });
+      await renderMyClasses();
     } catch(e){}
   })();
 </script>
