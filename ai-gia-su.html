@@ -506,6 +506,12 @@
           Chưa có câu hỏi nào. Hãy gửi câu hỏi để Thỏ Toán giúp em nhé!
         </div>
       </div>
+      <!-- Ô trả lời ngay trong khung chat (hiện sau khi bắt đầu hỏi) -->
+      <div class="chat-reply" id="chatReply" style="display:none; align-items:center; margin-top:18px; gap:10px;">
+        <input type="text" id="replyInput" placeholder="✏️ Nhập câu trả lời của em cho Thỏ rồi bấm Gửi..."
+          style="flex:1; min-width:0; padding:13px 16px; border-radius:14px; border:2px solid var(--bg-soft); background:var(--bg-soft); font-family:inherit; font-size:15px; color:var(--text-dark); outline:none;">
+        <button class="btn btn-primary" onclick="sendReply()" style="flex-shrink:0;">Gửi 📨</button>
+      </div>
     </div>
   </section>
 
@@ -872,6 +878,7 @@
 
     const empty = document.getElementById('chatEmpty');
     if (empty) empty.remove();
+    document.getElementById('chatReply').style.display = 'flex';  // hiện ô trả lời
 
     // Bong bóng học sinh
     const student = document.createElement('div');
@@ -907,6 +914,8 @@
     } finally {
       aiBusy = false;
       ai.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      const ri = document.getElementById('replyInput');
+      if (ri) ri.focus();   // đưa con trỏ vào ô trả lời cho em gõ tiếp
     }
   }
 
@@ -916,6 +925,21 @@
     questionInput.value = '';
     sendMessage(text);
   }
+
+  // Ô trả lời ngay trong khung chat
+  function sendReply() {
+    const ri = document.getElementById('replyInput');
+    const t = ri.value.trim();
+    if (!t) { ri.focus(); return; }
+    ri.value = '';
+    sendMessage(t);
+  }
+  (function () {
+    const ri = document.getElementById('replyInput');
+    if (ri) ri.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); sendReply(); }
+    });
+  })();
 
   function addAiActions(bubble) {
     const actions = document.createElement('div');
@@ -941,7 +965,7 @@
     sendMessage('Thỏ cho em một ví dụ tương tự khác để luyện tập nhé!');
   }
   function showAnswer(e) {
-    sendMessage('Em đã thử rồi, Thỏ cho em xem đáp án và lời giải đầy đủ nhé!');
+    sendMessage('Cho em XEM ĐÁP ÁN bài này ngay nhé: trình bày lời giải đầy đủ từng bước và đáp án cuối cùng.');
   }
   function saveQuestion(e) {
     showToast('💾 Đã lưu câu hỏi vào lịch sử học tập!');
