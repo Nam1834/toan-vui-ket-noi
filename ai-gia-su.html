@@ -459,7 +459,7 @@
           </select>
         </div>
         <div class="select-group">
-          <label class="select-label" for="topicSelect">🧩 Chọn chủ đề</label>
+          <label class="select-label" for="topicSelect">🧩 Chọn bài học</label>
           <select class="select-box" id="topicSelect"></select>
         </div>
       </div>
@@ -606,39 +606,95 @@
 </nav>
 
 <script>
-  // ====== DỮ LIỆU ======
-  const topicsByGrade = {
-    "1": ["Số đến 10", "So sánh số", "Phép cộng", "Phép trừ", "Hình học đơn giản"],
-    "2": ["Số đến 1000", "Phép nhân", "Phép chia", "Đo lường", "Toán có lời văn"],
-    "3": ["Nhân chia trong phạm vi lớn", "Góc", "Chu vi", "Diện tích", "Thời gian"],
-    "4": ["Số tự nhiên", "Phân số", "Hình học", "Đo lường", "Toán có lời văn"],
-    "5": ["Số thập phân", "Tỉ số phần trăm", "Hình học", "Chuyển động đều", "Ôn tập lên lớp 6"]
-  };
+  // Lịch sử hội thoại với Thỏ Toán (gửi lên API mỗi lượt để AI nhớ ngữ cảnh)
+  let conversation = [];
 
-  // 5 bước trả lời mẫu (theo chatExample trong tài liệu)
-  const answerSteps = [
-    { num: 1, title: "Đọc hiểu đề", content: "Đề bài cho biết Lan có 5 quả táo và được mẹ cho thêm 3 quả." },
-    { num: 2, title: "Tóm tắt", content: "Lan có: 5 quả táo. Mẹ cho thêm: 3 quả táo. Hỏi tất cả có bao nhiêu quả táo?" },
-    { num: 3, title: "Chọn phép tính", content: "Vì Lan được cho thêm nên ta dùng phép cộng. ➕" },
-    { num: 4, title: "Em thử làm", content: "Em hãy thử tính 5 + 3 nhé. Tự làm trước rồi mới xem đáp án nha! 😊" }
-  ];
-  const finalAnswer = "5 + 3 = 8. Vậy Lan có tất cả 8 quả táo. 🍎";
-
-  // ====== CHỌN LỚP / CHỦ ĐỀ ======
+  // ====== CHỌN LỚP / BÀI HỌC (nạp học liệu để Thỏ bám đúng kiến thức) ======
   const gradeSelect = document.getElementById('gradeSelect');
   const topicSelect = document.getElementById('topicSelect');
+  const loadedGrades = {};   // các lớp đã nạp dữ liệu
+  let coreLoaded = false;
 
-  function updateTopics() {
-    const topics = topicsByGrade[gradeSelect.value] || [];
-    topicSelect.innerHTML = '';
-    topics.forEach(t => {
-      const opt = document.createElement('option');
-      opt.value = t; opt.textContent = t;
-      topicSelect.appendChild(opt);
+  function loadScript(src) {
+    return new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = res;
+      s.onerror = () => rej(new Error('Không tải được ' + src));
+      document.head.appendChild(s);
     });
+  }
+
+  async function ensureGrade(g) {
+    if (!window.TVKN_LESSONS && !coreLoaded) { await loadScript('assets/js/lessons.js'); coreLoaded = true; }
+    if (loadedGrades[g]) return;
+    await loadScript('assets/js/lessons-lop' + g + '.js');
+    loadedGrades[g] = true;
+  }
+
+  function lessonsOfGrade(g) {
+    const all = (window.TVKN_LESSONS && window.TVKN_LESSONS.lessons) || {};
+    return Object.keys(all)
+      .filter(id => String(all[id].grade) === String(g))
+      .sort((a, b) => (all[a].no || 0) - (all[b].no || 0))
+      .map(id => ({ id, data: all[id] }));
+  }
+
+  async function updateTopics() {
+    topicSelect.innerHTML = '<option value="">✨ Hỏi chung (chưa chọn bài)</option>';
+    try {
+      await ensureGrade(gradeSelect.value);
+      lessonsOfGrade(gradeSelect.value).forEach(L => {
+        const opt = document.createElement('option');
+        opt.value = L.id;
+        opt.textContent = 'Bài ' + (L.data.no || '') + ' — ' + (L.data.title || L.id);
+        topicSelect.appendChild(opt);
+      });
+    } catch (e) {
+      // Không nạp được học liệu thì vẫn cho hỏi chung
+      console.warn('[Thỏ Toán] ' + e.message);
+    }
   }
   gradeSelect.addEventListener('change', updateTopics);
   updateTopics();
+
+  // Bỏ thẻ HTML trong dữ liệu (banner/sub có thể chứa <b>...)
+  function plainText(s) { return String(s == null ? '' : s).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim(); }
+
+  // Gom học liệu của bài đang chọn thành "ngữ cảnh" gửi cho Thỏ
+  function buildLessonContext() {
+    const all = (window.TVKN_LESSONS && window.TVKN_LESSONS.lessons) || {};
+    const L = all[topicSelect.value];
+    if (!L) return '';
+    const lines = [];
+    lines.push('BÀI: ' + plainText(L.title) + (L.topic ? ('  [' + plainText(L.topic) + ']') : '') + '  (Lớp ' + L.grade + ')');
+    if (L.desc) lines.push('Mục tiêu: ' + plainText(L.desc));
+    if (Array.isArray(L.blocks) && L.blocks.length) {
+      const ks = L.blocks.map(b => plainText(b.title) + (b.sub ? (': ' + plainText(b.sub)) : '')).filter(Boolean);
+      if (ks.length) lines.push('Nội dung chính:\n- ' + ks.join('\n- '));
+    }
+    if (L.ai && Array.isArray(L.ai.chips) && L.ai.chips.length) {
+      const ex = L.ai.chips.slice(0, 4).map(c => 'Hỏi: ' + plainText(c.q) + '\nThỏ: ' + plainText(c.a)).join('\n');
+      lines.push('VÍ DỤ VĂN PHONG TRẢ LỜI CHUẨN (hãy bắt chước đúng giọng này):\n' + ex);
+    }
+    if (Array.isArray(L.quiz) && L.quiz.length) {
+      const qs = L.quiz.slice(0, 6).map((q, i) => {
+        let line = (i + 1) + '. ' + plainText(q.q);
+        if (q.hint) line += ' | Gợi ý: ' + plainText(q.hint);
+        if (q.correct !== undefined) line += ' | Đáp án: ' + (typeof q.correct === 'object' ? JSON.stringify(q.correct) : q.correct);
+        return line;
+      }).join('\n');
+      lines.push('BÀI TẬP TRONG BÀI (kèm gợi ý & đáp án — CHỈ tiết lộ đáp án khi em xin):\n' + qs);
+    }
+    return lines.join('\n');
+  }
+
+  // Tên bài đang chọn (để gửi kèm)
+  function currentLessonTitle() {
+    const all = (window.TVKN_LESSONS && window.TVKN_LESSONS.lessons) || {};
+    const L = all[topicSelect.value];
+    return L ? plainText(L.title) : '';
+  }
 
   // ====== Ô NHẬP CÂU HỎI ======
   const questionInput = document.getElementById('questionInput');
@@ -678,14 +734,6 @@
   // ====== MODAL CHỤP ẢNH ======
   let camStream = null;
   let hasPhoto = false;
-  // Đề mẫu mô phỏng "nhận diện" theo lớp đang chọn
-  const sampleProblems = {
-    "1": "Lan có 5 quả táo, mẹ cho thêm 3 quả. Hỏi Lan có tất cả bao nhiêu quả táo?",
-    "2": "Một cửa hàng có 24 cái bánh, đã bán 8 cái. Hỏi còn lại bao nhiêu cái bánh?",
-    "3": "Mỗi hộp có 6 cây bút. Hỏi 4 hộp như vậy có tất cả bao nhiêu cây bút?",
-    "4": "Một mảnh vườn hình chữ nhật dài 8m, rộng 5m. Tính chu vi mảnh vườn đó.",
-    "5": "Một ô tô đi được 120 km trong 3 giờ. Hỏi trung bình mỗi giờ ô tô đi được bao nhiêu km?"
-  };
 
   function openPhotoModal() {
     resetPhotoModal();
@@ -756,21 +804,30 @@
     document.getElementById('recognizeBtn').style.display = 'inline-flex';
     document.getElementById('askPhotoBtn').style.display = 'none';
   }
-  function recognizePhoto(e) {
+  async function recognizePhoto(e) {
     if (!hasPhoto) { showToast('🖼️ Em hãy chọn hoặc chụp ảnh trước nhé!'); return; }
     const spin = document.getElementById('recogSpinner');
     const btn = document.getElementById('recognizeBtn');
+    const imgEl = document.getElementById('photoPreview');
     spin.style.display = 'block'; btn.disabled = true;
-    setTimeout(() => {
-      spin.style.display = 'none';
-      const grade = gradeSelect.value || "1";
-      document.getElementById('recognizedText').value = sampleProblems[grade] || sampleProblems["1"];
+    try {
+      const text = await callTutor({
+        action: 'ocr',
+        grade: gradeSelect.value || '1',
+        image: imgEl.src
+      });
+      document.getElementById('recognizedText').value = text;
       document.getElementById('recognizeBox').style.display = 'block';
       btn.style.display = 'none';
       document.getElementById('askPhotoBtn').style.display = 'inline-flex';
       showToast('✅ Thỏ đã đọc xong đề! Em kiểm tra lại nhé.');
       celebrate(e);
-    }, 1300);
+    } catch (err) {
+      showToast('😢 Thỏ chưa đọc được ảnh: ' + err.message);
+      btn.disabled = false;
+    } finally {
+      spin.style.display = 'none';
+    }
   }
   function askFromPhoto(e) {
     const text = document.getElementById('recognizedText').value.trim();
@@ -784,114 +841,108 @@
     if (e.target === this) closePhotoModal();
   });
 
-  // ====== KHUNG CHAT ======
+  // ====== KHUNG CHAT (gọi AI thật qua /api/ai-tutor) ======
   const chatArea = document.getElementById('chatArea');
+  let aiBusy = false;
 
-  function sendQuestion(e) {
-    const text = questionInput.value.trim();
-    if (!text) { showToast('✏️ Em hãy nhập câu hỏi trước nhé!'); questionInput.focus(); return; }
+  // Chuyển văn bản AI (markdown nhẹ) sang HTML an toàn
+  function renderRich(text) {
+    let s = escapeHtml(text);
+    s = s.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');   // **đậm**
+    s = s.replace(/\n/g, '<br>');                     // xuống dòng
+    return s;
+  }
+
+  async function callTutor(payload) {
+    const resp = await fetch('/api/ai-tutor', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await resp.json().catch(() => ({}));
+    if (!resp.ok) throw new Error(data.error || ('Lỗi máy chủ (' + resp.status + ').'));
+    return data.text || '';
+  }
+
+  // Gửi 1 tin nhắn của học sinh tới Thỏ Toán
+  async function sendMessage(text) {
+    if (aiBusy) { showToast('⏳ Thỏ đang trả lời, em chờ chút nhé!'); return; }
+    text = (text || '').trim();
+    if (!text) return;
 
     const empty = document.getElementById('chatEmpty');
     if (empty) empty.remove();
 
-    // Tin nhắn học sinh
+    // Bong bóng học sinh
     const student = document.createElement('div');
     student.className = 'msg student';
     student.innerHTML = '<div class="msg-avatar">👧</div><div class="msg-bubble">' + escapeHtml(text) + '</div>';
     chatArea.appendChild(student);
+    conversation.push({ role: 'user', text: text });
 
-    // Tin nhắn AI - đang gõ
+    // Bong bóng AI - đang gõ
     const ai = document.createElement('div');
     ai.className = 'msg ai';
     ai.innerHTML = '<div class="msg-avatar">🐰</div><div class="msg-bubble"><span class="typing">Thỏ đang suy nghĩ<span>...</span></span></div>';
     chatArea.appendChild(ai);
-
-    questionInput.value = '';
     ai.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-    // Sau một lúc, Thỏ trả lời từng bước
-    setTimeout(() => buildAiAnswer(ai), 1100);
+    const bubble = ai.querySelector('.msg-bubble');
+    aiBusy = true;
+    try {
+      const answer = await callTutor({
+        grade: gradeSelect.value,
+        topic: currentLessonTitle(),
+        context: buildLessonContext(),
+        history: conversation
+      });
+      conversation.push({ role: 'model', text: answer });
+      bubble.innerHTML = renderRich(answer);
+      addAiActions(bubble);
+    } catch (err) {
+      // Bỏ lượt user lỗi để em có thể hỏi lại
+      conversation.pop();
+      bubble.innerHTML = '😢 <b>Thỏ chưa trả lời được.</b><br>' + escapeHtml(err.message) +
+        '<br><span style="color:var(--text-soft)">Em thử gửi lại câu hỏi nhé!</span>';
+    } finally {
+      aiBusy = false;
+      ai.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   }
 
-  function buildAiAnswer(ai) {
-    const bubble = ai.querySelector('.msg-bubble');
-    bubble.innerHTML = '<div style="font-weight:700;margin-bottom:12px;">Để Thỏ giúp em từng bước nhé! 🐰</div>';
-
-    // Hiện từng bước một
-    let i = 0;
-    function nextStep() {
-      if (i < answerSteps.length) {
-        const s = answerSteps[i];
-        const div = document.createElement('div');
-        div.className = 'step';
-        div.innerHTML = '<div class="step-num">' + s.num + '</div><div><div class="step-title">' + s.title + '</div><div class="step-body">' + s.content + '</div></div>';
-        bubble.appendChild(div);
-        ai.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        i++;
-        setTimeout(nextStep, 650);
-      } else {
-        addAiActions(bubble);
-      }
-    }
-    nextStep();
+  function sendQuestion(e) {
+    const text = questionInput.value.trim();
+    if (!text) { showToast('✏️ Em hãy nhập câu hỏi trước nhé!'); questionInput.focus(); return; }
+    questionInput.value = '';
+    sendMessage(text);
   }
 
   function addAiActions(bubble) {
-    // Vùng đáp án (ẩn cho tới khi bấm Xem đáp án)
-    const answerWrap = document.createElement('div');
-    answerWrap.className = 'answer-wrap';
-
     const actions = document.createElement('div');
     actions.className = 'ai-actions';
     actions.innerHTML =
       '<button class="ai-action" onclick="understood(event)">✅ Em hiểu rồi</button>' +
-      '<button class="ai-action" onclick="explainAgain(event, this)">🔁 Giải thích lại</button>' +
-      '<button class="ai-action" onclick="otherExample(event, this)">🎲 Cho ví dụ khác</button>' +
-      '<button class="ai-action show-answer" onclick="showAnswer(event, this)">👁️ Xem đáp án</button>' +
+      '<button class="ai-action" onclick="explainAgain(event)">🔁 Giải thích lại</button>' +
+      '<button class="ai-action" onclick="otherExample(event)">🎲 Cho ví dụ khác</button>' +
+      '<button class="ai-action show-answer" onclick="showAnswer(event)">👁️ Xem đáp án</button>' +
       '<button class="ai-action" onclick="saveQuestion(event)">💾 Lưu câu hỏi</button>';
-
-    bubble.appendChild(answerWrap);
     bubble.appendChild(actions);
   }
 
-  // ====== CÁC NÚT DƯỚI TRẢ LỜI AI ======
+  // ====== CÁC NÚT DƯỚI TRẢ LỜI AI (đều hỏi tiếp Thỏ thật) ======
   function understood(e) {
-    showToast('🎉 Giỏi quá! Em đã tự học rất tốt. +5 XP');
+    showToast('🎉 Giỏi quá! Em đã tự học rất tốt.');
     celebrate(e);
   }
-
-  function explainAgain(e, btn) {
-    const bubble = btn.closest('.msg-bubble');
-    const wrap = bubble.querySelector('.answer-wrap');
-    addInlineNote(bubble, '🔁 <b>Giải thích đơn giản hơn:</b> Lan đang có 5 quả táo. Mẹ cho thêm nghĩa là số táo nhiều lên. Em đếm tiếp từ 5: 6, 7, 8. Vậy là có 8 quả nhé!', wrap);
+  function explainAgain(e) {
+    sendMessage('Em chưa hiểu lắm, Thỏ giải thích đơn giản hơn được không ạ?');
   }
-
-  function otherExample(e, btn) {
-    const bubble = btn.closest('.msg-bubble');
-    const wrap = bubble.querySelector('.answer-wrap');
-    addInlineNote(bubble, '🎲 <b>Ví dụ khác:</b> Nam có 4 viên bi, bạn cho thêm 2 viên. Em thử tính 4 + 2 xem bằng mấy nhé? 😊', wrap);
+  function otherExample(e) {
+    sendMessage('Thỏ cho em một ví dụ tương tự khác để luyện tập nhé!');
   }
-
-  function addInlineNote(bubble, html, beforeNode) {
-    const note = document.createElement('div');
-    note.style.cssText = 'margin-top:10px;padding:12px 14px;border-radius:12px;background:#F4F8FF;font-size:14px;';
-    note.innerHTML = html;
-    bubble.insertBefore(note, beforeNode || null);
-    note.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  function showAnswer(e) {
+    sendMessage('Em đã thử rồi, Thỏ cho em xem đáp án và lời giải đầy đủ nhé!');
   }
-
-  function showAnswer(e, btn) {
-    const bubble = btn.closest('.msg-bubble');
-    const wrap = bubble.querySelector('.answer-wrap');
-    if (wrap.querySelector('.answer-box')) { showToast('👀 Đáp án đã hiện rồi nhé!'); return; }
-    const box = document.createElement('div');
-    box.className = 'answer-box';
-    box.innerHTML = '🎯 Đáp án: ' + finalAnswer;
-    wrap.appendChild(box);
-    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    showToast('🎯 Đây là đáp án nhé!');
-  }
-
   function saveQuestion(e) {
     showToast('💾 Đã lưu câu hỏi vào lịch sử học tập!');
     celebrate(e);
