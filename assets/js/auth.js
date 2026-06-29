@@ -108,7 +108,8 @@ window.TVKN = (function () {
   async function signUp(info) {
     ensure();
     const meta = { name: info.name, avatar: info.avatar || '👧', grade: info.grade || 1 };
-    if (info.role === 'parent') meta.role = 'parent';   // 'admin' KHÔNG bao giờ nhận từ client (chỉ qua admin_emails)
+    // 'parent'/'teacher' nhận từ client; 'admin' KHÔNG bao giờ nhận từ client (chỉ qua admin_emails)
+    if (info.role === 'parent' || info.role === 'teacher') meta.role = info.role;
     const { data, error } = await sb.auth.signUp({
       email: info.email,
       password: info.password,
@@ -214,6 +215,93 @@ window.TVKN = (function () {
       .order('created_at', { ascending: false })
       .limit(limit || 10);
     return data || [];
+  }
+
+  // ============================================================
+  //  GIÁO VIÊN ↔ LỚP HỌC  (quản lý lớp bằng MÃ LỚP — xem sql/supabase-teacher.sql)
+  //  1 giáo viên ↔ NHIỀU học sinh. Giáo viên CHỈ ĐỌC dữ liệu HS (RLS teacher_read_*).
+  //  Tái dùng childData/childActivity/childStudyTime để xem chi tiết 1 HS.
+  // ============================================================
+  // Danh sách lớp của giáo viên đang đăng nhập (kèm sĩ số). Trả [] nếu chưa có / lỗi.
+  async function listMyClasses() {
+    ensure();
+    const user = await getUser();
+    if (!user) return [];
+    const { data, error } = await sb.rpc('list_my_classes');
+    if (error) { console.warn('list_my_classes:', error.message || error); return []; }
+    return data || [];
+  }
+
+  // Tạo lớp mới. Trả { ok, id, name, class_code } hoặc throw lỗi.
+  async function createClass(name) {
+    ensure();
+    const { data, error } = await sb.rpc('create_class', { p_name: name });
+    if (error) throw error;
+    return data;
+  }
+
+  // Học sinh tham gia lớp bằng mã. Trả { ok, class_id, class_name } hoặc throw lỗi (mã sai...).
+  async function joinClass(code) {
+    ensure();
+    const { data, error } = await sb.rpc('join_class', { p_code: code });
+    if (error) throw error;
+    return data;
+  }
+
+  // Danh sách hồ sơ học sinh trong 1 lớp (giáo viên sở hữu lớp). Trả [] nếu lỗi.
+  async function listClassStudents(classId) {
+    ensure();
+    if (!classId) return [];
+    const { data, error } = await sb.rpc('list_class_students', { p_class: classId });
+    if (error) { console.warn('list_class_students:', error.message || error); return []; }
+    return data || [];
+  }
+
+  // Danh sách yêu cầu CHỜ DUYỆT của 1 lớp. Trả [] nếu lỗi.
+  async function listPendingRequests(classId) {
+    ensure();
+    if (!classId) return [];
+    const { data, error } = await sb.rpc('list_pending_requests', { p_class: classId });
+    if (error) { console.warn('list_pending_requests:', error.message || error); return []; }
+    return data || [];
+  }
+
+  // Giáo viên DUYỆT 1 học sinh vào lớp
+  async function approveStudent(classId, studentId) {
+    ensure();
+    const { error } = await sb.rpc('approve_student', { p_class: classId, p_student: studentId });
+    if (error) throw error;
+  }
+
+  // Gỡ 1 học sinh khỏi lớp (cũng dùng để TỪ CHỐI yêu cầu đang chờ)
+  async function removeStudent(classId, studentId) {
+    ensure();
+    const { error } = await sb.rpc('remove_student', { p_class: classId, p_student: studentId });
+    if (error) throw error;
+  }
+
+  // HỌC SINH: danh sách lớp của mình (kèm trạng thái pending/approved). Trả [] nếu lỗi.
+  async function listMyClassesStudent() {
+    ensure();
+    const user = await getUser();
+    if (!user) return [];
+    const { data, error } = await sb.rpc('list_my_classes_student');
+    if (error) { console.warn('list_my_classes_student:', error.message || error); return []; }
+    return data || [];
+  }
+
+  // HỌC SINH: tự rời lớp (hoặc huỷ yêu cầu đang chờ)
+  async function leaveClass(classId) {
+    ensure();
+    const { error } = await sb.rpc('leave_class', { p_class: classId });
+    if (error) throw error;
+  }
+
+  // Xóa lớp
+  async function deleteClass(classId) {
+    ensure();
+    const { error } = await sb.rpc('delete_class', { p_class: classId });
+    if (error) throw error;
   }
 
   // ---------- CHẶN TRANG: chưa đăng nhập → về trang đăng nhập ----------
@@ -864,6 +952,8 @@ window.TVKN = (function () {
     signUp, signIn, signOut, getUser, getProfile,
     requireAuth, applyToDOM, guardPage, guardPageSoft, applyProfile, isLoggedIn, requireAdmin, bindCommon,
     listChildren, linkChild, unlinkChild, regenLinkCode, childData, childActivity,
+    listMyClasses, createClass, joinClass, listClassStudents, removeStudent, deleteClass,
+    listPendingRequests, approveStudent, listMyClassesStudent, leaveClass,
     getProgress, addXp, bumpStreak, setLesson,
     getActivity, getLessons, getBadges, getLeaderboard, getMyRank, getCohortStats,
     adminOverview, adminUsers,
