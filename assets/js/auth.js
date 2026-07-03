@@ -198,7 +198,8 @@ window.TVKN = (function () {
     const safe = function (p) { return p.then(function (r) { return r.data; }).catch(function () { return null; }); };
     const safeArr = function (p) { return p.then(function (r) { return r.data || []; }).catch(function () { return []; }); };
     const r = await Promise.all([
-      safe(sb.from('profiles').select('*').eq('id', childId).single()),
+      // KHÔNG lấy link_code (mã liên kết phụ huynh) — GV/PH không cần, tránh lộ.
+      safe(sb.from('profiles').select('id,name,avatar,grade,role,created_at,last_login').eq('id', childId).single()),
       safe(sb.from('progress').select('*').eq('user_id', childId).single()),
       safeArr(sb.from('lesson_progress').select('*').eq('user_id', childId)),
       safeArr(sb.from('user_badges').select('*').eq('user_id', childId))
@@ -303,6 +304,70 @@ window.TVKN = (function () {
     const { error } = await sb.rpc('delete_class', { p_class: classId });
     if (error) throw error;
   }
+
+  // ============================================================
+  //  TIN NHẮN / KHUNG CHAT  (xem sql/supabase-chat.sql)
+  //  • Chat LỚP  : recipientId = null → cả lớp cùng xem.
+  //  • Chat RIÊNG: recipientId = id người kia → chỉ 2 người thấy.
+  //  Phân quyền do RLS lo; realtime dùng postgres_changes (tôn trọng RLS).
+  // ============================================================
+  // Danh bạ lớp (id → name/avatar/is_teacher) — để hiển thị tên người gửi. Trả [] nếu lỗi.
+  async function classRoster(classId) {
+    ensure();
+    if (!classId) return [];
+    const { data, error } = await sb.rpc('class_roster', { p_class: classId });
+    if (error) { console.warn('class_roster:', error.message || error); return []; }
+    return data || [];
+  }
+
+  // Lấy tin của 1 luồng. opts = { classId, recipientId (null=cả lớp), me (uid) }. Trả [] cũ→mới.
+  async function chatFetch(opts) {
+    ensure();
+    opts = opts || {};
+    if (!opts.classId) return [];
+    let q = sb.from('messages').select('*').eq('class_id', opts.classId)
+              .order('id', { ascending: true }).limit(300);
+    if (opts.recipientId == null) {
+      q = q.is('recipient_id', null);                 // chat cả lớp
+    } else {
+      const me = opts.me, peer = opts.recipientId;    // chat riêng: (tôi↔người kia) 2 chiều
+      q = q.not('recipient_id', 'is', null).or(
+        'and(sender_id.eq.' + me + ',recipient_id.eq.' + peer + '),' +
+        'and(sender_id.eq.' + peer + ',recipient_id.eq.' + me + ')'
+      );
+    }
+    const { data, error } = await q;
+    if (error) { console.warn('chatFetch:', error.message || error); return []; }
+    return data || [];
+  }
+
+  // Gửi 1 tin. opts = { classId, recipientId (null=cả lớp), body, me (uid) }. Trả dòng vừa chèn hoặc throw.
+  async function chatSend(opts) {
+    ensure();
+    opts = opts || {};
+    const body = (opts.body || '').trim();
+    if (!body || !opts.classId) return null;
+    let me = opts.me;
+    if (!me) { const u = await getUser(); me = u ? u.id : null; }
+    const row = { class_id: opts.classId, sender_id: me,
+                  recipient_id: (opts.recipientId == null ? null : opts.recipientId), body: body };
+    const { data, error } = await sb.from('messages').insert(row).select().single();
+    if (error) throw error;
+    return data;
+  }
+
+  // Lắng nghe tin MỚI của 1 lớp (realtime). handler(row) cho mỗi INSERT. Trả channel để huỷ.
+  function chatSubscribe(classId, handler) {
+    ensure();
+    if (!classId) return null;
+    const ch = sb.channel('tvkn-msg-' + classId)
+      .on('postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'messages', filter: 'class_id=eq.' + classId },
+          function (payload) { try { handler(payload.new); } catch (e) {} })
+      .subscribe();
+    return ch;
+  }
+  function chatUnsubscribe(ch) { try { if (ch && sb) sb.removeChannel(ch); } catch (e) {} }
 
   // ---------- CHẶN TRANG: chưa đăng nhập → về trang đăng nhập ----------
   // Trả về profile nếu đã đăng nhập.
@@ -954,6 +1019,7 @@ window.TVKN = (function () {
     listChildren, linkChild, unlinkChild, regenLinkCode, childData, childActivity,
     listMyClasses, createClass, joinClass, listClassStudents, removeStudent, deleteClass,
     listPendingRequests, approveStudent, listMyClassesStudent, leaveClass,
+    classRoster, chatFetch, chatSend, chatSubscribe, chatUnsubscribe,
     getProgress, addXp, bumpStreak, setLesson,
     getActivity, getLessons, getBadges, getLeaderboard, getMyRank, getCohortStats,
     adminOverview, adminUsers,

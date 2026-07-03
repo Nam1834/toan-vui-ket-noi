@@ -34,8 +34,9 @@ Web học toán cho học sinh tiểu học — **HTML tĩnh + [Supabase](https:
 1. Tạo project tại [supabase.com](https://supabase.com).
 2. Điền `SUPABASE_URL` + `anon key` vào `assets/js/supabase-config.js`.
 3. Mở SQL Editor, chạy lần lượt các file trong `sql/`:
-   `supabase-schema.sql` → `supabase-roles.sql` → `supabase-extra.sql` → `supabase-admin-stats.sql` → `supabase-parent.sql` → `supabase-study-time.sql` → `supabase-teacher.sql`.
-   ⚠️ `supabase-teacher.sql` chạy **cuối cùng** (định nghĩa lại `handle_new_user` gộp cả role `teacher`).
+   `supabase-schema.sql` → `supabase-roles.sql` → `supabase-extra.sql` → `supabase-admin-stats.sql` → `supabase-parent.sql` → `supabase-study-time.sql` → `supabase-teacher.sql` → `supabase-chat.sql`.
+   ⚠️ `supabase-teacher.sql` chạy **trước** `supabase-chat.sql` (định nghĩa lại `handle_new_user` gộp cả role `teacher`, và tạo bảng `classes`/`class_members` mà chat cần).
+   💬 `supabase-chat.sql` tạo bảng tin nhắn + tự thêm `public.messages` vào publication **Realtime** (khung chat lớp hiện tin ngay tức thì).
 4. Thêm email admin trong `sql/supabase-roles.sql` (bảng `admin_emails`).
 
 ## Cấu hình Gia sư AI (Google Gemini — MIỄN PHÍ)
