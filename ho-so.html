@@ -846,7 +846,17 @@
         btn.disabled = true;
         try {
           const r = await TVKN.joinClass(code);
-          msg.textContent = '✓ Đã gửi yêu cầu vào lớp: ' + (r && r.class_name ? r.class_name : 'lớp') + ' — chờ giáo viên duyệt nhé!';
+          const nm = (r && r.class_name) ? r.class_name : 'lớp';
+          // Kiểm tra trạng thái thực: nếu em đã ở trong lớp rồi thì báo khác (tránh nói "chờ duyệt" sai).
+          let already = false;
+          try {
+            const rows = await TVKN.listMyClassesStudent();
+            const mine = rows.filter(function(x){ return x.class_id === (r && r.class_id); })[0];
+            already = mine && mine.status === 'approved';
+          } catch(e){}
+          msg.textContent = already
+            ? '✓ Em đã ở trong lớp: ' + nm + ' rồi nhé!'
+            : '✓ Đã gửi yêu cầu vào lớp: ' + nm + ' — chờ giáo viên duyệt nhé!';
           msg.style.color = '#2F8F3E';
           inp.value = '';
           await renderMyClasses();

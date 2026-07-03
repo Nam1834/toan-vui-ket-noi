@@ -269,7 +269,8 @@
 
     <section class="block">
       <h2 class="section-title">🧑‍🎓 Chi tiết học sinh
-        <button class="tbtn tbtn-soft" onclick="document.getElementById('studentDetail').style.display='none'" style="margin-left:auto;font-size:13px">✕ Đóng</button>
+        <button class="tbtn tbtn-primary" id="dmStudentBtn" style="margin-left:auto;font-size:13px">💬 Nhắn riêng</button>
+        <button class="tbtn tbtn-soft" onclick="document.getElementById('studentDetail').style.display='none'" style="font-size:13px">✕ Đóng</button>
       </h2>
       <div class="student-card">
         <div class="student-avatar">👧</div>
@@ -364,6 +365,7 @@
 <script src="assets/js/lessons-lop3.js"></script>
 <script src="assets/js/lessons-lop4.js"></script>
 <script src="assets/js/lessons-lop5.js"></script>
+<script src="assets/js/chat.js"></script>
 <script>
   /* TRANG GIÁO VIÊN — quản lý lớp bằng mã lớp; xem dữ liệu THẬT của HS (chỉ đọc). */
   window.tvknLogout = function(){ TVKN.signOut(); };
@@ -500,6 +502,7 @@
     let classes = [];          // [{id,name,class_code,student_count}]
     let curClassId = null;
     let curStudents = [];      // [{ profile, data, stats }]
+    let curDetailStudentId = null;   // HS đang mở ở khung chi tiết (để nút "Nhắn riêng")
 
     function fillClassSelect(){
       const sel = $('classSelect'); if (!sel) return;
@@ -517,7 +520,7 @@
       if (cnt) cnt.textContent = list.length;
       box.innerHTML = list.map(function(r){
         return '<div class="recent-row" data-pid="'+r.student_id+'">' +
-          '<div class="recent-ico">'+(r.avatar||'👧')+'</div>' +
+          '<div class="recent-ico">'+esc(r.avatar||'👧')+'</div>' +
           '<div class="recent-main"><div class="recent-name">'+esc(r.name||'Học sinh')+'</div>' +
             '<div style="font-size:13px;color:var(--text-soft)">Lớp '+(r.grade||1)+' · xin vào '+fmtDate(r.joined_at)+'</div></div>' +
           '<button class="tbtn tbtn-primary" data-approve="'+r.student_id+'" style="padding:8px 16px">✓ Duyệt</button>' +
@@ -544,7 +547,7 @@
       body.innerHTML = curStudents.map(function(x){
         const p = x.profile, s = x.stats;
         return '<tr data-id="'+p.id+'">' +
-          '<td><span class="mini-av">'+(p.avatar||'👧')+'</span> <b>'+esc(p.name||'Học sinh')+'</b></td>' +
+          '<td><span class="mini-av">'+esc(p.avatar||'👧')+'</span> <b>'+esc(p.name||'Học sinh')+'</b></td>' +
           '<td>Lớp '+s.grade+'</td>' +
           '<td>'+ (s.xp||0).toLocaleString('vi-VN') +'</td>' +
           '<td>'+ s.level +'</td>' +
@@ -645,9 +648,14 @@
         const tr = e.target.closest('tr[data-id]'); if (!tr) return;
         const st = curStudents.find(function(x){ return x.profile.id===tr.getAttribute('data-id'); });
         if (!st) return;
+        curDetailStudentId = st.profile.id;
         $('studentDetail').style.display='';
         await renderChild(st.data);
         $('studentDetail').scrollIntoView({ behavior:'smooth', block:'start' });
+      });
+      // Nút "Nhắn riêng" trong khung chi tiết → mở khung chat tới đúng HS
+      const dmBtn = $('dmStudentBtn'); if (dmBtn) dmBtn.addEventListener('click', function(){
+        if (window.TVKNChat && curClassId && curDetailStudentId) TVKNChat.openDM(curClassId, curDetailStudentId);
       });
       // Duyệt / Từ chối yêu cầu chờ
       $('pendingBox').addEventListener('click', async function(e){

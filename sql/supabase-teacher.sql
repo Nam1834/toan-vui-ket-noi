@@ -182,6 +182,7 @@ as $$
 $$;
 
 -- ---------- 9. RPC: DANH SÁCH HỌC SINH ĐÃ DUYỆT trong 1 lớp (chỉ giáo viên sở hữu lớp) ----------
+--  (Bản hardening BỎ link_code nằm ở supabase-chat.sql — file chạy sau cùng.)
 create or replace function public.list_class_students(p_class uuid)
 returns setof public.profiles
 language sql security definer stable set search_path = public
