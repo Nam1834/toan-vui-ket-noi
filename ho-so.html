@@ -169,7 +169,7 @@
 
   /* ============== THỐNG KÊ TỔNG QUAN ============== */
   .stats-section { margin-top: 24px; }
-  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; }
   .stat-card {
     background: var(--white); border-radius: 20px;
     padding: 22px; text-align: center; box-shadow: var(--shadow);
@@ -366,7 +366,7 @@
 
   /* ============== RESPONSIVE ============== */
   @media (max-width: 900px) {
-    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-grid { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
     .badge-grid { grid-template-columns: repeat(2, 1fr); }
     .profile-card { flex-direction: column; text-align: center; }
     .profile-tags, .profile-buttons { justify-content: center; }

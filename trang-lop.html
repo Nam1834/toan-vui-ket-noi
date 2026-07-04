@@ -162,7 +162,7 @@
 
   /* ============== THANH TIẾN ĐỘ ============== */
   .progress-section { margin-top: 24px; }
-  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; }
   .stat-card {
     background: var(--white); border-radius: 20px;
     padding: 20px; text-align: center; box-shadow: var(--shadow);
@@ -365,7 +365,7 @@
 
   /* ============== RESPONSIVE ============== */
   @media (max-width: 900px) {
-    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-grid { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
     .lesson-grid { grid-template-columns: repeat(2, 1fr); }
     .quick-grid { grid-template-columns: 1fr; }
     .banner { flex-direction: column; text-align: center; }
@@ -459,19 +459,19 @@
         <div class="quick-icon">🔥</div>
         <div class="quick-title">5 câu khởi động</div>
         <div class="quick-desc">Làm nhanh 5 câu để làm nóng não.</div>
-        <a href="lam-bai-tap.html" class="quick-btn">Làm ngay</a>
+        <a href="lam-bai-tap.html" class="quick-btn quick-practice">Làm ngay</a>
       </div>
       <div class="quick-card q2">
         <div class="quick-icon">🔁</div>
         <div class="quick-title">Ôn bài đã học</div>
         <div class="quick-desc">Ôn lại những bài em đã hoàn thành.</div>
-        <a href="lam-bai-tap.html" class="quick-btn">Ôn tập</a>
+        <a href="lam-bai-tap.html" class="quick-btn quick-practice">Ôn tập</a>
       </div>
       <div class="quick-card q3">
         <div class="quick-icon">🛠️</div>
         <div class="quick-title">Sửa lỗi sai</div>
         <div class="quick-desc">Làm lại các câu em từng trả lời sai.</div>
-        <a href="lam-bai-tap.html" class="quick-btn">Sửa lỗi</a>
+        <a href="lam-bai-tap.html" class="quick-btn quick-practice">Sửa lỗi</a>
       </div>
     </div>
   </section>
@@ -630,6 +630,9 @@
       setText('bnTag', G.tag); setText('bnTitle', G.title); setText('bnIntro', G.intro); setText('bnMascot', G.mascot);
       document.querySelectorAll('#gradeTabs .grade-tab').forEach(b =>
         b.classList.toggle('active', Number(b.dataset.grade) === Number(grade)));
+      // Nút "Luyện tập nhanh" mang theo khối lớp đang xem → không còn nhảy về câu lớp 1
+      document.querySelectorAll('.quick-practice').forEach(a =>
+        a.setAttribute('href', 'lam-bai-tap.html?grade=' + grade));
 
       const order = Object.keys(DATA.lessons)
         .filter(k => DATA.lessons[k].grade === grade)

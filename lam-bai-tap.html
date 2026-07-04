@@ -226,10 +226,27 @@
       pairs: [{img:'🐱🐱🐱', val:3}, {img:'🌸🌸🌸🌸🌸', val:5}],
       hint: 'Em hãy đếm số con vật, số bông hoa rồi nối với con số đúng.' },
   ];
-  // Lấy quiz theo bài (?lesson=...) từ dữ liệu chung; không có → dùng mặc định
+  // Gom câu hỏi của TẤT CẢ bài thuộc 1 khối lớp (dùng cho "luyện tập nhanh" không gắn bài cụ thể)
+  function pooledQuestionsForGrade(g) {
+    const all = (window.TVKN_LESSONS && TVKN_LESSONS.lessons) || {};
+    const pool = [];
+    Object.keys(all).forEach(id => {
+      const L = all[id];
+      if (L && String(L.grade) === String(g) && Array.isArray(L.quiz)) pool.push.apply(pool, L.quiz);
+    });
+    for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = pool[i]; pool[i] = pool[j]; pool[j] = t; }
+    return pool.slice(0, 8);   // lấy tối đa 8 câu cho 1 lượt luyện nhanh
+  }
+
+  // Lấy quiz theo bài (?lesson=...) nếu có; nếu không, chọn theo khối lớp (?grade=...) — KHÔNG mặc định về lớp 1
   const _lessonId = new URLSearchParams(location.search).get('lesson') || '';
+  const _gradeParam = new URLSearchParams(location.search).get('grade') || '';
   const _LDATA = (window.TVKN_LESSONS && TVKN_LESSONS.lessons[_lessonId]) || null;
-  const questions = (_LDATA && Array.isArray(_LDATA.quiz) && _LDATA.quiz.length) ? _LDATA.quiz : FALLBACK_QUESTIONS;
+  const questions = (function () {
+    if (_LDATA && Array.isArray(_LDATA.quiz) && _LDATA.quiz.length) return _LDATA.quiz;
+    if (_gradeParam) { const pool = pooledQuestionsForGrade(_gradeParam); if (pool.length) return pool; }
+    return FALLBACK_QUESTIONS;
+  })();
   if (_LDATA) {
     const _t = document.querySelector('.header-title');
     if (_t) _t.textContent = 'Luyện tập: ' + _LDATA.title;
@@ -448,23 +465,23 @@
       fb.innerHTML = `<span class="feedback-em">🎉</span> Chính xác! Em thật giỏi! <b>+10 XP</b>`;
       correctCount++; xp += 10; streak++;
       document.getElementById('hdrXp').textContent = baseXp + xp;
+      chimeCorrect();      // 🔊 âm thanh reo vui khi đúng
       celebrate();
       document.getElementById('checkBtn').style.display = 'none';
       document.getElementById('nextBtn').style.display = 'inline-flex';
     } else {
+      // Hiện ĐÁP ÁN ĐÚNG (giữ nguyên, không xoá) rồi cho em qua câu tiếp
+      let ansText = Q.correct;
+      if (Q.type === 'true_false') ansText = Q.correct ? 'Đúng' : 'Sai';
+      // Với điền số / kéo thả: hiện luôn giá trị đúng ngay tại ô cho dễ thấy
+      if (Q.type === 'fill_blank') { const fi = document.getElementById('fillInput'); if (fi) { fi.classList.remove('wrong'); fi.classList.add('correct'); fi.value = Q.correct; } }
+      if (Q.type === 'drag_drop') { const slot = document.getElementById('ddSlot'); if (slot) { slot.classList.remove('wrong'); slot.classList.add('correct'); slot.textContent = Q.correct; } }
       fb.className = 'feedback no show';
-      fb.innerHTML = `<span class="feedback-em">💡</span> Gần đúng rồi, thử lại nhé! Em hãy xem lại hình và đếm chậm từng vật.`;
+      fb.innerHTML = `<span class="feedback-em">💡</span> Chưa đúng. Đáp án đúng là <b>${ansText}</b>. Em xem lại rồi làm câu tiếp nhé!`;
+      chimeWrong();        // 🔊 âm thanh nhẹ báo chưa đúng
       streak = 0;
-      // cho thử lại
-      checked = false;
-      setTimeout(() => {
-        document.querySelectorAll('.ans,.tf').forEach(a => a.classList.remove('wrong','selected'));
-        const fi = document.getElementById('fillInput'); if (fi) fi.classList.remove('wrong');
-        const slot = document.getElementById('ddSlot');
-        if (slot) { slot.classList.remove('wrong','filled'); slot.textContent = '?'; }
-        document.querySelectorAll('.dd-tile').forEach(t => t.classList.remove('used','selected'));
-        if (questions[idx].type === 'drag_drop') { selected = null; ddTileIdx = null; document.getElementById('checkBtn').disabled = true; }
-      }, 1200);
+      document.getElementById('checkBtn').style.display = 'none';
+      document.getElementById('nextBtn').style.display = 'inline-flex';
     }
     updateScore();
   }
@@ -499,6 +516,25 @@
     } catch (e) { console.warn('Ghi tiến độ lỗi:', e); }
     window.location.href = 'ket-qua.html';
   }
+
+  // Âm thanh phản hồi (Web Audio — luôn kêu, không cần giọng TTS)
+  let _actx = null;
+  function _tone(freq, startAt, dur, type) {
+    try {
+      if (!_actx) _actx = new (window.AudioContext || window.webkitAudioContext)();
+      if (_actx.state === 'suspended') _actx.resume();
+      const o = _actx.createOscillator(), g = _actx.createGain();
+      o.type = type || 'sine'; o.frequency.value = freq;
+      o.connect(g); g.connect(_actx.destination);
+      const t0 = _actx.currentTime + (startAt || 0);
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(0.28, t0 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      o.start(t0); o.stop(t0 + dur + 0.03);
+    } catch (e) {}
+  }
+  function chimeCorrect() { _tone(660, 0, 0.16); _tone(988, 0.12, 0.24); }
+  function chimeWrong() { _tone(300, 0, 0.18, 'triangle'); }
 
   function celebrate(e) {
     if (e) e.preventDefault();

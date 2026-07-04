@@ -517,7 +517,8 @@
         <div class="week-stat"><div class="wn" data-bind="streak">0</div><div class="wl">Ngày chuỗi</div></div>
       </div>
       <div class="week-btns">
-        <button class="btn btn-white" onclick="window.print()">🖨️ In / Lưu PDF báo cáo</button>
+        <button class="btn btn-white" onclick="downloadReportPDF()">📄 Tải PDF báo cáo</button>
+        <button class="btn btn-white" onclick="window.print()" style="opacity:.85">🖨️ In</button>
       </div>
     </div>
   </section>
@@ -592,7 +593,7 @@
   <a href="trang-lop.html"><span>📚</span>Bài học</a>
   <a href="ho-so.html"><span>👤</span>Hồ sơ con</a>
   <a href="phu-huynh.html" class="active"><span>👨‍👩‍👧</span>Phụ huynh</a>
-  <a href="#" onclick="celebrate(event)"><span>📧</span>Liên hệ</a>
+  <a href="#" onclick="openParentChat(event)"><span>💬</span>Nhắn con</a>
 </nav>
 <div class="footer-copy">© 2026 TOÁN VUI KẾT NỐI · Đồng hành cùng con học Toán mỗi ngày 💙</div>
 
@@ -620,8 +621,10 @@
   }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.3/dist/html2pdf.bundle.min.js"></script>
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
+<script src="assets/js/chat.js"></script>
 <script src="assets/js/lessons.js"></script>
 <script src="assets/js/lessons-lop1.js"></script>
 <script src="assets/js/lessons-lop2.js"></script>
@@ -897,6 +900,74 @@
       }
     })();
   })();
+
+  // ====== MỞ KHUNG CHAT VỚI CON (dùng chung chat.js) ======
+  function openParentChat(e) {
+    if (e) e.preventDefault();
+    if (!window.TVKNChat) { alert('Khung chat đang khởi động, quý phụ huynh thử lại sau giây lát nhé.'); return; }
+    var sel = document.getElementById('childSelect');
+    var peer = (sel && sel.value) ? sel.value : null;   // id của con đang chọn (nếu có)
+    TVKNChat.openFamily(peer);
+  }
+
+  // ====== CÀI ĐẶT THÔNG BÁO — lưu lựa chọn (localStorage) ======
+  (function () {
+    var boxes = document.querySelectorAll('.notify-list input[type="checkbox"]');
+    if (!boxes.length) return;
+    var KEY = 'tvkn_parent_notify';
+    var saved = {};
+    try { saved = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+    boxes.forEach(function (b, i) {
+      if (saved[i] !== undefined) b.checked = !!saved[i];
+      b.addEventListener('change', function () {
+        var cur = {};
+        boxes.forEach(function (x, j) { cur[j] = x.checked; });
+        try { localStorage.setItem(KEY, JSON.stringify(cur)); } catch (e) {}
+        if (window.TVKN && TVKN.speak) {}   // (chỗ móc nếu sau này gửi thông báo thật)
+      });
+    });
+  })();
+
+  // ====== TẢI BÁO CÁO PDF (html2pdf) ======
+  async function downloadReportPDF() {
+    if (typeof html2pdf === 'undefined') { alert('Đang tải công cụ PDF, quý phụ huynh thử lại sau vài giây nhé.'); return; }
+    const g = id => { const e = document.getElementById(id); return e ? e.textContent.trim() : '—'; };
+    const sel = document.getElementById('childSelect');
+    const childName = (sel && sel.selectedOptions && sel.selectedOptions[0])
+      ? sel.selectedOptions[0].textContent.trim() : 'Học sinh';
+    const streakEl = document.querySelector('[data-bind="streak"]');
+    const streak = streakEl ? streakEl.textContent.trim() : '0';
+    const today = new Date().toLocaleDateString('vi-VN');
+    const rows = [
+      ['📚 Bài đã học trong tuần', g('wk-lessons')],
+      ['⭐ Điểm XP đạt được', g('wk-xp')],
+      ['⏱️ Thời gian học', g('wk-time')],
+      ['🏅 Huy hiệu mới', g('wk-badges')],
+      ['🔥 Chuỗi ngày học liên tiếp', streak],
+    ].map(r => '<tr><td style="padding:10px 14px;border:1px solid #E8ECF4">' + r[0] +
+      '</td><td style="padding:10px 14px;border:1px solid #E8ECF4;text-align:right;font-weight:800">' + r[1] + '</td></tr>').join('');
+    const el = document.createElement('div');
+    el.style.cssText = 'font-family:Arial,\'Segoe UI\',sans-serif;color:#2D3748;padding:28px;width:720px;background:#fff';
+    el.innerHTML =
+      '<div style="text-align:center;border-bottom:3px solid #4F8CFF;padding-bottom:14px;margin-bottom:20px">' +
+        '<div style="font-size:24px;font-weight:800;color:#4F8CFF">🐰 TOÁN VUI KẾT NỐI</div>' +
+        '<div style="font-size:18px;font-weight:700;margin-top:6px">Báo cáo học tập tuần</div>' +
+        '<div style="color:#6B7280;font-size:13px;margin-top:4px">Học sinh: <b>' + childName + '</b> &nbsp;·&nbsp; Ngày xuất: ' + today + '</div>' +
+      '</div>' +
+      '<table style="width:100%;border-collapse:collapse;font-size:15px">' + rows + '</table>' +
+      '<div style="margin-top:22px;color:#6B7280;font-size:12px;text-align:center">Cảm ơn quý phụ huynh đã đồng hành cùng con! 💖</div>';
+    const safeName = childName.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '') || 'hoc-sinh';
+    try {
+      await html2pdf().set({
+        margin: 10, filename: 'bao-cao-' + safeName + '.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, backgroundColor: '#ffffff' },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      }).from(el).save();
+    } catch (e) {
+      alert('Không tạo được PDF: ' + (e.message || e) + '. Quý phụ huynh có thể dùng nút "In" để lưu PDF.');
+    }
+  }
 </script>
 </body>
 </html>

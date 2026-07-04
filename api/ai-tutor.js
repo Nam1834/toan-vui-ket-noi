@@ -145,7 +145,7 @@ module.exports = async (req, res) => {
   const result = await callGemini({
     system_instruction: { parts: [{ text: buildSystemPrompt(grade, topic, context) }] },
     contents,
-    generationConfig: { temperature: 0.7, maxOutputTokens: 1024 },
+    generationConfig: { temperature: 0.45, maxOutputTokens: 1024 },
   });
   if (!result.ok) { res.status(result.status).json({ error: result.error }); return; }
   res.status(200).json({ text: result.text });

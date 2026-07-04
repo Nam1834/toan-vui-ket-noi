@@ -166,6 +166,7 @@
   .s1 .stat-ic { background: #E5EEFF; } .s2 .stat-ic { background: #E3F8E8; }
   .s3 .stat-ic { background: #F1E9FF; } .s4 .stat-ic { background: #FFEFD9; }
   .s5 .stat-ic { background: #FFF6D6; } .s6 .stat-ic { background: #FFE6EE; }
+  .s7 .stat-ic { background: #E0F7F4; } .s8 .stat-ic { background: #F3E8FF; }
   .stat-num { font-family: 'Baloo 2', sans-serif; font-size: 28px; font-weight: 800; line-height: 1.1; }
   .stat-label { font-size: 13.5px; color: var(--text-soft); font-weight: 600; }
 
@@ -358,6 +359,8 @@
           <div class="stat-card s4"><div class="stat-ic">🎲</div><div><div class="stat-num" id="stat-plays">0</div><div class="stat-label" id="stat-plays-label">Tổng hoạt động</div></div></div>
           <div class="stat-card s5"><div class="stat-ic">✨</div><div><div class="stat-num" id="stat-xptoday">0</div><div class="stat-label" id="stat-xptoday-label">XP phát sinh hôm nay</div></div></div>
           <div class="stat-card s6"><div class="stat-ic">🔥</div><div><div class="stat-num" id="stat-active">0</div><div class="stat-label" id="stat-active-label">Học sinh hoạt động hôm nay</div></div></div>
+          <div class="stat-card s7"><div class="stat-ic">👩‍🏫</div><div><div class="stat-num" id="stat-teachers">0</div><div class="stat-label" id="stat-teachers-label">Tổng giáo viên</div></div></div>
+          <div class="stat-card s8"><div class="stat-ic">🛡️</div><div><div class="stat-num" id="stat-admins">0</div><div class="stat-label" id="stat-admins-label">Tổng quản trị viên</div></div></div>
         </div>
         <div class="card">
           <div class="card-title">🛡️ Phân quyền hệ thống</div>
@@ -940,6 +943,8 @@
       var o = await TVKN.adminOverview();
       if (o) {
         setStat('stat-students', o.students);                 // 👦 Tổng học sinh
+        setStat('stat-teachers', o.teachers);                 // 👩‍🏫 Tổng giáo viên
+        setStat('stat-admins', o.admins);                     // 🛡️ Tổng quản trị viên
         setStat('stat-xptoday', o.xp_today);                  // ⭐ XP phát sinh hôm nay
         setStat('stat-active', o.active_today);               // 🔥 Học sinh hoạt động hôm nay
         // Card "📚 bài học" -> Bài đã hoàn thành
