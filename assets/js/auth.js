@@ -131,6 +131,33 @@ window.TVKN = (function () {
     return data;
   }
 
+  // ---------- QUÊN MẬT KHẨU (cách OTP — KHÔNG cần redirect) ----------
+  // Gửi email chứa MÃ OTP 6 số (template Reset Password cần có biến {{ .Token }}).
+  async function resetPassword(email) {
+    ensure();
+    const { error } = await sb.auth.resetPasswordForEmail(email);
+    if (error) throw error;
+    return true;
+  }
+
+  // Người dùng nhập MÃ OTP đúng → xác thực rồi đặt MẬT KHẨU MỚI (tất cả trên 1 trang).
+  async function confirmReset(email, token, newPassword) {
+    ensure();
+    const { error: e1 } = await sb.auth.verifyOtp({ email: email, token: (token || '').trim(), type: 'recovery' });
+    if (e1) throw e1;
+    const { error: e2 } = await sb.auth.updateUser({ password: newPassword });
+    if (e2) throw e2;
+    return true;
+  }
+
+  // (Giữ) đặt mật khẩu mới khi đã có phiên đăng nhập.
+  async function updatePassword(newPassword) {
+    ensure();
+    const { error } = await sb.auth.updateUser({ password: newPassword });
+    if (error) throw error;
+    return true;
+  }
+
   // ---------- ĐĂNG XUẤT ----------
   async function signOut() {
     clearBindCache();   // xóa cache chỉ số để người dùng sau không thấy dữ liệu cũ
@@ -368,6 +395,53 @@ window.TVKN = (function () {
     return ch;
   }
   function chatUnsubscribe(ch) { try { if (ch && sb) sb.removeChannel(ch); } catch (e) {} }
+
+  // ============================================================
+  //  CHAT PHỤ HUYNH ↔ CON (kênh riêng theo cặp parent_id/child_id)
+  //  Dùng chung khung chat.js. Cần chạy sql/supabase-family-chat.sql.
+  // ============================================================
+  // Danh sách luồng gia đình của người đang đăng nhập (PH→các con / con→các PH).
+  async function listFamilyThreads() {
+    ensure();
+    const { data, error } = await sb.rpc('list_family_threads');
+    if (error) { console.warn('list_family_threads:', error.message || error); return []; }
+    return data || [];
+  }
+  // Lấy tin của 1 cặp (parentId, childId). Trả [] cũ→mới.
+  async function famFetch(opts) {
+    ensure();
+    opts = opts || {};
+    if (!opts.parentId || !opts.childId) return [];
+    const { data, error } = await sb.from('family_messages').select('*')
+      .eq('parent_id', opts.parentId).eq('child_id', opts.childId)
+      .order('id', { ascending: true }).limit(300);
+    if (error) { console.warn('famFetch:', error.message || error); return []; }
+    return data || [];
+  }
+  // Gửi 1 tin trong cặp. Trả dòng vừa chèn hoặc throw.
+  async function famSend(opts) {
+    ensure();
+    opts = opts || {};
+    const body = (opts.body || '').trim();
+    if (!body || !opts.parentId || !opts.childId) return null;
+    let me = opts.me;
+    if (!me) { const u = await getUser(); me = u ? u.id : null; }
+    const row = { parent_id: opts.parentId, child_id: opts.childId, sender_id: me, body: body };
+    const { data, error } = await sb.from('family_messages').insert(row).select().single();
+    if (error) throw error;
+    return data;
+  }
+  // Lắng nghe tin gia đình mới. field = 'parent_id' (nếu tôi là PH) hoặc 'child_id' (nếu tôi là con).
+  function famSubscribe(field, myId, handler) {
+    ensure();
+    if (!myId) return null;
+    const ch = sb.channel('tvkn-fam-' + myId)
+      .on('postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'family_messages', filter: field + '=eq.' + myId },
+          function (payload) { try { handler(payload.new); } catch (e) {} })
+      .subscribe();
+    return ch;
+  }
 
   // ---------- CHẶN TRANG: chưa đăng nhập → về trang đăng nhập ----------
   // Trả về profile nếu đã đăng nhập.
@@ -827,7 +901,15 @@ window.TVKN = (function () {
       '#tvkn-notif{max-width:calc(100vw - 16px)}' +
       '#tvkn-loginwall,#tvkn-trial{max-width:100vw}' +
       // Mobile từng ẩn nhầm CẢ số XP (rule .xp-pill span:last-child). Luôn hiện số XP lại.
-      '.xp-pill span{display:inline !important}';
+      '.xp-pill span{display:inline !important}' +
+      // === C2: chữ TO hơn + giao diện mềm mại, dễ thương hơn (áp toàn site) ===
+      'html{font-size:106%}' +
+      'body{line-height:1.62;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}' +
+      // Tăng ~5% cỡ chữ NỘI DUNG (dùng em → co giãn an toàn, không phá layout px)
+      'p,li,label,button,input,select,textarea,' +
+      '.lesson-name,.lesson-desc,.section-title,.section-sub,.stat-label,.stat-num,' +
+      '.feedback,.opt,.ans,.option,.question,.block-sub,.read-num{font-size:1.05em}' +
+      'button,.btn,.opt,.ans,.option,.lesson-btn,.quick-btn{letter-spacing:.2px}';
     (document.head || document.documentElement).appendChild(st);
   }
 
@@ -938,7 +1020,13 @@ window.TVKN = (function () {
       const u = new SpeechSynthesisUtterance(s);
       const v = _pickVietVoice();
       if (v) { u.voice = v; u.lang = v.lang || 'vi-VN'; }
-      else { u.lang = 'vi-VN'; }                        // không có giọng Việt → vẫn đọc bằng giọng mặc định (vẫn có tiếng)
+      else {
+        u.lang = 'vi-VN';
+        // Không có giọng Việt: gán TẠM một giọng bất kỳ để CÓ TIẾNG
+        // (nhiều máy Windows im lặng nếu lang không khớp giọng nào) → tránh "bấm loa không nghe gì".
+        const vs = (_voices && _voices.length) ? _voices : _loadVoices();
+        if (vs && vs.length) u.voice = vs[0];
+      }
       u.rate = 0.85; u.pitch = 1; u.volume = 1;
       window.__tvknUtter = u;                           // giữ tham chiếu — tránh vài trình duyệt thu hồi sớm làm mất tiếng
       // Vá lỗi Chromium: cancel() NGAY trước speak() đôi khi "nuốt" câu → tách bằng setTimeout + resume()
@@ -1014,12 +1102,13 @@ window.TVKN = (function () {
 
   return {
     configured: typeof TVKN_CONFIGURED !== 'undefined' ? TVKN_CONFIGURED : false,
-    signUp, signIn, signOut, getUser, getProfile,
+    signUp, signIn, signOut, getUser, getProfile, resetPassword, confirmReset, updatePassword,
     requireAuth, applyToDOM, guardPage, guardPageSoft, applyProfile, isLoggedIn, requireAdmin, bindCommon,
     listChildren, linkChild, unlinkChild, regenLinkCode, childData, childActivity,
     listMyClasses, createClass, joinClass, listClassStudents, removeStudent, deleteClass,
     listPendingRequests, approveStudent, listMyClassesStudent, leaveClass,
     classRoster, chatFetch, chatSend, chatSubscribe, chatUnsubscribe,
+    listFamilyThreads, famFetch, famSend, famSubscribe,
     getProgress, addXp, bumpStreak, setLesson,
     getActivity, getLessons, getBadges, getLeaderboard, getMyRank, getCohortStats,
     adminOverview, adminUsers,

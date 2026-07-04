@@ -37,6 +37,7 @@
   var pendingClasses = [];       // (HS) tên các lớp đã xin vào nhưng CHỜ giáo viên duyệt
   var rosterByClass = {};        // classId → { uid: {name,avatar,is_teacher} }
   var channels = {};             // classId → realtime channel
+  var famChannel = null;         // realtime channel cho chat gia đình (PH↔con)
   var unread = {};               // threadKey → số tin chưa đọc
   var active = null;             // thread đang mở
   var shownIds = {};             // id tin đã hiển thị ở luồng đang mở (chống trùng)
@@ -176,7 +177,9 @@
     foot(false);
     if (!threads.length) {
       var msg;
-      if (role === 'teacher') {
+      if (role === 'parent') {
+        msg = 'Chưa liên kết con nào để trò chuyện.<br>Hãy nhập mã của con ở trang Phụ huynh nhé!';
+      } else if (role === 'teacher') {
         msg = 'Chưa có lớp học nào để trò chuyện.<br>Hãy tạo lớp ở trang Giáo viên.';
       } else if (pendingClasses.length) {
         msg = '⏳ Em đã gửi yêu cầu vào lớp <b>' + esc(pendingClasses.join(', ')) + '</b>.<br>' +
@@ -264,9 +267,14 @@
     elTitle.textContent = th.avatar + ' ' + th.title;
     foot(true);
     elBody.innerHTML = '<div class="tvkn-empty">Đang tải…</div>';
-    // Đảm bảo có danh bạ lớp để hiện tên (chat lớp)
-    if (!rosterByClass[th.classId]) await loadRoster(th.classId);
-    var rows = await T.chatFetch({ classId: th.classId, recipientId: th.kind === 'class' ? null : th.peerId, me: me });
+    var rows;
+    if (th.kind === 'fam') {
+      rows = await T.famFetch({ parentId: th.parentId, childId: th.childId, me: me });
+    } else {
+      // Đảm bảo có danh bạ lớp để hiện tên (chat lớp)
+      if (!rosterByClass[th.classId]) await loadRoster(th.classId);
+      rows = await T.chatFetch({ classId: th.classId, recipientId: th.kind === 'class' ? null : th.peerId, me: me });
+    }
     shownIds = {};                 // reset ngay trước khi vẽ để chống trùng chuẩn theo lô vừa tải
     elBody.innerHTML = '';
     if (!rows.length) {
@@ -283,9 +291,14 @@
     var body = (elInput.value || '').trim();
     if (!body) return;
     elSend.disabled = true;
-    var recip = active.kind === 'class' ? null : active.peerId;
     try {
-      var row = await T.chatSend({ classId: active.classId, recipientId: recip, body: body, me: me });
+      var row;
+      if (active.kind === 'fam') {
+        row = await T.famSend({ parentId: active.parentId, childId: active.childId, body: body, me: me });
+      } else {
+        var recip = active.kind === 'class' ? null : active.peerId;
+        row = await T.chatSend({ classId: active.classId, recipientId: recip, body: body, me: me });
+      }
       elInput.value = '';
       if (row) {                        // hiện ngay (realtime sẽ bị chống trùng theo id)
         // xoá ô "chưa có tin"
@@ -303,7 +316,9 @@
   function onIncoming(row) {
     // Xác định luồng của tin
     var key;
-    if (row.recipient_id == null) {
+    if (row.parent_id !== undefined && row.child_id !== undefined) {
+      key = 'fam:' + row.parent_id + ':' + row.child_id;    // tin gia đình
+    } else if (row.recipient_id == null) {
       key = tkey('class', row.class_id);
     } else {
       var peer = row.sender_id === me ? row.recipient_id : row.sender_id;
@@ -354,7 +369,7 @@
                          title: p.name || 'Học sinh', avatar: p.avatar || '👧', className: c.name });
         });
       }
-    } else {  // student
+    } else if (role === 'student') {
       var rows = await T.listMyClassesStudent();             // [{class_id,class_name,teacher_id,teacher_name,status}]
       var approved = rows.filter(function (r) { return r.status === 'approved'; });
       // Lớp đã xin vào nhưng CHỜ duyệt → để hiện thông báo chờ (không tạo luồng chat).
@@ -371,9 +386,30 @@
         }
       }
     }
+    // ----- Luồng GIA ĐÌNH (phụ huynh ↔ con) — cho mọi vai trò có liên kết -----
+    if (T.listFamilyThreads) {
+      try {
+        var fam = await T.listFamilyThreads();   // [{peer_id,peer_name,peer_avatar,parent_id,child_id,i_am}]
+        (fam || []).forEach(function (f) {
+          threads.push({
+            key: 'fam:' + f.parent_id + ':' + f.child_id, kind: 'fam', classId: null,
+            parentId: f.parent_id, childId: f.child_id, peerId: f.peer_id,
+            title: f.peer_name || (f.i_am === 'parent' ? 'Con' : 'Phụ huynh'),
+            avatar: f.peer_avatar || (f.i_am === 'parent' ? '👧' : '👩'),
+            className: '👨‍👩‍👧 Gia đình'
+          });
+        });
+        if ((fam || []).length && !famChannel) {
+          // PH lắng theo parent_id; con lắng theo child_id
+          famChannel = T.famSubscribe(role === 'parent' ? 'parent_id' : 'child_id', me, onIncoming);
+        }
+      } catch (e) { console.warn('family threads:', e); }
+    }
+
     // Đăng ký realtime cho mỗi lớp (1 lần/lớp)
     var seen = {};
     threads.forEach(function (t) {
+      if (!t.classId) return;                              // bỏ luồng gia đình (đã có kênh riêng)
       if (seen[t.classId]) return; seen[t.classId] = true;
       if (!channels[t.classId]) channels[t.classId] = T.chatSubscribe(t.classId, onIncoming);
     });
@@ -403,7 +439,8 @@
     try { profile = await T.getProfile(); } catch (e) { return; }
     if (!profile) return;                                   // chưa đăng nhập → không hiện chat
     role = profile.role;
-    if (role !== 'teacher' && role !== 'student') return;   // phụ huynh/admin: không dùng chat lớp
+    // teacher/student: chat lớp; parent: chỉ chat gia đình (PH↔con). admin: bỏ qua.
+    if (role !== 'teacher' && role !== 'student' && role !== 'parent') return;
     me = profile.id; myName = profile.name || 'Tôi';
     buildDom();
     refreshDot();
@@ -413,6 +450,7 @@
 
   window.addEventListener('beforeunload', function () {
     for (var cid in channels) T.chatUnsubscribe(channels[cid]);
+    if (famChannel) T.chatUnsubscribe(famChannel);
   });
 
   // ---------- API công khai (để trang khác mở thẳng 1 cuộc trò chuyện) ----------
@@ -432,9 +470,20 @@
     openPanel(true);
     openThread(th);
   }
+  // Mở chat gia đình: nếu truyền peerId (id của con/PH) thì mở đúng luồng đó;
+  // không truyền → có đúng 1 luồng thì mở luôn, nhiều luồng thì hiện danh sách.
+  async function openFamily(peerId) {
+    if (!(await ensureBuilt())) return;
+    var fams = threads.filter(function (t) { return t.kind === 'fam'; });
+    var th = peerId ? fams.filter(function (t) { return t.peerId === peerId; })[0]
+                    : (fams.length === 1 ? fams[0] : null);
+    openPanel(true);
+    if (th) openThread(th); else showList();
+  }
   window.TVKNChat = {
-    openClass: function (classId) { return openByKey(tkey('class', classId)); },
-    openDM:    function (classId, peerId) { return openByKey(tkey('dm', classId, peerId)); },
-    open:      function () { openPanel(true); showList(); }
+    openClass:  function (classId) { return openByKey(tkey('class', classId)); },
+    openDM:     function (classId, peerId) { return openByKey(tkey('dm', classId, peerId)); },
+    openFamily: openFamily,
+    open:       function () { openPanel(true); showList(); }
   };
 })();

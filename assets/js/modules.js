@@ -81,7 +81,27 @@ window.TVKN_UI = (function () {
 
   function esc(s) { return ('' + (s == null ? '' : s)).replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c])); }
 
-  return { applyTheme, readNumber, speak, addXp, celebrate, esc, THEMES };
+  // ---------- Âm thanh phản hồi (Web Audio — LUÔN kêu, không phụ thuộc giọng TTS) ----------
+  let _actx = null;
+  function _tone(freq, startAt, dur, type) {
+    try {
+      if (!_actx) _actx = new (window.AudioContext || window.webkitAudioContext)();
+      if (_actx.state === 'suspended') _actx.resume();
+      const o = _actx.createOscillator(), g = _actx.createGain();
+      o.type = type || 'sine'; o.frequency.value = freq;
+      o.connect(g); g.connect(_actx.destination);
+      const t0 = _actx.currentTime + (startAt || 0);
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(0.28, t0 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      o.start(t0); o.stop(t0 + dur + 0.03);
+    } catch (e) { /* trình duyệt không hỗ trợ Web Audio */ }
+  }
+  // Tiếng "đúng" reo vui (2 nốt đi lên), tiếng "sai" trầm nhẹ (không gắt)
+  function chimeCorrect() { _tone(660, 0, 0.16); _tone(988, 0.12, 0.24); }
+  function chimeWrong() { _tone(300, 0, 0.18, 'triangle'); }
+
+  return { applyTheme, readNumber, speak, addXp, celebrate, esc, chimeCorrect, chimeWrong, THEMES };
 })();
 
 // ============================================================
@@ -248,11 +268,18 @@ window.TVKN_MODULES = (function () {
               fb.className = 'feedback ok show';
               fb.innerHTML = `🎉 Chính xác! ${q.ok || ''} <b>+5 XP</b>`;
               if (!solved) { U.addXp(5); solved = true; }
+              U.chimeCorrect();        // 🔊 âm thanh reo vui khi đúng
               U.celebrate(e);
             } else {
               opt.classList.add('wrong');
+              // Hiện ĐÁP ÁN ĐÚNG: tô xanh phương án đúng để em biết
+              let correctLbl = q.correct;
+              opts.forEach(o => {
+                if (('' + o.dataset.val) === ('' + q.correct)) { o.classList.add('correct'); correctLbl = o.textContent; }
+              });
               fb.className = 'feedback no show';
-              fb.textContent = q.no || '💡 Chưa đúng rồi. Em đọc lại và thử lại nhé!';
+              fb.innerHTML = `💡 Chưa đúng. Đáp án đúng là <b>${U.esc(correctLbl)}</b>.` + (q.ok ? ` ${U.esc(q.ok)}` : '');
+              U.chimeWrong();          // 🔊 âm thanh nhẹ báo chưa đúng
             }
           }));
         });
