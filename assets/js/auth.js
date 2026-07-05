@@ -1009,12 +1009,11 @@ window.TVKN = (function () {
         || vs.find(function (v) { return /^vi([-_]|$)/i.test(v.lang || '') || /vi[eệ]t.?nam/i.test(v.name || ''); })
         || null;
   }
-  // Đọc to một đoạn văn bản. Trả về true nếu đã yêu cầu đọc.
-  function speak(text) {
+  // ---- Đọc bằng GIỌNG MÁY (Web Speech API) — chỉ dùng khi Cloud TTS lỗi/offline ----
+  // Lưu ý: máy KHÔNG cài giọng tiếng Việt sẽ phát âm SAI/méo (mượn giọng ngoại).
+  function _speakLocal(s) {
     try {
-      if (!('speechSynthesis' in window) || text == null) return false;
-      const s = String(text).trim();
-      if (!s) return false;
+      if (!('speechSynthesis' in window)) return false;
       const synth = window.speechSynthesis;
       synth.cancel();                                   // dừng câu đang đọc (nếu có)
       const u = new SpeechSynthesisUtterance(s);
@@ -1032,6 +1031,43 @@ window.TVKN = (function () {
       // Vá lỗi Chromium: cancel() NGAY trước speak() đôi khi "nuốt" câu → tách bằng setTimeout + resume()
       setTimeout(function () { try { synth.resume(); synth.speak(u); } catch (e) {} }, 60);
       return true;
+    } catch (e) { return false; }
+  }
+
+  // ---- Đọc bằng CLOUD TTS (giọng vi-VN chuẩn trên MỌI thiết bị) qua /api/tts ----
+  // Trả về true nếu ĐÃ bắt đầu thử phát bằng cloud. Nếu cloud lỗi (offline / bị
+  // chặn / mở bằng file:// không có máy chủ) → tự động fallback sang giọng máy.
+  let _ttsAudio = null;
+  function _speakCloud(s) {
+    try {
+      if (!window.Audio || !location || !/^https?:$/.test(location.protocol)) return false;
+      try { if (_ttsAudio) { _ttsAudio.pause(); } } catch (e) {}
+      try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
+      const a = new Audio('/api/tts?tl=vi&q=' + encodeURIComponent(s));
+      _ttsAudio = a;
+      let done = false;                                 // tránh fallback 2 lần (error + play().catch)
+      const fallback = function () {
+        if (done) return; done = true;
+        if (_ttsAudio === a) _ttsAudio = null;
+        _speakLocal(s);
+      };
+      a.addEventListener('error', fallback);
+      a.addEventListener('playing', function () { done = true; });  // cloud OK → đừng fallback nữa
+      const p = a.play();
+      if (p && typeof p.catch === 'function') p.catch(fallback);    // autoplay bị chặn / lỗi mạng
+      return true;
+    } catch (e) { return false; }
+  }
+
+  // Đọc to một đoạn văn bản. Trả về true nếu đã yêu cầu đọc.
+  // Ưu tiên Cloud TTS (chuẩn mọi thiết bị); fallback giọng máy khi offline/lỗi.
+  function speak(text) {
+    try {
+      if (text == null) return false;
+      const s = String(text).trim();
+      if (!s) return false;
+      if (_speakCloud(s)) return true;
+      return _speakLocal(s);
     } catch (e) { return false; }
   }
 
