@@ -213,6 +213,42 @@
   .filter-btn:hover { color: var(--theme); }
   .filter-btn.active { background: var(--theme); color: var(--white); box-shadow: 0 6px 14px rgba(107, 203, 119, 0.4); }
 
+  /* ====== THANH TÌM KIẾM HỌC LIỆU ====== */
+  .lesson-toolbar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+  .search-box {
+    flex: 1 1 320px; min-width: 240px; position: relative;
+    display: flex; align-items: center; background: var(--white);
+    border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    border: 2px solid transparent; transition: border-color .2s;
+  }
+  .search-box:focus-within { border-color: var(--theme); }
+  .search-box .search-ico { padding: 0 6px 0 14px; font-size: 16px; color: var(--text-soft); }
+  .search-box input {
+    flex: 1; border: none; background: transparent; outline: none;
+    padding: 12px 8px; font-family: inherit; font-size: 15px; color: var(--text-dark);
+  }
+  .search-box input::-webkit-search-cancel-button { display: none; }
+  .search-clear {
+    border: none; background: transparent; cursor: pointer; font-size: 14px;
+    color: var(--text-soft); padding: 0 14px; display: none; line-height: 1;
+  }
+  .search-box.has-text .search-clear { display: block; }
+  .search-clear:hover { color: var(--pink); }
+  .chapter-select {
+    flex: 0 1 260px; min-width: 180px;
+    padding: 12px 14px; border-radius: 14px; border: 2px solid transparent;
+    background: var(--white); box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    font-family: inherit; font-size: 14px; font-weight: 600; color: var(--text-dark);
+    cursor: pointer; outline: none; transition: border-color .2s;
+  }
+  .chapter-select:focus { border-color: var(--theme); }
+  .no-result {
+    display: none; text-align: center; padding: 40px 20px; color: var(--text-soft);
+    background: var(--white); border-radius: 20px; box-shadow: var(--shadow);
+  }
+  .no-result .nr-emoji { font-size: 44px; margin-bottom: 8px; }
+  .no-result .nr-title { font-family: 'Baloo 2', sans-serif; font-size: 18px; font-weight: 700; color: var(--text-dark); }
+
   /* ============== TAB CHỌN LỚP ============== */
   .grade-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
   .grade-tab {
@@ -439,6 +475,21 @@
     <!-- Tabs chọn lớp: HS có thể xem & học bài của MỌI lớp -->
     <div class="grade-tabs" id="gradeTabs"></div>
 
+    <!-- Tìm kiếm học liệu: theo chương, số bài, tên bài (không dấu vẫn tìm được) -->
+    <div class="lesson-toolbar">
+      <div class="search-box" id="searchBox">
+        <span class="search-ico">🔍</span>
+        <input type="search" id="lessonSearch" autocomplete="off" placeholder="Tìm học liệu: chương 1, bài 3, tên bài...">
+        <button type="button" class="search-clear" id="searchClear" aria-label="Xóa tìm kiếm">✕</button>
+      </div>
+      <select class="chapter-select" id="chapterSelect" aria-label="Lọc theo chương">
+        <option value="">📚 Tất cả chương</option>
+      </select>
+      <select class="chapter-select" id="lessonSelect" aria-label="Lọc theo bài">
+        <option value="">📖 Tất cả bài</option>
+      </select>
+    </div>
+
     <div class="filters" id="filters">
       <button class="filter-btn active" data-filter="all">Tất cả</button>
       <button class="filter-btn" data-filter="not_started">Chưa học</button>
@@ -448,6 +499,11 @@
 
     <!-- Danh sách bài render động theo lớp của học sinh (engine) -->
     <div id="lessonSections"></div>
+    <div class="no-result" id="noResult">
+      <div class="nr-emoji">🔍</div>
+      <div class="nr-title">Không tìm thấy học liệu phù hợp</div>
+      <div class="lesson-desc" style="margin-top:6px">Em thử đổi từ khóa hoặc chọn lại chương/trạng thái khác nhé!</div>
+    </div>
   </section>
 
   <!-- ============ LUYỆN TẬP NHANH ============ -->
@@ -522,18 +578,121 @@
 </nav>
 
 <script>
-  // Bộ lọc bài học (query thẻ bài trực tiếp lúc bấm vì thẻ được dựng động)
+  // Chuẩn hóa chuỗi để tìm không phân biệt hoa/thường & dấu tiếng Việt
+  function tvknNorm(s) {
+    return (s == null ? '' : String(s)).toLowerCase()
+      .normalize('NFD').replace(new RegExp('[\\u0300-\\u036f]', 'g'), '')
+      .replace(/đ/g, 'd')
+      .replace(/\s+/g, ' ').trim();
+  }
+  window.tvknNorm = tvknNorm;
+
+  // Bộ lọc hợp nhất: trạng thái + từ khóa tìm kiếm + chương. Ẩn nhóm chương rỗng.
+  // (query thẻ bài lúc gọi vì thẻ được dựng động theo lớp)
+  function applyLessonFilters() {
+    const af = document.querySelector('.filter-btn.active');
+    const status = af ? af.dataset.filter : 'all';
+    const qEl = document.getElementById('lessonSearch');
+    const chEl = document.getElementById('chapterSelect');
+    const lsEl = document.getElementById('lessonSelect');
+    const chapter = chEl ? chEl.value : '';
+    const lessonSel = lsEl ? lsEl.value : '';
+
+    // Tách "chương N" / "bài N" (khớp chính xác số) khỏi từ khóa tự do
+    let rest = tvknNorm(qEl && qEl.value);
+    let chapQ = '', lessonQ = '';
+    const mc = rest.match(/(?:chuong|chu de)\s*(\d+)/);
+    if (mc) { chapQ = mc[1]; rest = rest.replace(mc[0], ' '); }
+    const ml = rest.match(/bai\s*(\d+)/);
+    if (ml) { lessonQ = ml[1]; rest = rest.replace(ml[0], ' '); }
+    const tokens = rest.split(' ').filter(Boolean);
+
+    let visible = 0;
+    document.querySelectorAll('#lessonSections .lesson-card').forEach(c => {
+      if (!c.dataset.status) return; // bỏ qua thẻ thông báo "đang xây dựng"
+      const okStatus = (status === 'all' || c.dataset.status === status);
+      const hay = c.dataset.search || '';
+      const okChapText = (!chapQ || c.dataset.chap === chapQ);
+      const okLesson = (!lessonQ || c.dataset.no === lessonQ);
+      const okSearch = tokens.every(t => hay.indexOf(t) !== -1);
+      const okChapter = (!chapter || c.dataset.topic === chapter);
+      const okLessonSel = (!lessonSel || c.dataset.lesson === lessonSel);
+      const show = okStatus && okChapText && okLesson && okSearch && okChapter && okLessonSel;
+      c.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+
+    // Ẩn tiêu đề chương + lưới nếu không còn thẻ nào hiển thị trong đó
+    document.querySelectorAll('#lessonSections .topic-head').forEach(h => {
+      const grid = h.nextElementSibling;
+      let any = false;
+      if (grid) grid.querySelectorAll('.lesson-card').forEach(c => { if (c.style.display !== 'none') any = true; });
+      h.style.display = any ? '' : 'none';
+      if (grid) grid.style.display = any ? '' : 'none';
+    });
+
+    const nr = document.getElementById('noResult');
+    const hasCards = document.querySelector('#lessonSections .lesson-card[data-status]');
+    if (nr) nr.style.display = (hasCards && visible === 0) ? 'block' : 'none';
+  }
+  window.applyLessonFilters = applyLessonFilters;
+
+  // Đổ danh sách bài vào dropdown (liên động: chỉ hiện bài của chương đang chọn)
+  function populateLessonSelect() {
+    const lsEl = document.getElementById('lessonSelect');
+    if (!lsEl) return;
+    const chEl = document.getElementById('chapterSelect');
+    const chapter = chEl ? chEl.value : '';
+    let opts = '<option value="">📖 Tất cả bài</option>';
+    document.querySelectorAll('#lessonSections .lesson-card[data-status]').forEach(c => {
+      if (chapter && c.dataset.topic !== chapter) return;
+      const nameEl = c.querySelector('.lesson-name');
+      const name = nameEl ? nameEl.textContent : '';
+      opts += '<option value="' + c.dataset.lesson + '">Bài ' + (c.dataset.no || '') + ': ' + name + '</option>';
+    });
+    lsEl.innerHTML = opts;
+    lsEl.value = '';
+  }
+  window.populateLessonSelect = populateLessonSelect;
+
+  // Nút lọc trạng thái
   const filterBtns = document.querySelectorAll('.filter-btn');
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      const f = btn.dataset.filter;
-      document.querySelectorAll('.lesson-card').forEach(c => {
-        c.style.display = (f === 'all' || c.dataset.status === f) ? '' : 'none';
-      });
+      applyLessonFilters();
     });
   });
+
+  // Ô tìm kiếm + nút xóa
+  const searchInput = document.getElementById('lessonSearch');
+  const searchBox = document.getElementById('searchBox');
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      if (searchBox) searchBox.classList.toggle('has-text', !!searchInput.value);
+      applyLessonFilters();
+    });
+  }
+  const searchClear = document.getElementById('searchClear');
+  if (searchClear) {
+    searchClear.addEventListener('click', () => {
+      if (searchInput) { searchInput.value = ''; searchInput.focus(); }
+      if (searchBox) searchBox.classList.remove('has-text');
+      applyLessonFilters();
+    });
+  }
+
+  // Dropdown chọn chương → cập nhật lại danh sách bài (liên động) rồi lọc
+  const chapterSelect = document.getElementById('chapterSelect');
+  if (chapterSelect) chapterSelect.addEventListener('change', () => {
+    populateLessonSelect();
+    applyLessonFilters();
+  });
+
+  // Dropdown chọn bài
+  const lessonSelect = document.getElementById('lessonSelect');
+  if (lessonSelect) lessonSelect.addEventListener('change', applyLessonFilters);
 
   // Hiệu ứng confetti
   function celebrate(e) {
@@ -649,9 +808,14 @@
         cont.innerHTML = '<div class="lesson-card" style="grid-column:1/-1;text-align:center;padding:40px">' +
           '<div class="lesson-name" style="font-size:20px">🚧 Lớp ' + grade + ' đang được xây dựng</div>' +
           '<div class="lesson-desc" style="margin-top:8px">Nội dung sắp ra mắt. Em quay lại sau nhé!</div></div>';
+        const chSel0 = document.getElementById('chapterSelect');
+        if (chSel0) { chSel0.innerHTML = '<option value="">📚 Tất cả chương</option>'; chSel0.value = ''; }
       } else {
+        const escAttr = s => esc(s).replace(/"/g, '&quot;');
+        const norm = window.tvknNorm || (s => ('' + (s || '')).toLowerCase());
         let html = '';
         let curTopic = null;
+        const topicList = [];
         order.forEach(id => {
           const L = DATA.lessons[id]; const st = states[id]; const v = VIEW[st];
           const topic = (L && L.topic) || '📚 Danh sách bài học';
@@ -659,8 +823,15 @@
             if (curTopic !== null) html += '</div>';
             html += '<h3 class="topic-head">' + esc(topic) + '</h3><div class="lesson-grid">';
             curTopic = topic;
+            if (topicList.indexOf(topic) === -1) topicList.push(topic);
           }
-          html += '<div class="lesson-card ' + st + '" data-status="' + st + '" data-lesson="' + id + '">' +
+          // data-chap/data-no: khớp CHÍNH XÁC "chương N"/"bài N"; data-search: từ khóa tự do (tên/mô tả/chương)
+          const chapNum = (String(topic).match(/\d+/) || [''])[0];
+          const searchStr = norm(topic + ' ' + (L ? L.title : id) + ' ' + (L ? L.desc : ''));
+          html += '<div class="lesson-card ' + st + '" data-status="' + st + '"' +
+            ' data-topic="' + escAttr(topic) + '" data-chap="' + chapNum + '" data-no="' + (L ? L.no : '') + '"' +
+            ' data-search="' + escAttr(searchStr) + '"' +
+            ' data-lesson="' + id + '">' +
             '<span class="badge-status">' + v.badge + '</span>' +
             '<div class="lesson-top"><div class="lesson-icon">' + (L ? L.icon : '📘') + '</div>' +
             '<div><div class="lesson-no">Bài ' + (L ? L.no : '') + '</div>' +
@@ -671,16 +842,22 @@
         });
         if (curTopic !== null) html += '</div>';
         cont.innerHTML = html;
+        // Đổ danh sách chương của lớp này vào dropdown lọc
+        const chSel = document.getElementById('chapterSelect');
+        if (chSel) {
+          chSel.innerHTML = '<option value="">📚 Tất cả chương</option>' +
+            topicList.map(t => '<option value="' + escAttr(t) + '">' + esc(t) + '</option>').join('');
+          chSel.value = '';
+        }
       }
 
-      // Áp lại bộ lọc trạng thái đang chọn cho danh sách vừa dựng
-      const af = document.querySelector('.filter-btn.active');
-      const f = af ? af.dataset.filter : 'all';
-      if (f && f !== 'all') {
-        document.querySelectorAll('.lesson-card').forEach(c => {
-          c.style.display = (c.dataset.status === f) ? '' : 'none';
-        });
-      }
+      // Reset ô tìm kiếm khi đổi lớp, đổ lại danh sách bài rồi áp bộ lọc
+      const si = document.getElementById('lessonSearch');
+      const sb = document.getElementById('searchBox');
+      if (si) si.value = '';
+      if (sb) sb.classList.remove('has-text');
+      if (window.populateLessonSelect) window.populateLessonSelect();
+      if (window.applyLessonFilters) window.applyLessonFilters();
 
       // Thống kê tiến độ THEO LỚP đang xem
       const total = order.length;
