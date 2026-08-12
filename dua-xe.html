@@ -404,30 +404,10 @@
     return arr;
   }
 
-  // Build a question: + or - within 20, non-negative result
+  // Sinh câu hỏi theo lớp của học sinh (dùng bộ chung TVKN_GAME).
+  // Đua xe thiên về CỘNG, hỗ trợ lớp 1–5.
   function makeQuestion() {
-    let a, b, op, ans;
-    if (Math.random() < 0.5) {
-      // addition: a + b <= 20
-      a = rnd(1, 14);
-      b = rnd(1, 20 - a);
-      op = '+';
-      ans = a + b;
-    } else {
-      // subtraction: a - b >= 0
-      a = rnd(2, 20);
-      b = rnd(1, a);
-      op = '−';
-      ans = a - b;
-    }
-    // build 4 distinct options
-    const opts = new Set([ans]);
-    while (opts.size < 4) {
-      let delta = rnd(-3, 3);
-      let cand = ans + delta;
-      if (cand >= 0 && cand !== ans) opts.add(cand);
-    }
-    return { text: a + ' ' + op + ' ' + b + ' = ?', answer: ans, options: shuffle([...opts]) };
+    return TVKN_GAME.makeQuestion('cong', 1, 5);
   }
 
   function buildQuestions() {
@@ -502,7 +482,7 @@
     } else {
       // WRONG -> stall, show correct
       btn.classList.add('wrong');
-      allBtns.forEach(b => { if (Number(b.textContent) === q.answer) b.classList.add('correct'); });
+      allBtns.forEach(b => { if (String(b.textContent) === String(q.answer)) b.classList.add('correct'); });
       fb.textContent = '😅 Chưa đúng! Xe chững lại... Đáp án: ' + q.answer;
       fb.className = 'feedback no';
     }
@@ -604,8 +584,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
+<script src="assets/js/game-math.js"></script>
 <script>
   if (window.TVKN) { window.tvknLogout = function(){ TVKN.signOut(); }; TVKN.guardPage(); }
+  if (window.TVKN_GAME) { TVKN_GAME.loadGrade(); }
 </script>
 </body>
 </html>
