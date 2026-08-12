@@ -328,23 +328,10 @@
   var REWARD_COINS = 20;
   var state = { questions: [], openedCount: 0, coins: 0, xp: 0, current: -1 };
 
-  // ---------- Question generator (cộng/trừ trong phạm vi 20) ----------
+  // ---------- Question generator (theo lớp — dùng bộ chung TVKN_GAME) ----------
+  // Kho báu thiên về phép TRỪ, hỗ trợ lớp 2–5.
   function makeQuestion() {
-    var isSub = Math.random() < 0.5;
-    var a, b, answer, text;
-    if (isSub) {
-      a = 6 + Math.floor(Math.random() * 14);      // 6..19
-      b = 1 + Math.floor(Math.random() * (a - 1));  // 1..a-1
-      answer = a - b;
-      text = a + ' − ' + b + ' = ?';
-    } else {
-      a = 1 + Math.floor(Math.random() * 14);       // 1..14
-      var max = 20 - a;
-      b = 1 + Math.floor(Math.random() * Math.min(max, 14));
-      answer = a + b;
-      text = a + ' + ' + b + ' = ?';
-    }
-    return { text: text, answer: answer, options: makeOptions(answer) };
+    return TVKN_GAME.makeQuestion('tru', 2, 5);
   }
 
   function makeOptions(answer) {
@@ -545,8 +532,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
+<script src="assets/js/game-math.js"></script>
 <script>
   if (window.TVKN) { window.tvknLogout = function(){ TVKN.signOut(); }; TVKN.guardPage(); }
+  if (window.TVKN_GAME) { TVKN_GAME.loadGrade(); }
 </script>
 </body>
 </html>

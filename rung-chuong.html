@@ -390,47 +390,11 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  // Rung chuông vàng — trộn nhiều phép tính hợp lớp (dùng bộ chung TVKN_GAME).
+  // Hỗ trợ lớp 3–5.
   function buildQuestions() {
     const list = [];
-    for (let i = 0; i < TOTAL; i++) {
-      // độ khó tăng dần theo i — luôn cho ra đáp án không âm, trong phạm vi ~20
-      let a, b, op, ans;
-      const max = Math.min(20, 5 + Math.round((i / TOTAL) * 15)); // 5 -> 20
-
-      if (i < 4) {
-        // cộng đơn giản
-        a = rand(1, Math.max(2, Math.floor(max / 2)));
-        b = rand(1, Math.max(1, max - a));
-        op = '+'; ans = a + b;
-      } else if (i < 8) {
-        // trừ
-        a = rand(Math.max(3, Math.floor(max / 2)), max);
-        b = rand(1, a);
-        op = '−'; ans = a - b;
-      } else if (i < 11) {
-        // cộng khó hơn (tổng ≤ 20)
-        a = rand(5, Math.max(6, max - 2));
-        b = rand(2, Math.max(2, 20 - a));
-        op = '+'; ans = a + b;
-      } else if (i < 13) {
-        // nhân nhỏ
-        a = rand(2, 5);
-        b = rand(2, 4);
-        op = '×'; ans = a * b;
-      } else {
-        // hỗn hợp khó: cộng/trừ trong 20
-        if (Math.random() < 0.5) {
-          a = rand(8, 16);
-          b = rand(2, Math.max(2, 20 - a));
-          op = '+'; ans = a + b;
-        } else {
-          a = rand(12, 20);
-          b = rand(3, a - 1);
-          op = '−'; ans = a - b;
-        }
-      }
-      list.push({ text: a + ' ' + op + ' ' + b + ' = ?', answer: ans });
-    }
+    for (let i = 0; i < TOTAL; i++) { list.push(TVKN_GAME.makeQuestion('logic', 3, 5)); }
     return list;
   }
 
@@ -482,7 +446,7 @@
 
     const box = document.getElementById('options');
     box.innerHTML = '';
-    const opts = makeOptions(q.answer);
+    const opts = q.options;
     opts.forEach(val => {
       const btn = document.createElement('button');
       btn.className = 'option';
@@ -519,7 +483,7 @@
       // SAI -> dừng ngay
       btn.classList.add('wrong');
       // hiện đáp án đúng
-      allBtns.forEach(b => { if (Number(b.textContent) === q.answer) b.classList.add('correct'); });
+      allBtns.forEach(b => { if (String(b.textContent) === String(q.answer)) b.classList.add('correct'); });
       ding(false);
       setTimeout(function () { finish(false); }, 1100);
     }
@@ -645,8 +609,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
+<script src="assets/js/game-math.js"></script>
 <script>
   if (window.TVKN) { window.tvknLogout = function(){ TVKN.signOut(); }; TVKN.guardPage(); }
+  if (window.TVKN_GAME) { TVKN_GAME.loadGrade(); }
 </script>
 </body>
 </html>
