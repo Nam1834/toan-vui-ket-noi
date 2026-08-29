@@ -2,7 +2,9 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
+<script>/* Trang "Bài 1" cũ (legacy) → chuyển sang engine có KHÓA LỚP + tiến độ thật */ location.replace('hoc-bai.html?id=bai-1');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Bài 1: Các số 0, 1, 2, 3, 4, 5 - TOÁN VUI KẾT NỐI</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -79,10 +81,6 @@
   .num-tile.active { background: var(--blue); color: var(--white); transform: scale(1.1); }
   .num-detail { text-align: center; padding: 16px; background: var(--bg-soft); border-radius: 16px; min-height: 70px; display: flex; align-items: center; justify-content: center; gap: 14px; font-size: 18px; font-weight: 600; }
 
-  /* VIDEO PLACEHOLDER */
-  .video-box { background: linear-gradient(135deg,#2D3748,#1A202C); border-radius: 18px; height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: rgba(255,255,255,.85); }
-  .video-play { width: 64px; height: 64px; border-radius: 50%; background: rgba(255,255,255,.15); display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; transition: all .2s; }
-  .video-play:hover { background: var(--blue); transform: scale(1.1); }
 
   /* VÍ DỤ */
   .example { display: flex; gap: 16px; align-items: center; padding: 16px; background: var(--bg-soft); border-radius: 16px; margin-bottom: 12px; }
@@ -155,8 +153,8 @@
   <a href="trang-lop.html" class="back-btn">← Quay lại Lớp 1</a>
   <div class="header-title">Bài 1: Các số 0, 1, 2, 3, 4, 5</div>
   <div class="header-right">
-    <div class="xp-pill">🪙 <span>450</span></div>
-    <div class="notif" onclick="celebrate(event)">🔔<span class="notif-dot"></span></div>
+    <div class="xp-pill">🪙 <span data-bind="xp">0</span></div>
+    <div class="notif" title="Thông báo">🔔<span class="notif-dot"></span></div>
     <div class="avatar">👧</div>
   </div>
 </header>
@@ -206,17 +204,7 @@
     <div class="num-detail" id="numDetail">👆 Bấm vào một con số phía trên để xem chi tiết.</div>
   </div>
 
-  <!-- KHỐI 3: VIDEO -->
-  <div class="block">
-    <h2 class="block-title">🎬 Xem video bài học</h2>
-    <p class="block-sub">Video hoạt hình sinh động giúp em hiểu bài nhanh hơn.</p>
-    <div class="video-box">
-      <div class="video-play" onclick="celebrate(event)">▶️</div>
-      <div>Video bài học sẽ được cập nhật.</div>
-    </div>
-  </div>
-
-  <!-- KHỐI 4: VÍ DỤ -->
+  <!-- KHỐI 3: VÍ DỤ -->
   <div class="block">
     <h2 class="block-title">💡 Ví dụ mẫu</h2>
     <p class="block-sub">Cùng xem vài ví dụ để hiểu rõ hơn nhé!</p>
@@ -240,7 +228,7 @@
     </div>
   </div>
 
-  <!-- KHỐI 5: AI HỖ TRỢ -->
+  <!-- KHỐI 4: AI HỖ TRỢ -->
   <div class="block ai">
     <div class="ai-head">
       <div class="ai-bunny">🐰</div>
@@ -280,7 +268,7 @@
       </div>
     </div>
     <div class="reward-btns">
-      <a href="bai-2.html" class="btn btn-light">Học bài tiếp theo →</a>
+      <a href="hoc-bai.html?id=bai-2" class="btn btn-light">Học bài tiếp theo →</a>
       <a href="bai-hoc.html" class="btn btn-ghost">🔁 Ôn lại bài này</a>
       <a href="trang-lop.html" class="btn btn-ghost">📚 Về trang lớp</a>
     </div>
@@ -297,7 +285,7 @@
   <div class="nav-row">
     <button class="nav-btn disabled">← Bài trước</button>
     <a href="trang-lop.html" class="nav-btn">📚 Danh sách bài</a>
-    <a href="bai-2.html" class="nav-btn next">Bài tiếp theo →</a>
+    <a href="hoc-bai.html?id=bai-2" class="nav-btn next">Bài tiếp theo →</a>
   </div>
 
 </div>
@@ -365,6 +353,13 @@
       c.animate([{transform:'translate(0,0)',opacity:1},{transform:`translate(${Math.cos(a)*v}px,${Math.sin(a)*v+300}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:1400,easing:'cubic-bezier(.25,.46,.45,.94)'}).onfinish=()=>c.remove();
     }
   }
+</script>
+<!-- Chặn đăng nhập + đồng bộ tên/avatar/XP người học (Supabase) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+  if (window.TVKN) { window.tvknLogout = function(){ TVKN.signOut(); }; TVKN.guardPage(); }
 </script>
 </body>
 </html>

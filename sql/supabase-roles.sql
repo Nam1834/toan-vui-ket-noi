@@ -51,7 +51,11 @@ begin
   return new;
 end;
 $$;
--- (Trigger on_auth_user_created đã tạo ở supabase-schema.sql, trỏ tới hàm này.)
+-- Tạo trigger gọi hàm trên (định nghĩa DUY NHẤT ở đây để tránh trùng với schema).
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_user();
 
 -- ---------- 5. Khóa cột role: client KHÔNG tự đổi quyền ----------
 create or replace function public.lock_role()

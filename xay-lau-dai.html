@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>🏰 Xây lâu đài Toán học - TOÁN VUI KẾT NỐI</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -393,34 +394,11 @@
 
   function rint(min, max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
-  // Tạo bộ câu hỏi cộng/trừ trong phạm vi 20
+  // Tạo bộ câu hỏi theo lớp (dùng bộ chung TVKN_GAME).
+  // Xây lâu đài thiên về phép NHÂN, hỗ trợ lớp 2–5.
   function makeQuestions(){
     var list = [];
-    for (var i=0;i<TOTAL;i++){
-      var op = Math.random() < 0.5 ? '+' : '-';
-      var a, b, ans, text;
-      if (op === '+'){
-        a = rint(1, 15); b = rint(1, 20 - a); ans = a + b;
-        text = a + ' + ' + b + ' = ?';
-      } else {
-        a = rint(2, 20); b = rint(1, a); ans = a - b;
-        text = a + ' − ' + b + ' = ?';
-      }
-      // tạo 3 đáp án sai gần đúng, không trùng
-      var opts = [ans];
-      var guard = 0;
-      while (opts.length < 4 && guard < 50){
-        guard++;
-        var d = ans + rint(-3, 3);
-        if (d >= 0 && opts.indexOf(d) === -1) opts.push(d);
-      }
-      // dự phòng nếu thiếu
-      var fill = 0;
-      while (opts.length < 4){ if (opts.indexOf(fill) === -1) opts.push(fill); fill++; }
-      // xáo trộn
-      for (var j=opts.length-1;j>0;j--){ var k=rint(0,j); var t=opts[j]; opts[j]=opts[k]; opts[k]=t; }
-      list.push({ text: text, answer: ans, options: opts });
-    }
+    for (var i=0;i<TOTAL;i++){ list.push(TVKN_GAME.makeQuestion('nhan', 2, 5)); }
     return list;
   }
 
@@ -559,5 +537,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
+<script src="assets/js/game-math.js"></script>
+<script>
+  if (window.TVKN) { window.tvknLogout = function(){ TVKN.signOut(); }; TVKN.guardPage(); }
+  if (window.TVKN_GAME) { TVKN_GAME.loadGrade(); }
+</script>
 </body>
 </html>

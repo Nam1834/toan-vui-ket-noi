@@ -57,28 +57,9 @@ create table if not exists public.activity_log (
 -- ============================================================
 -- 6. TỰ TẠO hồ sơ + tiến độ khi có người ĐĂNG KÝ
 -- ============================================================
-create or replace function public.handle_new_user()
-returns trigger
-language plpgsql
-security definer set search_path = public
-as $$
-begin
-  insert into public.profiles (id, name, avatar, grade)
-  values (
-    new.id,
-    coalesce(new.raw_user_meta_data->>'name', 'Học sinh'),
-    coalesce(new.raw_user_meta_data->>'avatar', '👧'),
-    coalesce((new.raw_user_meta_data->>'grade')::int, 1)
-  );
-  insert into public.progress (user_id) values (new.id);
-  return new;
-end;
-$$;
-
-drop trigger if exists on_auth_user_created on auth.users;
-create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute function public.handle_new_user();
+-- Hàm public.handle_new_user() + trigger on_auth_user_created được định nghĩa DUY NHẤT
+-- ở supabase-roles.sql (để tự gán role theo admin_emails).
+-- ⚠️ BẮT BUỘC chạy supabase-roles.sql NGAY SAU file này thì việc tự tạo hồ sơ mới hoạt động.
 
 -- ============================================================
 -- 7. ROW LEVEL SECURITY — mỗi người chỉ thấy/sửa dữ liệu của mình
@@ -118,7 +99,8 @@ create or replace view public.leaderboard as
   select p.name, p.avatar, p.grade, pr.xp, pr.streak_days,
          row_number() over (order by pr.xp desc) as rank
   from public.profiles p
-  join public.progress pr on pr.user_id = p.id;
+  join public.progress pr on pr.user_id = p.id
+  where p.role = 'student';            -- chỉ học sinh; admin KHÔNG lên bảng xếp hạng
 
 grant select on public.leaderboard to anon, authenticated;
 
@@ -135,6 +117,7 @@ create or replace view public.cohort_stats as
     round(avg(pr.level), 1)               as level_trung_binh
   from public.profiles p
   join public.progress pr on pr.user_id = p.id
+  where p.role = 'student'             -- chỉ thống kê học sinh, bỏ admin
   group by 1;
 
 grant select on public.cohort_stats to anon, authenticated;

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Đăng nhập - TOÁN VUI KẾT NỐI</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -39,6 +40,13 @@
   .banner.show{display:block}
   .banner code{background:rgba(0,0,0,.06);padding:1px 5px;border-radius:5px}
   .note{font-size:12px;color:var(--text-soft);margin-top:18px;line-height:1.5}
+  .pass-wrap{position:relative}
+  .pass-wrap .input{margin-bottom:0;padding-right:48px}
+  .eye-btn{position:absolute;right:10px;top:14px;background:none;border:none;cursor:pointer;font-size:20px;line-height:1;padding:4px;opacity:.65}
+  .eye-btn:hover{opacity:1}
+  .forgot{text-align:right;margin:8px 4px 16px}
+  .forgot a{color:var(--blue);font-weight:600;font-size:13px;cursor:pointer;text-decoration:none}
+  .forgot a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -47,55 +55,142 @@
   <div class="login-card">
     <div class="logo-icon">🐰</div>
     <div class="brand">TOÁN VUI KẾT NỐI</div>
-    <div class="welcome">Chào em! Đăng nhập để tiếp tục học Toán nhé 🎉</div>
+    <div class="welcome">Đăng nhập để tiếp tục nhé! 🎉</div>
 
     <div class="banner" id="cfgBanner">
       ⚠️ <b>Chưa kết nối Supabase.</b> Hãy điền <code>SUPABASE_URL</code> + key vào <code>supabase-config.js</code> và chạy <code>supabase-schema.sql</code>.
     </div>
 
-    <span class="field-label">Email</span>
-    <input class="input" id="email" type="email" placeholder="email@cuaban.com" autocomplete="email">
+    <div id="loginBox">
+      <span class="field-label">Email</span>
+      <input class="input" id="email" type="email" placeholder="email@cuaban.com" autocomplete="email">
 
-    <span class="field-label">Mật khẩu</span>
-    <input class="input" id="pass" type="password" placeholder="••••••" autocomplete="current-password">
+      <span class="field-label">Mật khẩu</span>
+      <div class="pass-wrap">
+        <input class="input" id="pass" type="password" placeholder="••••••" autocomplete="current-password">
+        <button type="button" class="eye-btn" id="eyeBtn" onclick="togglePass('pass','eyeBtn')" aria-label="Hiện/ẩn mật khẩu" title="Hiện/ẩn mật khẩu">👁️</button>
+      </div>
+      <div class="forgot"><a onclick="doForgot()">Quên mật khẩu?</a></div>
 
-    <div class="msg" id="msg"></div>
-    <button class="btn-login" id="btn" onclick="doLogin()">🚀 Đăng nhập</button>
+      <div class="msg" id="msg"></div>
+      <button class="btn-login" id="btn" onclick="doLogin()">🚀 Đăng nhập</button>
 
-    <div class="link">Chưa có tài khoản? <a href="dang-ky.html">Đăng ký ngay</a></div>
-    <div class="note">🔒 Tài khoản & tiến độ của em được lưu an toàn trên hệ thống (Supabase).</div>
+      <div class="link">Chưa có tài khoản? <a href="dang-ky.html">Đăng ký ngay</a></div>
+    </div>
+
+    <!-- Đặt lại mật khẩu bằng MÃ OTP gửi qua email (không cần rời trang) -->
+    <div id="recoveryBox" style="display:none">
+      <p id="otpHint" style="font-size:13.5px;color:var(--text-soft);text-align:left;margin-bottom:14px;line-height:1.5"></p>
+
+      <span class="field-label">Mã xác nhận (OTP)</span>
+      <input class="input" id="otpCode" type="text" inputmode="numeric" autocomplete="one-time-code" placeholder="Nhập mã 6 số trong email">
+
+      <span class="field-label">Mật khẩu mới</span>
+      <div class="pass-wrap">
+        <input class="input" id="newPass" type="password" placeholder="Mật khẩu mới (≥ 6 ký tự)" autocomplete="new-password">
+        <button type="button" class="eye-btn" id="eyeBtn2" onclick="togglePass('newPass','eyeBtn2')" aria-label="Hiện/ẩn mật khẩu" title="Hiện/ẩn mật khẩu">👁️</button>
+      </div>
+
+      <div class="msg" id="msg2" style="margin-top:12px"></div>
+      <button class="btn-login" id="btnNew" onclick="doUpdatePass()">💾 Đặt lại mật khẩu</button>
+      <div class="link"><a onclick="doForgot()" style="cursor:pointer">Gửi lại mã</a> · <a onclick="cancelRecovery()" style="cursor:pointer">Quay lại đăng nhập</a></div>
+    </div>
   </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
 <script>
+  let resetEmail = '';   // email đang đặt lại mật khẩu (dùng cho bước xác thực OTP)
+
   if (!TVKN.configured) {
     document.getElementById('cfgBanner').classList.add('show');
     document.getElementById('btn').disabled = true;
   } else {
     // đã đăng nhập sẵn thì vào thẳng
-    TVKN.getUser().then(function (u) { if (u) window.location.replace('index.html'); }).catch(function () {});
+    TVKN.getProfile().then(function (p) { if (p) window.location.replace(homeFor(p.role)); }).catch(function () {});
   }
 
   function setMsg(t, ok) { const m = document.getElementById('msg'); m.textContent = t; m.className = 'msg ' + (ok ? 'ok' : 'err'); }
 
+  // Con mắt hiện/ẩn mật khẩu
+  function togglePass(inputId, btnId) {
+    const p = document.getElementById(inputId), b = document.getElementById(btnId);
+    if (p.type === 'password') { p.type = 'text'; b.textContent = '🙈'; }
+    else { p.type = 'password'; b.textContent = '👁️'; }
+  }
+
+  // Quên mật khẩu: gửi MÃ OTP tới email → hiện ô nhập mã + mật khẩu mới
+  async function doForgot() {
+    const email = (resetEmail || document.getElementById('email').value).trim();
+    if (!email) return setMsg('📧 Nhập email vào ô phía trên rồi bấm "Quên mật khẩu" nhé.');
+    try {
+      setMsg('⏳ Đang gửi mã xác nhận...', true);
+      await TVKN.resetPassword(email);
+      resetEmail = email;
+      // Chuyển sang khung nhập OTP
+      document.getElementById('loginBox').style.display = 'none';
+      document.getElementById('recoveryBox').style.display = 'block';
+      document.querySelector('.welcome').textContent = 'Đặt lại mật khẩu 🔑';
+      document.getElementById('otpHint').innerHTML =
+        '📩 Đã gửi <b>mã xác nhận</b> tới <b>' + email + '</b>.<br>Mở email (kiểm tra cả mục Spam), nhập mã và mật khẩu mới bên dưới.';
+      const otp = document.getElementById('otpCode'); if (otp) otp.focus();
+    } catch (err) {
+      setMsg('❌ ' + (err.message || 'Không gửi được mã. Em thử lại sau chút nhé.'));
+    }
+  }
+
+  // Quay lại màn đăng nhập
+  function cancelRecovery() {
+    document.getElementById('recoveryBox').style.display = 'none';
+    document.getElementById('loginBox').style.display = 'block';
+    document.querySelector('.welcome').textContent = 'Đăng nhập để tiếp tục nhé! 🎉';
+  }
+
+  // Nhập MÃ OTP đúng + mật khẩu mới → đặt lại
+  async function doUpdatePass() {
+    const otp = document.getElementById('otpCode').value.trim();
+    const np = document.getElementById('newPass').value;
+    const m = document.getElementById('msg2');
+    const setM = (t, ok) => { m.textContent = t; m.className = 'msg ' + (ok ? 'ok' : 'err'); };
+    if (!otp) return setM('🔢 Nhập mã xác nhận trong email nhé.');
+    if (!np || np.length < 6) return setM('🔒 Mật khẩu mới cần ít nhất 6 ký tự.');
+    const b = document.getElementById('btnNew');
+    b.disabled = true; setM('⏳ Đang xác thực & đặt lại...', true);
+    try {
+      await TVKN.confirmReset(resetEmail, otp, np);
+      setM('✅ Đổi mật khẩu thành công! Đang chuyển hướng...', true);
+      const prof = await TVKN.getProfile();
+      setTimeout(function () { window.location.href = homeFor(prof && prof.role); }, 1200);
+    } catch (err) {
+      let msg = err.message || 'Không đặt lại được mật khẩu.';
+      if (/otp|token|invalid|expired/i.test(msg)) msg = 'Mã không đúng hoặc đã hết hạn. Em kiểm tra lại hoặc bấm "Gửi lại mã".';
+      setM('❌ ' + msg);
+      b.disabled = false;
+    }
+  }
+  document.getElementById('otpCode').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('newPass').focus(); });
+  document.getElementById('newPass').addEventListener('keydown', e => { if (e.key === 'Enter') doUpdatePass(); });
+
+  // Trang chủ theo vai trò: admin → quản trị, parent → trang phụ huynh, teacher → trang giáo viên, còn lại → app học sinh
+  function homeFor(role) { return role === 'admin' ? 'admin.html' : role === 'parent' ? 'phu-huynh.html' : role === 'teacher' ? 'giao-vien.html' : 'index.html'; }
+
   async function doLogin() {
     const email = document.getElementById('email').value.trim();
     const pass = document.getElementById('pass').value;
-    if (!email) return setMsg('📧 Em hãy nhập email.');
-    if (!pass) return setMsg('🔒 Em hãy nhập mật khẩu.');
+    if (!email) return setMsg('📧 Vui lòng nhập email.');
+    if (!pass) return setMsg('🔒 Vui lòng nhập mật khẩu.');
     const btn = document.getElementById('btn');
     btn.disabled = true; setMsg('⏳ Đang đăng nhập...', true);
     try {
       await TVKN.signIn(email, pass);
       setMsg('🎉 Đăng nhập thành công!', true);
       const prof = await TVKN.getProfile();
-      window.location.href = (prof && prof.role === 'admin') ? 'admin.html' : 'index.html';
+      window.location.href = homeFor(prof && prof.role);
     } catch (err) {
       let m = err.message || 'Đăng nhập thất bại';
       if (/Invalid login/i.test(m)) m = 'Email hoặc mật khẩu chưa đúng.';
-      if (/Email not confirmed/i.test(m)) m = 'Email chưa xác nhận. Em kiểm tra hộp thư, hoặc tắt "Confirm email" trong Supabase.';
+      if (/Email not confirmed/i.test(m)) m = 'Email chưa xác nhận. Vui lòng kiểm tra hộp thư, hoặc tắt "Confirm email" trong Supabase.';
       setMsg('❌ ' + m);
       btn.disabled = false;
     }

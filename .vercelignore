@@ -1,3 +1,6 @@
 # Không đưa lên website công khai (chỉ giữ trong repo)
 docs/
 sql/
+.env
+.env.local
+dev-server.js

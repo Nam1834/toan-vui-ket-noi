@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>TOÁN VUI KẾT NỐI - Mỗi ngày 15 phút, Giỏi Toán tự nhiên</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -1072,6 +1073,8 @@
   /* ============== RESPONSIVE ============== */
   @media (max-width: 1024px) {
     .nav-menu { display: none; }
+    /* nav-menu ẩn → mất lực đẩy; ghim nhóm nút header về sát phải */
+    .header-right { margin-left: auto; }
     .class-grid { grid-template-columns: repeat(3, 1fr); }
     .profile-stats { grid-template-columns: repeat(2, 1fr); }
     .two-col { grid-template-columns: 1fr; }
@@ -1098,6 +1101,10 @@
     .ch-title { font-size: 26px; }
     .ai-section { padding: 40px 24px; }
     .ai-title { font-size: 26px; }
+    /* Chống cắt nội dung ở mobile: bỏ min-width cứng + thu nhỏ linh vật AI */
+    .ai-content { min-width: 0; }
+    .ai-bunny { width: 120px; height: 120px; font-size: 72px; }
+    .ch-info { min-width: 0; }
     .footer-grid { grid-template-columns: 1fr; gap: 28px; }
   }
 
@@ -1140,9 +1147,9 @@
       <span class="badge-dot"></span>
     </button>
     <div class="xp-pill">
-      🪙 <span><span data-bind="xp">4.250</span> XP</span>
+      🪙 <span><span data-bind="xp">0</span> XP</span>
     </div>
-    <a href="ho-so.html" class="avatar" title="Hồ sơ của Nguyễn Minh Anh">👧</a>
+    <a href="ho-so.html" class="avatar" title="Hồ sơ của em">👧</a>
   </div>
 </header>
 
@@ -1163,24 +1170,24 @@
     <span class="hero-tag">✨ Học theo SGK Kết nối tri thức với cuộc sống</span>
     <h1>🚀 Chinh phục <span class="highlight">Toán học</span> mỗi ngày!</h1>
     <p class="hero-sub">
-      Học Toán tiểu học vui như chơi game. Video hoạt hình sinh động, trò chơi hấp dẫn và AI gia sư hướng dẫn từng bước cho học sinh lớp 1 đến lớp 5.
+      Học Toán tiểu học vui như chơi game. Bài học sinh động, trò chơi hấp dẫn và AI gia sư hướng dẫn từng bước cho học sinh lớp 1 đến lớp 5.
     </p>
     <div class="hero-buttons">
       <a href="trang-lop.html" class="btn btn-primary">🎯 Bắt đầu học ngay</a>
-      <a href="trang-lop.html" class="btn btn-secondary">🎁 Học thử miễn phí</a>
+      <button type="button" class="btn btn-secondary" id="trialBtn">🎁 Học thử miễn phí</button>
     </div>
     <div class="hero-stats">
       <div class="stat">
-        <span class="stat-num" id="stat-students-num">50K+</span>
+        <span class="stat-num" id="stat-students-num">—</span>
         <span class="stat-label" id="stat-students-label">Học sinh đang học</span>
       </div>
       <div class="stat">
-        <span class="stat-num" id="stat-lessons-num">1.200+</span>
-        <span class="stat-label" id="stat-lessons-label">Bài học sinh động</span>
+        <span class="stat-num" id="stat-lessons-num">—</span>
+        <span class="stat-label" id="stat-lessons-label">Bài đã hoàn thành</span>
       </div>
       <div class="stat">
-        <span class="stat-num" id="stat-xp-num">98%</span>
-        <span class="stat-label" id="stat-xp-label">Phụ huynh hài lòng</span>
+        <span class="stat-num" id="stat-xp-num">—</span>
+        <span class="stat-label" id="stat-xp-label">Tổng XP toàn hệ thống</span>
       </div>
     </div>
   </div>
@@ -1243,30 +1250,30 @@
       <div class="profile-avatar">👧</div>
       <div>
         <div class="profile-greeting">Xin chào,</div>
-        <div class="profile-name">Nguyễn Minh Anh</div>
-        <span class="profile-level">⭐ Cấp độ <span data-bind="level">15</span> · Lớp <span data-bind="grade">4</span></span>
+        <div class="profile-name" data-bind="name">Bạn</div>
+        <span class="profile-level">⭐ Cấp độ <span data-bind="level">1</span> · Lớp <span data-bind="grade">1</span></span>
       </div>
     </div>
 
     <div class="profile-stats">
       <div class="pstat">
         <div class="pstat-icon">🏆</div>
-        <div class="pstat-num">15</div>
+        <div class="pstat-num" data-bind="badges">0</div>
         <div class="pstat-label">Huy hiệu</div>
       </div>
       <div class="pstat">
         <div class="pstat-icon">🔥</div>
-        <div class="pstat-num" data-bind="streak">12</div>
+        <div class="pstat-num" data-bind="streak">0</div>
         <div class="pstat-label">Ngày liên tiếp</div>
       </div>
       <div class="pstat">
         <div class="pstat-icon">⭐</div>
-        <div class="pstat-num" data-bind="xp">4.250</div>
+        <div class="pstat-num" data-bind="xp">0</div>
         <div class="pstat-label">Tổng XP</div>
       </div>
       <div class="pstat">
         <div class="pstat-icon">📈</div>
-        <div class="pstat-num">78%</div>
+        <div class="pstat-num" data-bind="percent">0%</div>
         <div class="pstat-label">Tiến độ</div>
       </div>
     </div>
@@ -1275,7 +1282,7 @@
   <div class="progress-wrap">
     <div class="progress-label">
       <span>📈 Tiến độ học tập của em</span>
-      <span>78 / 100 bài</span>
+      <span><span data-bind="completed">0</span> / <span data-bind="total">10</span> bài</span>
     </div>
     <div class="progress-bar">
       <div class="progress-fill"></div>
@@ -1318,7 +1325,7 @@
       <div class="game-body">
         <div class="game-title">Đua xe Toán học</div>
         <div class="game-meta">
-          <span>🎮 12.5K lượt chơi</span>
+          <span class="game-plays" data-game="Đua xe Toán học">🎮 0 lượt chơi</span>
           <span class="new-tag">HOT</span>
         </div>
       </div>
@@ -1328,7 +1335,7 @@
       <div class="game-body">
         <div class="game-title">Kho báu phép tính</div>
         <div class="game-meta">
-          <span>🎮 8.2K lượt chơi</span>
+          <span class="game-plays" data-game="Kho báu phép tính">🎮 0 lượt chơi</span>
           <span class="new-tag">MỚI</span>
         </div>
       </div>
@@ -1338,7 +1345,7 @@
       <div class="game-body">
         <div class="game-title">Bắn bóng số học</div>
         <div class="game-meta">
-          <span>🎮 15.8K lượt chơi</span>
+          <span class="game-plays" data-game="Bắn bóng số học">🎮 0 lượt chơi</span>
         </div>
       </div>
     </div>
@@ -1347,7 +1354,7 @@
       <div class="game-body">
         <div class="game-title">Rung chuông vàng</div>
         <div class="game-meta">
-          <span>🎮 22.1K lượt chơi</span>
+          <span class="game-plays" data-game="Rung chuông vàng">🎮 0 lượt chơi</span>
           <span class="new-tag">HOT</span>
         </div>
       </div>
@@ -1357,7 +1364,7 @@
       <div class="game-body">
         <div class="game-title">Xây lâu đài Toán học</div>
         <div class="game-meta">
-          <span>🎮 9.4K lượt chơi</span>
+          <span class="game-plays" data-game="Xây lâu đài Toán học">🎮 0 lượt chơi</span>
           <span class="new-tag">MỚI</span>
         </div>
       </div>
@@ -1395,51 +1402,11 @@
         <h3 class="panel-title">🏆 Bảng xếp hạng tuần</h3>
         <a href="bang-xep-hang.html" class="panel-link">Xem tất cả →</a>
       </div>
-      <div class="rank-list">
-        <div class="rank-row gold">
-          <div class="rank-num">🥇</div>
-          <div class="rank-avatar">👦</div>
-          <div class="rank-info">
-            <div class="rank-name">Trần Gia Bảo</div>
-            <div class="rank-class">Lớp 5A · 15 huy hiệu</div>
-          </div>
-          <div class="rank-xp">6.850 XP</div>
-        </div>
-        <div class="rank-row silver">
-          <div class="rank-num">🥈</div>
-          <div class="rank-avatar">👧</div>
-          <div class="rank-info">
-            <div class="rank-name">Nguyễn Minh Anh</div>
-            <div class="rank-class">Lớp 4B · 12 huy hiệu</div>
-          </div>
-          <div class="rank-xp">4.250 XP</div>
-        </div>
-        <div class="rank-row bronze">
-          <div class="rank-num">🥉</div>
-          <div class="rank-avatar">🧑</div>
-          <div class="rank-info">
-            <div class="rank-name">Lê Huy Hoàng</div>
-            <div class="rank-class">Lớp 5A · 10 huy hiệu</div>
-          </div>
-          <div class="rank-xp">3.920 XP</div>
-        </div>
+      <div class="rank-list" id="home-rank-list">
         <div class="rank-row">
-          <div class="rank-num">4</div>
-          <div class="rank-avatar">👦</div>
           <div class="rank-info">
-            <div class="rank-name">Phạm Quốc Khánh</div>
-            <div class="rank-class">Lớp 3C · 8 huy hiệu</div>
+            <div class="rank-name" style="color:var(--text-light,#888)">Đang tải bảng xếp hạng…</div>
           </div>
-          <div class="rank-xp">3.450 XP</div>
-        </div>
-        <div class="rank-row">
-          <div class="rank-num">5</div>
-          <div class="rank-avatar">👧</div>
-          <div class="rank-info">
-            <div class="rank-name">Đỗ Bảo Châu</div>
-            <div class="rank-class">Lớp 4A · 7 huy hiệu</div>
-          </div>
-          <div class="rank-xp">2.980 XP</div>
         </div>
       </div>
     </div>
@@ -1455,6 +1422,7 @@
         <li>Gợi ý lộ trình ôn tập phù hợp</li>
       </ul>
       <a href="phu-huynh.html" class="btn-parent">🔐 Đăng nhập phụ huynh</a>
+      <a href="giao-vien.html" style="display:block;margin-top:12px;font-weight:700;color:#4F8CFF">👩‍🏫 Bạn là giáo viên? Quản lý lớp tại đây →</a>
     </div>
   </div>
 </section>
@@ -1505,9 +1473,10 @@
     <div class="footer-col">
       <h4>📞 Liên hệ</h4>
       <ul>
-        <li><a href="#">📧 hello@toanvui.vn</a></li>
-        <li><a href="#">📱 1900 6868</a></li>
-        <li><a href="#">📍 Hà Nội, Việt Nam</a></li>
+        <li>👩‍🏫 Nhóm tác giả Trường Tiểu học Trảng Dài</li>
+        <li><a href="mailto:thuonga282@gmail.com">📧 thuonga282@gmail.com</a></li>
+        <li><a href="tel:0372669627">📱 0372 669 627</a></li>
+        <li><a href="#">📍 Đồng Nai, Việt Nam</a></li>
         <li><a href="#">⏰ T2-CN: 8h - 22h</a></li>
       </ul>
     </div>
@@ -1589,32 +1558,162 @@
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
 <script>
-  /* Chặn trang + hiển thị đúng người đăng nhập (Supabase) */
-  window.tvknLogout = function(){ TVKN.signOut(); };
-  TVKN.guardPage();
+  /* Trang chủ CÔNG KHAI: khách vẫn xem được, nhưng KHÔNG hiện hồ sơ giả.
+     Đã đăng nhập → hiện tên/avatar/tiến độ thật. Khách → nút Đăng nhập/Đăng ký. */
+  (async function initHome() {
+    window.tvknLogout = function () { if (window.TVKN) TVKN.signOut(); };
+    var data = null;
+    if (window.TVKN && TVKN.configured) {
+      try { data = await TVKN.applyProfile(); } catch (e) {}
+    }
+    if (data && data.profile) {
+      // ----- ĐÃ ĐĂNG NHẬP -----
+      var av = document.querySelector('.header-right .avatar');
+      if (av) av.title = 'Hồ sơ của ' + data.profile.name;
+      // thanh tiến độ theo % thật
+      var fill = document.querySelector('.progress-fill');
+      if (fill && data.stats) fill.style.width = data.stats.percent + '%';
+    } else {
+      // ----- KHÁCH (chưa đăng nhập) -----
+      var hr = document.querySelector('.header-right');
+      if (hr) {
+        hr.innerHTML =
+          '<a href="dang-nhap.html" class="btn btn-secondary" style="padding:9px 18px;font-size:14px">Đăng nhập</a>' +
+          '<a href="dang-ky.html" class="btn btn-primary" style="padding:9px 18px;font-size:14px">Đăng ký</a>';
+      }
+      // Ẩn khối hồ sơ cá nhân (lời chào, XP, huy hiệu... của tài khoản)
+      var ps = document.querySelector('.profile-section');
+      if (ps) ps.style.display = 'none';
+      // Khách: "Bắt đầu học ngay" → mời đăng nhập; "Học thử miễn phí" → hoc-bai.html?id=bai-1 (engine, chế độ học thử)
+      var primaryBtn = document.querySelector('.hero-buttons .btn-primary');
+      if (primaryBtn) primaryBtn.setAttribute('href', 'dang-nhap.html');
+    }
+  })();
+</script>
+<script>
+  /* Bảng xếp hạng thật (top 5) — dùng được cả khi chưa đăng nhập (view cấp quyền cho anon). */
+  (async function initHomeLeaderboard() {
+    var list = document.getElementById('home-rank-list');
+    if (!list) return;
+    function setEmpty() {
+      list.innerHTML =
+        '<div class="rank-row"><div class="rank-info">' +
+        '<div class="rank-name" style="color:var(--text-light,#888)">Chưa có dữ liệu xếp hạng</div>' +
+        '</div></div>';
+    }
+    if (!window.TVKN || !TVKN.configured) { setEmpty(); return; }
+    var nf = new Intl.NumberFormat('vi-VN');
+    var medals = ['🥇', '🥈', '🥉'];
+    var variants = ['gold', 'silver', 'bronze'];
+    function esc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+    try {
+      var rows = await TVKN.getLeaderboard(5);
+      if (!rows || !rows.length) { setEmpty(); return; }
+      list.innerHTML = rows.map(function (r, i) {
+        var variant = i < 3 ? ' ' + variants[i] : '';
+        var num = i < 3 ? medals[i] : String(i + 1);
+        var avatar = r.avatar || '🧑';
+        var name = r.name || 'Ẩn danh';
+        var grade = (r.grade !== null && r.grade !== undefined && r.grade !== '')
+          ? 'Lớp ' + esc(r.grade) : '';
+        var xp = nf.format(Number(r.xp) || 0) + ' XP';
+        return '<div class="rank-row' + variant + '">' +
+          '<div class="rank-num">' + num + '</div>' +
+          '<div class="rank-avatar">' + esc(avatar) + '</div>' +
+          '<div class="rank-info">' +
+          '<div class="rank-name">' + esc(name) + '</div>' +
+          '<div class="rank-class">' + grade + '</div>' +
+          '</div>' +
+          '<div class="rank-xp">' + esc(xp) + '</div>' +
+          '</div>';
+      }).join('');
+    } catch (e) {
+      console.warn('getLeaderboard không khả dụng:', e);
+      setEmpty();
+    }
+  })();
 </script>
 <script>
   /* Hiển thị số liệu thật của nền tảng cho phần hero (nếu có Supabase) */
   (async function () {
     if (!window.TVKN || !TVKN.configured) return;
-    try {
-      var s = await TVKN.platformStats();
-      if (!s) return;
-      var nf = new Intl.NumberFormat('vi-VN');
-      function setStat(numId, labelId, value, labelText) {
-        if (value === null || value === undefined) return;
-        var numEl = document.getElementById(numId);
-        var labelEl = document.getElementById(labelId);
-        if (numEl) numEl.textContent = nf.format(value);
-        if (labelEl && labelText) labelEl.textContent = labelText;
-      }
-      setStat('stat-students-num', 'stat-students-label', s.students, 'Học sinh đang học');
-      setStat('stat-lessons-num', 'stat-lessons-label', s.lessons_completed, 'Bài đã hoàn thành');
-      setStat('stat-xp-num', 'stat-xp-label', s.total_xp, 'Tổng XP toàn hệ thống');
-    } catch (e) {
-      /* Giữ nguyên số liệu mặc định nếu có lỗi */
-      console.warn('platformStats không khả dụng:', e);
+    var nf = new Intl.NumberFormat('vi-VN');
+    function setStat(numId, labelId, value, labelText) {
+      if (value === null || value === undefined) return;
+      var numEl = document.getElementById(numId);
+      var labelEl = document.getElementById(labelId);
+      if (numEl) numEl.textContent = nf.format(value);
+      if (labelEl && labelText) labelEl.textContent = labelText;
     }
+    // Thử lại vài lần: gói free Supabase có thể "ngủ"/khởi động nguội ở request đầu.
+    // Nếu tất cả đều lỗi, số liệu giữ nguyên "—" (KHÔNG hiển thị con số bịa).
+    for (var attempt = 0; attempt < 3; attempt++) {
+      try {
+        var s = await TVKN.platformStats();
+        if (s) {
+          setStat('stat-students-num', 'stat-students-label', s.students, 'Học sinh đang học');
+          setStat('stat-lessons-num', 'stat-lessons-label', s.lessons_completed, 'Bài đã hoàn thành');
+          setStat('stat-xp-num', 'stat-xp-label', s.total_xp, 'Tổng XP toàn hệ thống');
+          return;
+        }
+      } catch (e) {
+        console.warn('platformStats không khả dụng (lần ' + (attempt + 1) + '):', e);
+      }
+      await new Promise(function (r) { setTimeout(r, 800 * (attempt + 1)); });
+    }
+  })();
+</script>
+<script>
+  /* Lượt chơi THẬT mỗi game (bảng game_plays, công khai) */
+  (async function () {
+    if (!(window.TVKN && TVKN.configured)) return;
+    try {
+      var plays = await TVKN.gamePlays();
+      var nf = new Intl.NumberFormat('vi-VN');
+      document.querySelectorAll('.game-plays[data-game]').forEach(function (el) {
+        var n = plays[el.getAttribute('data-game')] || 0;
+        el.textContent = '🎮 ' + nf.format(n) + ' lượt chơi';
+      });
+    } catch (e) { console.warn('gamePlays không khả dụng:', e); }
+  })();
+</script>
+
+<!-- ===== MODAL CHỌN LỚP ĐỂ HỌC THỬ ===== -->
+<style>
+  .trial-grade { display:flex; align-items:center; justify-content:center; gap:8px; padding:14px; border-radius:14px; background:var(--bg-soft); font-weight:700; font-size:16px; color:var(--text-dark); border:2px solid transparent; text-decoration:none; transition:all .2s; }
+  .trial-grade:hover { border-color:var(--blue); background:#fff; transform:translateY(-2px); box-shadow:var(--shadow); }
+</style>
+<div id="trialModal" style="display:none; position:fixed; inset:0; z-index:10000; background:rgba(45,55,72,.55); align-items:center; justify-content:center; padding:20px">
+  <div style="background:#fff; border-radius:24px; max-width:440px; width:100%; padding:30px 28px; box-shadow:0 24px 60px rgba(0,0,0,.3); text-align:center">
+    <div style="font-size:42px">🎁</div>
+    <h3 style="font-family:'Baloo 2',sans-serif; font-size:22px; font-weight:800; margin:6px 0 4px">Học thử miễn phí</h3>
+    <p style="color:var(--text-soft); font-size:14px; margin-bottom:18px">Chọn lớp của em — học thử <b>2 bài đầu</b> mỗi lớp, không cần đăng nhập!</p>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+      <a href="hoc-bai.html?id=bai-1" class="trial-grade">🐣 Lớp 1</a>
+      <a href="hoc-bai.html?id=lop2-bai-1" class="trial-grade">🐼 Lớp 2</a>
+      <a href="hoc-bai.html?id=lop3-bai-1" class="trial-grade">🦊 Lớp 3</a>
+      <a href="hoc-bai.html?id=lop4-bai-1" class="trial-grade">🐰 Lớp 4</a>
+      <a href="hoc-bai.html?id=lop5-bai-1" class="trial-grade" style="grid-column:1/-1">🦁 Lớp 5</a>
+    </div>
+    <button type="button" id="trialClose" style="margin-top:16px; background:none; border:none; color:var(--text-soft); font-family:inherit; font-size:14px; cursor:pointer; text-decoration:underline">Đóng</button>
+  </div>
+</div>
+<script>
+  (function () {
+    var btn = document.getElementById('trialBtn'),
+        modal = document.getElementById('trialModal'),
+        close = document.getElementById('trialClose');
+    if (!btn || !modal) return;
+    function open() { modal.style.display = 'flex'; }
+    function hide() { modal.style.display = 'none'; }
+    btn.addEventListener('click', open);
+    if (close) close.addEventListener('click', hide);
+    modal.addEventListener('click', function (e) { if (e.target === modal) hide(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hide(); });
   })();
 </script>
 </body>

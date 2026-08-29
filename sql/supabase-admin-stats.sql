@@ -16,6 +16,7 @@ begin
   end if;
   select json_build_object(
     'students',          (select count(*) from public.profiles where role = 'student'),
+    'teachers',          (select count(*) from public.profiles where role = 'teacher'),
     'admins',            (select count(*) from public.profiles where role = 'admin'),
     'total_users',       (select count(*) from public.profiles),
     'total_xp',          (select coalesce(sum(xp), 0) from public.progress),

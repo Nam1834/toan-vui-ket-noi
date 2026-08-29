@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <title>Luyện tập: Làm quen với các số đến 10 - TOÁN VUI KẾT NỐI</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -139,6 +140,13 @@
   }
   @media (max-width: 560px) {
     .header-title { display: none; }
+    /* Header không bị chật/cắt: rút gọn nút và cho xuống dòng nếu cần */
+    .header { height: auto; min-height: 56px; flex-wrap: wrap; padding: 10px 14px; gap: 8px; }
+    .back-btn { font-size: 0; }
+    .back-btn::after { content: '← Quay lại'; font-size: 13px; }
+    .exit-btn { font-size: 0; }
+    .exit-btn::after { content: '✕'; font-size: 15px; }
+    .match-box { gap: 12px; }
     .qcard { padding: 24px; }
     .qtext { font-size: 22px; }
     .answers, .tf-box { grid-template-columns: 1fr; }
@@ -150,9 +158,9 @@
 
 <!-- HEADER -->
 <header class="header">
-  <a href="bai-hoc.html" class="back-btn">← Quay lại bài học</a>
+  <a href="trang-lop.html" class="back-btn">← Quay lại bài học</a>
   <div class="header-title">Luyện tập: Làm quen với các số đến 10</div>
-  <div class="xp-pill">🪙 <span id="hdrXp">450</span></div>
+  <div class="xp-pill">🪙 <span id="hdrXp">0</span></div>
   <div class="hdr-avatar" title="Học sinh">👧</div>
   <a href="trang-lop.html" class="exit-btn" title="Thoát">✕ Thoát</a>
 </header>
@@ -189,8 +197,15 @@
   </aside>
 </div>
 
+<script src="assets/js/lessons.js"></script>
+<script src="assets/js/lessons-lop1.js"></script>
+<script src="assets/js/lessons-lop2.js"></script>
+<script src="assets/js/lessons-lop3.js"></script>
+<script src="assets/js/lessons-lop4.js"></script>
+<script src="assets/js/lessons-lop5.js"></script>
 <script>
-  const questions = [
+  // Bộ câu hỏi mặc định (dùng khi bài không khai báo quiz riêng)
+  const FALLBACK_QUESTIONS = [
     { type: 'multiple_choice', label: 'Trắc nghiệm', q: 'Có bao nhiêu quả cam trong hình?', img: '🍊🍊🍊🍊',
       options: [{l:'A',v:2},{l:'B',v:3},{l:'C',v:4},{l:'D',v:5}], correct: 4,
       hint: 'Em hãy đếm từng quả cam từ trái sang phải.' },
@@ -211,6 +226,33 @@
       pairs: [{img:'🐱🐱🐱', val:3}, {img:'🌸🌸🌸🌸🌸', val:5}],
       hint: 'Em hãy đếm số con vật, số bông hoa rồi nối với con số đúng.' },
   ];
+  // Gom câu hỏi của TẤT CẢ bài thuộc 1 khối lớp (dùng cho "luyện tập nhanh" không gắn bài cụ thể)
+  function pooledQuestionsForGrade(g) {
+    const all = (window.TVKN_LESSONS && TVKN_LESSONS.lessons) || {};
+    const pool = [];
+    Object.keys(all).forEach(id => {
+      const L = all[id];
+      if (L && String(L.grade) === String(g) && Array.isArray(L.quiz)) pool.push.apply(pool, L.quiz);
+    });
+    for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = pool[i]; pool[i] = pool[j]; pool[j] = t; }
+    return pool.slice(0, 8);   // lấy tối đa 8 câu cho 1 lượt luyện nhanh
+  }
+
+  // Lấy quiz theo bài (?lesson=...) nếu có; nếu không, chọn theo khối lớp (?grade=...) — KHÔNG mặc định về lớp 1
+  const _lessonId = new URLSearchParams(location.search).get('lesson') || '';
+  const _gradeParam = new URLSearchParams(location.search).get('grade') || '';
+  const _LDATA = (window.TVKN_LESSONS && TVKN_LESSONS.lessons[_lessonId]) || null;
+  const questions = (function () {
+    if (_LDATA && Array.isArray(_LDATA.quiz) && _LDATA.quiz.length) return _LDATA.quiz;
+    if (_gradeParam) { const pool = pooledQuestionsForGrade(_gradeParam); if (pool.length) return pool; }
+    return FALLBACK_QUESTIONS;
+  })();
+  if (_LDATA) {
+    const _t = document.querySelector('.header-title');
+    if (_t) _t.textContent = 'Luyện tập: ' + _LDATA.title;
+    const _back = document.querySelector('.back-btn');
+    if (_back) _back.setAttribute('href', 'hoc-bai.html?id=' + encodeURIComponent(_lessonId));
+  }
 
   let idx = 0, selected = null, checked = false;
   let ddTileIdx = null;            // chỉ số ô số đang chọn/kéo (kéo thả)
@@ -218,7 +260,33 @@
   let matchedPairs = 0;            // số cặp đã nối đúng
   let correctCount = 0, xp = 0, streak = 0, doneCount = 0;
   const answered = new Array(questions.length).fill(false);
-  const baseXp = 450;
+  let baseXp = 0;   // XP nền — gán = XP thật của người học sau khi đăng nhập
+
+  // Đọc to câu hỏi hiện tại (chuyển ký hiệu toán sang lời cho dễ nghe)
+  function speakQuestion() {
+    try {
+      const Q = questions[idx]; if (!Q) return;
+      let t = String(Q.q || '');
+      t = t.replace(/<[^>]+>/g, ' ');                    // bỏ thẻ HTML
+      t = t.replace(/[×✕]/g, ' nhân ')                   // dấu nhân chuẩn
+           .replace(/÷/g, ' chia ')                      // dấu chia chuẩn
+           .replace(/(\d)\s*[x*]\s*(\d)/g, '$1 nhân $2') // x/* CHỈ khi giữa 2 số (tránh phá từ "xanh, xếp"...)
+           .replace(/(\d)\s*:\s*(\d)/g, '$1 chia $2')    // ":" CHỈ khi giữa 2 số (giữ nhãn "Câu 1:", "Điền số...:")
+           .replace(/\+/g, ' cộng ')
+           .replace(/(\d)\s*[-–]\s*(\d)/g, '$1 trừ $2')  // dấu trừ giữa hai số
+           .replace(/=/g, ' bằng ')
+           .replace(/>/g, ' lớn hơn ')
+           .replace(/</g, ' bé hơn ')
+           .replace(/\s+/g, ' ').trim();
+      if (window.TVKN && typeof TVKN.speak === 'function') { TVKN.speak(t); return; }
+      if ('speechSynthesis' in window) {
+        const synth = window.speechSynthesis; synth.cancel();
+        const u = new SpeechSynthesisUtterance(t); u.lang = 'vi-VN'; u.rate = 0.85;
+        window.__tvknUtter = u;
+        setTimeout(function () { try { synth.resume(); synth.speak(u); } catch (e) {} }, 60);
+      }
+    } catch (e) {}
+  }
 
   function render() {
     const Q = questions[idx];
@@ -263,7 +331,7 @@
       <div class="qno">Câu ${idx+1}/${questions.length}</div>
       <div class="qtext">${Q.q}</div>
       ${Q.img ? `<div class="qimg">${Q.img}</div>` : ''}
-      <button class="listen" onclick="celebrate(event)">🔊 Nghe câu hỏi</button>
+      <button class="listen" onclick="speakQuestion()">🔊 Nghe câu hỏi</button>
       ${body}
       <div class="hint-row">
         <button class="hint-btn" onclick="showHint()">💡 Gợi ý</button>
@@ -397,23 +465,23 @@
       fb.innerHTML = `<span class="feedback-em">🎉</span> Chính xác! Em thật giỏi! <b>+10 XP</b>`;
       correctCount++; xp += 10; streak++;
       document.getElementById('hdrXp').textContent = baseXp + xp;
+      chimeCorrect();      // 🔊 âm thanh reo vui khi đúng
       celebrate();
       document.getElementById('checkBtn').style.display = 'none';
       document.getElementById('nextBtn').style.display = 'inline-flex';
     } else {
+      // Hiện ĐÁP ÁN ĐÚNG (giữ nguyên, không xoá) rồi cho em qua câu tiếp
+      let ansText = Q.correct;
+      if (Q.type === 'true_false') ansText = Q.correct ? 'Đúng' : 'Sai';
+      // Với điền số / kéo thả: hiện luôn giá trị đúng ngay tại ô cho dễ thấy
+      if (Q.type === 'fill_blank') { const fi = document.getElementById('fillInput'); if (fi) { fi.classList.remove('wrong'); fi.classList.add('correct'); fi.value = Q.correct; } }
+      if (Q.type === 'drag_drop') { const slot = document.getElementById('ddSlot'); if (slot) { slot.classList.remove('wrong'); slot.classList.add('correct'); slot.textContent = Q.correct; } }
       fb.className = 'feedback no show';
-      fb.innerHTML = `<span class="feedback-em">💡</span> Gần đúng rồi, thử lại nhé! Em hãy xem lại hình và đếm chậm từng vật.`;
+      fb.innerHTML = `<span class="feedback-em">💡</span> Chưa đúng. Đáp án đúng là <b>${ansText}</b>. Em xem lại rồi làm câu tiếp nhé!`;
+      chimeWrong();        // 🔊 âm thanh nhẹ báo chưa đúng
       streak = 0;
-      // cho thử lại
-      checked = false;
-      setTimeout(() => {
-        document.querySelectorAll('.ans,.tf').forEach(a => a.classList.remove('wrong','selected'));
-        const fi = document.getElementById('fillInput'); if (fi) fi.classList.remove('wrong');
-        const slot = document.getElementById('ddSlot');
-        if (slot) { slot.classList.remove('wrong','filled'); slot.textContent = '?'; }
-        document.querySelectorAll('.dd-tile').forEach(t => t.classList.remove('used','selected'));
-        if (questions[idx].type === 'drag_drop') { selected = null; ddTileIdx = null; document.getElementById('checkBtn').disabled = true; }
-      }, 1200);
+      document.getElementById('checkBtn').style.display = 'none';
+      document.getElementById('nextBtn').style.display = 'inline-flex';
     }
     updateScore();
   }
@@ -449,6 +517,25 @@
     window.location.href = 'ket-qua.html';
   }
 
+  // Âm thanh phản hồi (Web Audio — luôn kêu, không cần giọng TTS)
+  let _actx = null;
+  function _tone(freq, startAt, dur, type) {
+    try {
+      if (!_actx) _actx = new (window.AudioContext || window.webkitAudioContext)();
+      if (_actx.state === 'suspended') _actx.resume();
+      const o = _actx.createOscillator(), g = _actx.createGain();
+      o.type = type || 'sine'; o.frequency.value = freq;
+      o.connect(g); g.connect(_actx.destination);
+      const t0 = _actx.currentTime + (startAt || 0);
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(0.28, t0 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      o.start(t0); o.stop(t0 + dur + 0.03);
+    } catch (e) {}
+  }
+  function chimeCorrect() { _tone(660, 0, 0.16); _tone(988, 0.12, 0.24); }
+  function chimeWrong() { _tone(300, 0, 0.18, 'triangle'); }
+
   function celebrate(e) {
     if (e) e.preventDefault();
     const colors = ['#4F8CFF','#FFD93D','#6BCB77','#FF9F43','#FF6B9D','#9B72FF'];
@@ -467,5 +554,24 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
+<script>
+  /* Luyện tập là trang HỌC → bắt buộc đăng nhập; chặn đúng lớp + tiến độ; lấy XP nền thật */
+  (async function () {
+    if (!window.TVKN) return;
+    const data = await TVKN.guardPage();   // chưa đăng nhập → tự chuyển về trang đăng nhập
+    if (!data) return;
+    const profile = data.profile || {};
+    const DATA = window.TVKN_LESSONS;
+
+    // KHÔNG chặn theo lớp và KHÔNG khóa tuần tự: học sinh được luyện tập bài của
+    // bất kỳ lớp nào, theo thứ tự tùy ý. (Vẫn yêu cầu đăng nhập ở guardPage phía trên.)
+
+    if (data.progress) {
+      baseXp = data.progress.xp || 0;
+      const h = document.getElementById('hdrXp');
+      if (h) h.textContent = baseXp;
+    }
+  })();
+</script>
 </body>
 </html>
