@@ -46,6 +46,8 @@
   .banner{background:#FFF4E0;color:#8A5A12;border-radius:14px;padding:14px;font-size:13px;text-align:left;margin-bottom:16px;line-height:1.6;display:none}
   .banner.show{display:block}
   .banner code{background:rgba(0,0,0,.06);padding:1px 5px;border-radius:5px}
+  .consent{display:flex;gap:9px;align-items:flex-start;text-align:left;font-size:12.5px;color:var(--text-soft);line-height:1.5;margin:2px 2px 14px;background:var(--bg-soft);border:1px solid #E8ECF4;border-radius:12px;padding:11px 12px;cursor:pointer}
+  .consent input{margin-top:2px;width:16px;height:16px;flex:none;accent-color:var(--blue);cursor:pointer}
 </style>
 </head>
 <body>
@@ -105,6 +107,11 @@
       <button type="button" class="eye-btn" id="eyeBtn2" onclick="togglePass('pass2','eyeBtn2')" aria-label="Hiện/ẩn mật khẩu" title="Hiện/ẩn mật khẩu">👁️</button>
     </div>
 
+    <label class="consent" id="consentWrap">
+      <input type="checkbox" id="consent">
+      <span>Tôi là <b>phụ huynh</b> hoặc đã được phụ huynh/người giám hộ <b>đồng ý</b> cho em tạo tài khoản, và đồng ý để hệ thống lưu trữ tiến độ học tập của em theo <b>chính sách bảo vệ dữ liệu cá nhân trẻ em</b> (Nghị định 13/2023/NĐ-CP).</span>
+    </label>
+
     <div class="msg" id="msg"></div>
     <button class="btn" id="btn" onclick="doRegister()">✨ Đăng ký</button>
 
@@ -140,6 +147,7 @@
     document.getElementById('avatarLabel').classList.toggle('hide', !isStudent);
     document.getElementById('avatarGrid').classList.toggle('hide', !isStudent);
     document.getElementById('gradeWrap').classList.toggle('hide', !isStudent);
+    document.getElementById('consentWrap').classList.toggle('hide', !isStudent);
     document.getElementById('welcome').textContent =
       role === 'parent'  ? 'Tạo tài khoản phụ huynh để theo dõi việc học của con 👨‍👩‍👧' :
       role === 'teacher' ? 'Tạo tài khoản giáo viên để quản lý lớp & theo dõi học sinh 👩‍🏫' :
@@ -165,6 +173,8 @@
     if (!email) return setMsg('📧 Vui lòng nhập email.');
     if (pass.length < 6) return setMsg('🔒 Mật khẩu cần ít nhất 6 ký tự.');
     if (pass !== pass2) return setMsg('🔒 Hai mật khẩu chưa khớp.');
+    if (role === 'student' && !document.getElementById('consent').checked)
+      return setMsg('👨‍👩‍👧 Vui lòng xác nhận có sự đồng ý của phụ huynh.');
 
     const btn = document.getElementById('btn');
     btn.disabled = true; setMsg('⏳ Đang tạo tài khoản...', true);
