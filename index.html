@@ -1178,16 +1178,16 @@
     </div>
     <div class="hero-stats">
       <div class="stat">
-        <span class="stat-num" id="stat-students-num">50K+</span>
+        <span class="stat-num" id="stat-students-num">—</span>
         <span class="stat-label" id="stat-students-label">Học sinh đang học</span>
       </div>
       <div class="stat">
-        <span class="stat-num" id="stat-lessons-num">1.200+</span>
-        <span class="stat-label" id="stat-lessons-label">Bài học sinh động</span>
+        <span class="stat-num" id="stat-lessons-num">—</span>
+        <span class="stat-label" id="stat-lessons-label">Bài đã hoàn thành</span>
       </div>
       <div class="stat">
-        <span class="stat-num" id="stat-xp-num">98%</span>
-        <span class="stat-label" id="stat-xp-label">Phụ huynh hài lòng</span>
+        <span class="stat-num" id="stat-xp-num">—</span>
+        <span class="stat-label" id="stat-xp-label">Tổng XP toàn hệ thống</span>
       </div>
     </div>
   </div>
@@ -1641,23 +1641,29 @@
   /* Hiển thị số liệu thật của nền tảng cho phần hero (nếu có Supabase) */
   (async function () {
     if (!window.TVKN || !TVKN.configured) return;
-    try {
-      var s = await TVKN.platformStats();
-      if (!s) return;
-      var nf = new Intl.NumberFormat('vi-VN');
-      function setStat(numId, labelId, value, labelText) {
-        if (value === null || value === undefined) return;
-        var numEl = document.getElementById(numId);
-        var labelEl = document.getElementById(labelId);
-        if (numEl) numEl.textContent = nf.format(value);
-        if (labelEl && labelText) labelEl.textContent = labelText;
+    var nf = new Intl.NumberFormat('vi-VN');
+    function setStat(numId, labelId, value, labelText) {
+      if (value === null || value === undefined) return;
+      var numEl = document.getElementById(numId);
+      var labelEl = document.getElementById(labelId);
+      if (numEl) numEl.textContent = nf.format(value);
+      if (labelEl && labelText) labelEl.textContent = labelText;
+    }
+    // Thử lại vài lần: gói free Supabase có thể "ngủ"/khởi động nguội ở request đầu.
+    // Nếu tất cả đều lỗi, số liệu giữ nguyên "—" (KHÔNG hiển thị con số bịa).
+    for (var attempt = 0; attempt < 3; attempt++) {
+      try {
+        var s = await TVKN.platformStats();
+        if (s) {
+          setStat('stat-students-num', 'stat-students-label', s.students, 'Học sinh đang học');
+          setStat('stat-lessons-num', 'stat-lessons-label', s.lessons_completed, 'Bài đã hoàn thành');
+          setStat('stat-xp-num', 'stat-xp-label', s.total_xp, 'Tổng XP toàn hệ thống');
+          return;
+        }
+      } catch (e) {
+        console.warn('platformStats không khả dụng (lần ' + (attempt + 1) + '):', e);
       }
-      setStat('stat-students-num', 'stat-students-label', s.students, 'Học sinh đang học');
-      setStat('stat-lessons-num', 'stat-lessons-label', s.lessons_completed, 'Bài đã hoàn thành');
-      setStat('stat-xp-num', 'stat-xp-label', s.total_xp, 'Tổng XP toàn hệ thống');
-    } catch (e) {
-      /* Giữ nguyên số liệu mặc định nếu có lỗi */
-      console.warn('platformStats không khả dụng:', e);
+      await new Promise(function (r) { setTimeout(r, 800 * (attempt + 1)); });
     }
   })();
 </script>
