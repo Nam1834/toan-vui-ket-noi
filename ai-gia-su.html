@@ -408,6 +408,12 @@
     .history-item { flex-wrap: wrap; }
     .history-q { white-space: normal; }
   }
+
+  /* Phân số / hỗn số trong câu trả lời của Thỏ */
+  .frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1; margin: 0 .14em; font-size: .95em; }
+  .frac-n { display: block; padding: 0 .35em; }
+  .frac-d { display: block; padding: 2px .35em 0; border-top: 2px solid currentColor; }
+  .mixed-whole { vertical-align: middle; margin-right: .12em; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -851,11 +857,13 @@
   const chatArea = document.getElementById('chatArea');
   let aiBusy = false;
 
-  // Chuyển văn bản AI (markdown nhẹ) sang HTML an toàn
+  // Chuyển văn bản AI (markdown nhẹ + phân số/hỗn số) sang HTML an toàn
   function renderRich(text) {
+    if (window.TVKN_MATH) return TVKN_MATH.renderRich(text);
+    // Dự phòng nếu math-format.js chưa nạp
     let s = escapeHtml(text);
-    s = s.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');   // **đậm**
-    s = s.replace(/\n/g, '<br>');                     // xuống dòng
+    s = s.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+    s = s.replace(/\n/g, '<br>');
     return s;
   }
 
@@ -1013,6 +1021,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
+<script src="assets/js/math-format.js"></script>
 <script>
   /* Cho khách XEM (không ép login). Đã đăng nhập → bind dữ liệu thật. */
   window.tvknLogout = function(){ TVKN.signOut(); };
