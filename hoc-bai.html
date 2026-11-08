@@ -119,6 +119,23 @@
   .ai-answer { margin-top: 14px; background: rgba(255,255,255,.95); color: var(--text-dark); border-radius: 16px; padding: 14px 18px; font-weight: 600; display: none; }
   .ai-answer.show { display: block; }
 
+  /* Khung chat Thỏ Toán thật (nhiều lượt) */
+  .ai-thread { margin-top: 14px; display: none; flex-direction: column; gap: 10px; }
+  .ai-thread.show { display: flex; }
+  .ai-msg { display: flex; gap: 8px; align-items: flex-end; max-width: 92%; }
+  .ai-msg.me { align-self: flex-end; flex-direction: row-reverse; }
+  .ai-ava { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,.9); display: flex; align-items: center; justify-content: center; font-size: 18px; flex: none; }
+  .ai-bubble { background: rgba(255,255,255,.97); color: var(--text-dark); border-radius: 16px; padding: 11px 15px; font-weight: 600; line-height: 1.5; }
+  .ai-msg.me .ai-bubble { background: rgba(255,255,255,.25); color: var(--white); }
+  .ai-bubble .typing span { animation: aiDots 1.2s infinite; }
+  @keyframes aiDots { 0%,100% { opacity: .3; } 50% { opacity: 1; } }
+
+  /* Phân số / hỗn số trong câu trả lời của Thỏ */
+  .frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1; margin: 0 .14em; font-size: .95em; }
+  .frac-n { display: block; padding: 0 .35em; }
+  .frac-d { display: block; padding: 2px .35em 0; border-top: 2px solid currentColor; }
+  .mixed-whole { vertical-align: middle; margin-right: .12em; font-weight: 700; }
+
   .btn { display: inline-flex; align-items: center; gap: 9px; padding: 14px 28px; border-radius: 16px; font-family: inherit; font-weight: 700; font-size: 16px; border: none; cursor: pointer; transition: all .25s cubic-bezier(.34,1.56,.64,1); }
   .btn-primary { background: linear-gradient(135deg,var(--theme),var(--blue)); color: var(--white); box-shadow: 0 8px 20px rgba(0,0,0,.18); }
   .btn-primary:hover { transform: translateY(-3px) scale(1.02); }
@@ -161,6 +178,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/supabase-config.js"></script>
 <script src="assets/js/auth.js"></script>
+<script src="assets/js/math-format.js"></script>
 <script src="assets/js/modules.js"></script>
 <script src="assets/js/lessons.js"></script>
 <script src="assets/js/lessons-lop1.js"></script>
@@ -229,7 +247,7 @@
           <button class="ai-send" id="aiSend">💬 Hỏi</button>
         </div>
         <div class="ai-chips" id="aiChips">${chips}</div>
-        <div class="ai-answer" id="aiAnswer"></div>
+        <div class="ai-thread" id="aiThread"></div>
       </div>`;
     }
 
@@ -263,25 +281,83 @@
     // ---- Gắn tương tác cho từng module ----
     inits.forEach(fn => { try { fn(wrap); } catch (e) { console.warn('init module lỗi:', e); } });
 
-    // ---- AI Thỏ Toán ----
+    // ---- AI Thỏ Toán (gọi AI THẬT qua /api/ai-tutor, hội thoại nhiều lượt, từng bước) ----
     if (L.ai) {
-      const map = {};
-      (L.ai.chips || []).forEach(c => { map[c.q.trim().toLowerCase()] = c.a; });
       const input = document.getElementById('aiInput');
-      const answer = document.getElementById('aiAnswer');
-      function show(q) {
-        const key = (q || '').trim().toLowerCase();
-        answer.textContent = map[key] || ((L.ai.fallback || 'Thỏ Toán đang suy nghĩ...') + ' (Em hỏi: "' + q + '")');
-        answer.className = 'ai-answer show';
+      const sendBtn = document.getElementById('aiSend');
+      const thread = document.getElementById('aiThread');
+      const conversation = [];   // [{ role:'user'|'model', text }]
+      let aiBusy = false;
+
+      // Ngữ cảnh bài học gửi kèm để Thỏ bám sát đúng bài em đang học
+      const lessonContext = (function () {
+        const bits = [];
+        if (L.title) bits.push('Bài: ' + L.title);
+        if (L.topic) bits.push('Chủ đề: ' + String(L.topic).replace(/^[^\wÀ-ỹ]+/, '').trim());
+        if (L.banner) bits.push(L.banner);
+        (L.blocks || []).forEach(b => {
+          if (b.title) bits.push(b.title);
+          if (b.html) { const d = document.createElement('div'); d.innerHTML = b.html; bits.push(d.textContent.trim()); }
+          (b.questions || []).forEach(q => { if (q.q) bits.push(q.q); });
+        });
+        return bits.filter(Boolean).join('\n').slice(0, 2500);
+      })();
+
+      const render = (txt) => (window.TVKN_MATH ? TVKN_MATH.renderRich(txt) : U.esc(txt));
+
+      function addMsg(who, html) {
+        const el = document.createElement('div');
+        el.className = 'ai-msg ' + (who === 'me' ? 'me' : 'bot');
+        el.innerHTML = '<div class="ai-ava">' + (who === 'me' ? '👧' : '🐰') + '</div>' +
+          '<div class="ai-bubble">' + html + '</div>';
+        thread.appendChild(el);
+        thread.classList.add('show');
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        return el.querySelector('.ai-bubble');
       }
-      document.getElementById('aiSend').addEventListener('click', e => {
+
+      async function ask(q) {
+        q = (q || '').trim();
+        if (!q || aiBusy) return;
+        aiBusy = true; sendBtn.disabled = true;
+        addMsg('me', U.esc(q));
+        conversation.push({ role: 'user', text: q });
+        const bubble = addMsg('bot', '<span class="typing">Thỏ đang suy nghĩ<span>.</span><span>.</span><span>.</span></span>');
+        try {
+          const resp = await fetch('/api/ai-tutor', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              grade: L.grade,
+              topic: L.title,
+              context: lessonContext,
+              history: conversation
+            })
+          });
+          const data = await resp.json().catch(() => ({}));
+          if (!resp.ok) throw new Error(data.error || ('Lỗi máy chủ (' + resp.status + ').'));
+          const answer = data.text || '';
+          conversation.push({ role: 'model', text: answer });
+          bubble.innerHTML = render(answer);
+        } catch (err) {
+          conversation.pop();   // bỏ lượt lỗi để em hỏi lại
+          bubble.innerHTML = '😢 <b>Thỏ chưa trả lời được.</b><br>' + U.esc(err.message) +
+            '<br><span style="color:var(--text-soft)">Em thử gửi lại câu hỏi nhé!</span>';
+        } finally {
+          aiBusy = false; sendBtn.disabled = false; input.focus();
+        }
+      }
+
+      sendBtn.addEventListener('click', e => {
         if (!input.value.trim()) { input.focus(); return; }
-        show(input.value); U.celebrate(e);
+        const q = input.value; input.value = ''; ask(q); U.celebrate(e);
       });
-      input.addEventListener('keydown', e => { if (e.key === 'Enter') { if (input.value.trim()) { show(input.value); U.celebrate(); } } });
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && input.value.trim()) { const q = input.value; input.value = ''; ask(q); }
+      });
       document.getElementById('aiChips').addEventListener('click', e => {
         const chip = e.target.closest('.ai-chip'); if (!chip) return;
-        input.value = chip.textContent; show(chip.textContent);
+        ask(chip.textContent);
       });
     }
 
