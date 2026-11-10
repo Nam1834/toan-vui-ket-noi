@@ -698,6 +698,18 @@
       }).join('\n');
       lines.push('BÀI TẬP TRONG BÀI (kèm gợi ý & đáp án — CHỈ tiết lộ đáp án khi em xin):\n' + qs);
     }
+    // Cá nhân hoá: phần em vừa làm SAI ở luyện tập bài này (localStorage) -> ôn đúng phần yếu
+    try {
+      const raw = localStorage.getItem('tvkn_weak_' + topicSelect.value);
+      if (raw) {
+        const w = JSON.parse(raw);
+        if (w && Array.isArray(w.wrong) && w.wrong.length) {
+          let s = 'GHI CHÚ RIÊNG VỀ EM: Em vừa luyện tập bài này, đúng ' + w.correct + '/' + w.total + ' câu. Phần em còn làm SAI (hãy ưu tiên ôn và đề xuất bài ôn phù hợp khi em hỏi "em cần ôn phần nào"):';
+          w.wrong.forEach(function (x) { s += '\n- Phần "' + (x.skill || '') + '": ' + (x.q || ''); });
+          lines.push(s);
+        }
+      }
+    } catch (e) {}
     return lines.join('\n');
   }
 

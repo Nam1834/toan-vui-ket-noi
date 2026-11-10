@@ -300,7 +300,18 @@
           if (b.html) { const d = document.createElement('div'); d.innerHTML = b.html; bits.push(d.textContent.trim()); }
           (b.questions || []).forEach(q => { if (q.q) bits.push(q.q); });
         });
-        return bits.filter(Boolean).join('\n').slice(0, 2500);
+        // Cá nhân hoá: đọc phần em vừa làm SAI ở luyện tập (localStorage) để Thỏ gợi ý ôn đúng phần yếu
+        try {
+          const raw = localStorage.getItem('tvkn_weak_' + id);
+          if (raw) {
+            const w = JSON.parse(raw);
+            if (w && Array.isArray(w.wrong) && w.wrong.length) {
+              bits.push('GHI CHÚ RIÊNG VỀ EM: Em vừa luyện tập bài này, đúng ' + w.correct + '/' + w.total + ' câu. Em còn làm SAI các phần dưới đây — hãy ưu tiên ôn đúng các phần này và đề xuất bài ôn phù hợp khi em hỏi "em cần ôn phần nào":');
+              w.wrong.forEach(function (x) { bits.push('- Phần "' + (x.skill || '') + '": ' + (x.q || '')); });
+            }
+          }
+        } catch (e) {}
+        return bits.filter(Boolean).join('\n').slice(0, 2800);
       })();
 
       const render = (txt) => (window.TVKN_MATH ? TVKN_MATH.renderRich(txt) : U.esc(txt));

@@ -259,8 +259,11 @@
   let matchLeftEl = null;          // ô bên trái đang chọn (nối cặp)
   let matchedPairs = 0;            // số cặp đã nối đúng
   let correctCount = 0, xp = 0, streak = 0, doneCount = 0;
+  let wrongByIdx = {};   // {idx: {skill, q}} — các câu làm sai, để AI gợi ý ôn đúng phần yếu
   const answered = new Array(questions.length).fill(false);
   let baseXp = 0;   // XP nền — gán = XP thật của người học sau khi đăng nhập
+  // Hiện đúng tổng số câu ngay từ đầu (vd 0/4) thay vì cứng 0/5
+  (function () { const sc = document.getElementById('scDone'); if (sc) sc.textContent = '0/' + questions.length; })();
 
   // Đọc to câu hỏi hiện tại (chuyển ký hiệu toán sang lời cho dễ nghe)
   function speakQuestion() {
@@ -295,9 +298,9 @@
     const c = document.getElementById('qcard');
     let body = '';
     if (Q.type === 'multiple_choice') {
-      body = `<div class="answers">` + Q.options.map(o =>
-        `<button class="ans" data-val="${o.v}" onclick="selectAns(this,${o.v})">
-          <span class="ans-label">${o.l}</span><span class="ans-text">${o.v}</span></button>`).join('') + `</div>`;
+      body = `<div class="answers">` + Q.options.map((o, i) =>
+        `<button class="ans" data-idx="${i}" onclick="selectAnsIdx(this)">
+          <span class="ans-label">${o.l}</span><span class="ans-text">${o.label != null ? o.label : o.v}</span></button>`).join('') + `</div>`;
     } else if (Q.type === 'fill_blank') {
       body = `<div class="fill-box"><input type="number" class="fill-input" id="fillInput" oninput="selectFill(this.value)" placeholder="?"></div>`;
     } else if (Q.type === 'true_false') {
@@ -357,6 +360,14 @@
     if (checked) return;
     document.querySelectorAll('.ans').forEach(a => a.classList.remove('selected'));
     el.classList.add('selected'); selected = v;
+    document.getElementById('checkBtn').disabled = false;
+  }
+  // Chọn đáp án theo CHỈ SỐ -> giữ nguyên kiểu giá trị (số hoặc chuỗi phân số như "7/10")
+  function selectAnsIdx(el) {
+    if (checked) return;
+    document.querySelectorAll('.ans').forEach(a => a.classList.remove('selected'));
+    el.classList.add('selected');
+    selected = questions[idx].options[Number(el.dataset.idx)].v;
     document.getElementById('checkBtn').disabled = false;
   }
   function selectFill(v) {
@@ -436,12 +447,13 @@
     checked = true;
     // nối cặp: chỉ bật được Kiểm tra khi đã nối đúng tất cả -> luôn đúng
     const isRight = (Q.type === 'matching') ? true : (selected === Q.correct);
+    wrongByIdx[idx] = isRight ? null : { skill: Q.label || '', q: Q.q };   // ghi phần yếu
     const fb = document.getElementById('feedback');
 
     // tô màu
     if (Q.type === 'multiple_choice') {
       document.querySelectorAll('.ans').forEach(a => {
-        const v = a.dataset.val == 'true' ? true : a.dataset.val == 'false' ? false : Number(a.dataset.val);
+        const v = Q.options[Number(a.dataset.idx)].v;   // giá trị thật (số hoặc chuỗi phân số)
         if (v === Q.correct) a.classList.add('correct');
         else if (v === selected) a.classList.add('wrong');
       });
@@ -473,6 +485,7 @@
       // Hiện ĐÁP ÁN ĐÚNG (giữ nguyên, không xoá) rồi cho em qua câu tiếp
       let ansText = Q.correct;
       if (Q.type === 'true_false') ansText = Q.correct ? 'Đúng' : 'Sai';
+      if (Q.type === 'multiple_choice') { const co = (Q.options || []).find(o => o.v === Q.correct); if (co) ansText = co.label != null ? co.label : co.v; }
       // Với điền số / kéo thả: hiện luôn giá trị đúng ngay tại ô cho dễ thấy
       if (Q.type === 'fill_blank') { const fi = document.getElementById('fillInput'); if (fi) { fi.classList.remove('wrong'); fi.classList.add('correct'); fi.value = Q.correct; } }
       if (Q.type === 'drag_drop') { const slot = document.getElementById('ddSlot'); if (slot) { slot.classList.remove('wrong'); slot.classList.add('correct'); slot.textContent = Q.correct; } }
@@ -503,10 +516,24 @@
     const percent = Math.round(correctCount/questions.length*100);
     const result = { correct: correctCount, total: questions.length, xp: xp, percent: percent };
     try { sessionStorage.setItem('quizResult', JSON.stringify(result)); } catch(e) {}
+    const lessonId = new URLSearchParams(location.search).get('lesson') || 'luyen-tap';
+    // Lưu "phần làm sai" (localStorage) để AI Thỏ Toán gợi ý ôn đúng phần em còn yếu.
+    // Chạy cho MỌI bài; mỗi phiên trình duyệt có dữ liệu riêng của học sinh đó.
+    try {
+      const wrong = Object.keys(wrongByIdx).map(function (k) { return wrongByIdx[k]; }).filter(Boolean);
+      const weak = {
+        lessonId: lessonId,
+        lessonTitle: (_LDATA && _LDATA.title) || '',
+        grade: (_LDATA && _LDATA.grade) || '',
+        correct: correctCount, total: questions.length, percent: percent,
+        wrong: wrong, ts: Date.now()
+      };
+      localStorage.setItem('tvkn_weak_' + lessonId, JSON.stringify(weak));
+      localStorage.setItem('tvkn_last_practice', JSON.stringify(weak));
+    } catch (e) {}
     // Ghi tiến độ thật vào Supabase (nếu đã đăng nhập)
     try {
       if (window.TVKN && TVKN.configured) {
-        const lessonId = new URLSearchParams(location.search).get('lesson') || 'luyen-tap';
         await TVKN.bumpStreak();
         await TVKN.addXp(xp, 'Hoàn thành luyện tập (' + correctCount + '/' + questions.length + ' câu đúng)', Math.round(xp/10));
         await TVKN.setLesson(lessonId, percent >= 60 ? 'completed' : 'in_progress', percent);
