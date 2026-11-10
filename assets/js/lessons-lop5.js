@@ -125,11 +125,10 @@ Object.assign(window.TVKN_LESSONS.lessons, {
       { q: '9/20 có phải phân số thập phân không?', a: 'Không nha, vì mẫu số 20 không phải là 10, 100, 1 000... 🦅' }
     ], fallback: 'Câu hỏi hay! Đại Bàng gợi ý: em nhớ các cặp số nhân ra 10 (2×5), ra 100 (4×25) để biến đổi cho nhanh nhé. 🦅' },
     quiz: [
-      { type: 'multiple_choice', label: 'Trắc nghiệm', q: 'Đưa 3/5 về …/10 thì tử số là số nào?', options: [{ l: 'A', v: 6 }, { l: 'B', v: 5 }, { l: 'C', v: 3 }, { l: 'D', v: 10 }], correct: 6, hint: 'Nhân cả tử và mẫu với 2.' },
-      { type: 'fill_blank', label: 'Điền số', q: 'Mẫu số của phân số thập phân 7/10 là?', correct: 10, hint: 'Số nằm dưới gạch ngang.' },
-      { type: 'true_false', label: 'Đúng / Sai', q: '9/20 là phân số thập phân. Đúng hay sai?', correct: false, hint: 'Mẫu số phải là 10, 100, 1 000...' },
-      { type: 'multiple_choice', label: 'Trắc nghiệm', q: 'Tô 3 dải trên 10 dải được phân số có tử số là?', options: [{ l: 'A', v: 3 }, { l: 'B', v: 10 }, { l: 'C', v: 30 }, { l: 'D', v: 7 }], correct: 3, hint: '3 phần trên 10 phần.' },
-      { type: 'multiple_choice', label: 'Trắc nghiệm', q: '1/2 = …/10 thì tử số là?', options: [{ l: 'A', v: 5 }, { l: 'B', v: 2 }, { l: 'C', v: 10 }, { l: 'D', v: 1 }], correct: 5, hint: 'Nhân cả tử và mẫu với 5.' }
+      { type: 'multiple_choice', label: 'Nhận biết', q: 'Phân số nào đã được viết dưới dạng phân số thập phân?', options: [{ l: 'A', v: '7/10' }, { l: 'B', v: '9/20' }, { l: 'C', v: '3/4' }, { l: 'D', v: '2/5' }], correct: '7/10', hint: 'Phân số thập phân có mẫu số là 10, 100, 1 000, ...' },
+      { type: 'multiple_choice', label: 'Nhận biết', q: 'Phân số nào đã được viết dưới dạng phân số thập phân?', options: [{ l: 'A', v: '11/20' }, { l: 'B', v: '11/200' }, { l: 'C', v: '11/100' }, { l: 'D', v: '11/25' }], correct: '11/100', hint: 'Mẫu số phải đúng bằng 10, 100 hoặc 1 000...' },
+      { type: 'fill_blank', label: 'Biến đổi', q: 'Viết 3/5 thành phân số có mẫu số 10: 3/5 = …/10. Tử số cần điền là?', correct: 6, hint: 'Nhân cả tử và mẫu với 2 (vì 5 × 2 = 10).' },
+      { type: 'fill_blank', label: 'Biến đổi', q: 'Viết 7/20 thành phân số có mẫu số 100: 7/20 = …/100. Tử số cần điền là?', correct: 35, hint: 'Nhân cả tử và mẫu với 5 (vì 20 × 5 = 100).' }
     ]
   },
 
