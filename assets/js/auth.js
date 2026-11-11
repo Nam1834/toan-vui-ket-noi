@@ -474,6 +474,28 @@ window.TVKN = (function () {
           if (t.length <= 4 && t !== '') el.textContent = profile.avatar;
         });
     }
+
+    // Bấm AVATAR = về ĐÚNG trang của vai trò. GV/PH/Admin: về dashboard riêng
+    // (thoát khỏi shell học sinh nếu đang lỡ vào). Học sinh: giữ mặc định (hồ sơ).
+    if (profile && (profile.role === 'teacher' || profile.role === 'parent' || profile.role === 'admin')) {
+      var _home = profile.role === 'teacher' ? 'giao-vien.html'
+                : profile.role === 'parent'  ? 'phu-huynh.html'
+                : 'admin.html';
+      var _label = profile.role === 'teacher' ? 'Giáo viên'
+                 : profile.role === 'parent'  ? 'Phụ huynh' : 'Quản trị';
+      document.querySelectorAll('.avatar').forEach(function (old) {
+        if (old.dataset.roleHomeBound) return;            // tránh gắn trùng
+        var el = old.cloneNode(true);                      // bỏ listener cũ (vd data-nav="ho-so" của shell)
+        el.removeAttribute('data-nav');
+        el.dataset.roleHomeBound = '1';
+        el.style.cursor = 'pointer';
+        el.title = 'Về trang ' + _label;
+        el.addEventListener('click', function () {
+          try { window.top.location.href = _home; } catch (e) { window.location.href = _home; }
+        });
+        if (old.parentNode) old.parentNode.replaceChild(el, old);
+      });
+    }
   }
 
   // Tổng số bài của một LỚP (động). Ưu tiên đếm THẬT từ dữ liệu bài (TVKN_LESSONS)
