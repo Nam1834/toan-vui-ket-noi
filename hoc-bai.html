@@ -136,7 +136,7 @@
   .frac-d { display: block; padding: 2px .35em 0; border-top: 2px solid currentColor; }
   .mixed-whole { display: inline-block; vertical-align: middle; margin-right: .08em; font-weight: 700; font-size: 1.5em; line-height: 1; }
 
-  /* Bản ghi truy xuất (cho Hội đồng xem): câu sai -> học liệu -> lời gợi -> bài ôn */
+  /* Bản ghi truy xuất (giải thích vì sao Thỏ gợi ý): câu sai -> học liệu -> lời gợi -> bài ôn */
   .ai-bubble details.trace { margin-top: 11px; background: #F6F8FF; border: 1px solid #E2E8F5; border-radius: 12px; padding: 2px 11px; }
   .ai-bubble details.trace summary { cursor: pointer; font-weight: 800; color: #4338CA; font-size: 13.5px; padding: 8px 0; list-style: none; }
   .ai-bubble details.trace summary::-webkit-details-marker { display: none; }
@@ -326,7 +326,7 @@
 
       const render = (txt) => (window.TVKN_MATH ? TVKN_MATH.renderRich(txt) : U.esc(txt));
 
-      // ---- Dữ liệu cho "Bản ghi truy xuất" (cho Hội đồng xem). CHỈ để hiển thị,
+      // ---- Dữ liệu cho "Bản ghi truy xuất" (chỉ hiện ở chế độ demo). CHỈ để hiển thị,
       //      KHÔNG đổi payload gửi AI (lessonContext ở trên giữ nguyên). ----
       const weakData = (function () {
         try { const r = localStorage.getItem('tvkn_weak_' + id); return r ? JSON.parse(r) : null; } catch (e) { return null; }
