@@ -136,6 +136,16 @@
   .frac-d { display: block; padding: 2px .35em 0; border-top: 2px solid currentColor; }
   .mixed-whole { vertical-align: middle; margin-right: .12em; font-weight: 700; }
 
+  /* Bản ghi truy xuất (cho Hội đồng xem): câu sai -> học liệu -> lời gợi -> bài ôn */
+  .ai-bubble details.trace { margin-top: 11px; background: #F6F8FF; border: 1px solid #E2E8F5; border-radius: 12px; padding: 2px 11px; }
+  .ai-bubble details.trace summary { cursor: pointer; font-weight: 800; color: #4338CA; font-size: 13.5px; padding: 8px 0; list-style: none; }
+  .ai-bubble details.trace summary::-webkit-details-marker { display: none; }
+  .ai-bubble details.trace summary::before { content: '▸ '; }
+  .ai-bubble details.trace[open] summary::before { content: '▾ '; }
+  .trace-row { font-size: 13.5px; margin: 9px 0; color: var(--text-dark); line-height: 1.5; }
+  .trace-hl { background: #fff; border: 1px dashed #c7d2fe; border-radius: 9px; padding: 9px 11px; margin-top: 5px; max-height: 170px; overflow: auto; white-space: pre-wrap; font-size: 12.8px; color: var(--text-soft); }
+  .trace-btn { display: inline-block; margin-top: 5px; background: linear-gradient(135deg,var(--green),var(--blue)); color: #fff !important; padding: 8px 15px; border-radius: 11px; font-weight: 700; text-decoration: none; font-size: 13.5px; }
+
   .btn { display: inline-flex; align-items: center; gap: 9px; padding: 14px 28px; border-radius: 16px; font-family: inherit; font-weight: 700; font-size: 16px; border: none; cursor: pointer; transition: all .25s cubic-bezier(.34,1.56,.64,1); }
   .btn-primary { background: linear-gradient(135deg,var(--theme),var(--blue)); color: var(--white); box-shadow: 0 8px 20px rgba(0,0,0,.18); }
   .btn-primary:hover { transform: translateY(-3px) scale(1.02); }
@@ -316,6 +326,40 @@
 
       const render = (txt) => (window.TVKN_MATH ? TVKN_MATH.renderRich(txt) : U.esc(txt));
 
+      // ---- Dữ liệu cho "Bản ghi truy xuất" (cho Hội đồng xem). CHỈ để hiển thị,
+      //      KHÔNG đổi payload gửi AI (lessonContext ở trên giữ nguyên). ----
+      const weakData = (function () {
+        try { const r = localStorage.getItem('tvkn_weak_' + id); return r ? JSON.parse(r) : null; } catch (e) { return null; }
+      })();
+      const hocLieuText = (function () {
+        const bits = [];
+        (L.blocks || []).forEach(b => {
+          if (b.title) bits.push(b.title);
+          if (b.html) { const d = document.createElement('div'); d.innerHTML = b.html; bits.push(d.textContent.trim()); }
+          (b.questions || []).forEach(q => { if (q.q) bits.push('• ' + q.q); });
+        });
+        return bits.filter(Boolean).join('\n');
+      })();
+      const reviewSkill = (weakData && weakData.wrong && weakData.wrong[0] && weakData.wrong[0].skill) || '';
+      const reviewHref = 'lam-bai-tap.html?lesson=' + encodeURIComponent(id);
+
+      function traceRecord(answer) {
+        const esc = U.esc;
+        let cauSai = 'Chưa có — em làm phần luyện tập trước để hệ thống ghi lại phần làm sai.';
+        if (weakData && weakData.wrong && weakData.wrong.length) {
+          cauSai = 'Đúng <b>' + weakData.correct + '/' + weakData.total + '</b> câu. Phần em làm SAI:<br>' +
+            weakData.wrong.map(x => '— <b>' + esc(x.skill || '') + '</b>: ' + esc(x.q || '')).join('<br>');
+        }
+        const hl = esc(hocLieuText).replace(/\n/g, '<br>') || '<i>(không có)</i>';
+        const review = reviewSkill ? ('🎯 Ôn lại phần <b>' + esc(reviewSkill) + '</b>') : '🎯 Luyện tập lại bài này';
+        return '<details class="trace"><summary>📋 Bản ghi truy xuất (cho Hội đồng xem)</summary>' +
+          '<div class="trace-row"><b>① Câu sai đã lưu:</b><br>' + cauSai + '</div>' +
+          '<div class="trace-row"><b>② Học liệu thực sự được lấy (gửi cho AI):</b><div class="trace-hl">' + hl + '</div></div>' +
+          '<div class="trace-row"><b>③ Lời gợi của AI:</b><br>' + render(answer) + '</div>' +
+          '<div class="trace-row"><b>④ Bài ôn được đề xuất:</b><br><a class="trace-btn" href="' + reviewHref + '">' + review + ' →</a></div>' +
+          '</details>';
+      }
+
       function addMsg(who, html) {
         const el = document.createElement('div');
         el.className = 'ai-msg ' + (who === 'me' ? 'me' : 'bot');
@@ -350,6 +394,7 @@
           const answer = data.text || '';
           conversation.push({ role: 'model', text: answer });
           bubble.innerHTML = render(answer);
+          bubble.insertAdjacentHTML('beforeend', traceRecord(answer));   // Bản ghi truy xuất 4 bước
         } catch (err) {
           conversation.pop();   // bỏ lượt lỗi để em hỏi lại
           bubble.innerHTML = '😢 <b>Thỏ chưa trả lời được.</b><br>' + U.esc(err.message) +
