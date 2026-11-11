@@ -134,7 +134,7 @@
   .frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1; margin: 0 .14em; font-size: .95em; }
   .frac-n { display: block; padding: 0 .35em; }
   .frac-d { display: block; padding: 2px .35em 0; border-top: 2px solid currentColor; }
-  .mixed-whole { vertical-align: middle; margin-right: .12em; font-weight: 700; }
+  .mixed-whole { display: inline-block; vertical-align: middle; margin-right: .08em; font-weight: 700; font-size: 1.5em; line-height: 1; }
 
   /* Bản ghi truy xuất (cho Hội đồng xem): câu sai -> học liệu -> lời gợi -> bài ôn */
   .ai-bubble details.trace { margin-top: 11px; background: #F6F8FF; border: 1px solid #E2E8F5; border-radius: 12px; padding: 2px 11px; }
@@ -342,6 +342,8 @@
       })();
       const reviewSkill = (weakData && weakData.wrong && weakData.wrong[0] && weakData.wrong[0].skill) || '';
       const reviewHref = 'lam-bai-tap.html?lesson=' + encodeURIComponent(id);
+      // "Bản ghi truy xuất" CHỈ hiện ở chế độ demo (thêm ?demo=1 vào link) — học sinh thường KHÔNG thấy.
+      const DEMO = new URLSearchParams(location.search).get('demo') === '1' || (function () { try { return localStorage.getItem('tvkn_demo') === '1'; } catch (e) { return false; } })();
 
       function traceRecord(answer) {
         const esc = U.esc;
@@ -352,7 +354,7 @@
         }
         const hl = esc(hocLieuText).replace(/\n/g, '<br>') || '<i>(không có)</i>';
         const review = reviewSkill ? ('🎯 Ôn lại phần <b>' + esc(reviewSkill) + '</b>') : '🎯 Luyện tập lại bài này';
-        return '<details class="trace"><summary>📋 Bản ghi truy xuất (cho Hội đồng xem)</summary>' +
+        return '<details class="trace"><summary>📋 Vì sao Thỏ gợi ý phần này cho em?</summary>' +
           '<div class="trace-row"><b>① Câu sai đã lưu:</b><br>' + cauSai + '</div>' +
           '<div class="trace-row"><b>② Học liệu thực sự được lấy (gửi cho AI):</b><div class="trace-hl">' + hl + '</div></div>' +
           '<div class="trace-row"><b>③ Lời gợi của AI:</b><br>' + render(answer) + '</div>' +
@@ -394,7 +396,7 @@
           const answer = data.text || '';
           conversation.push({ role: 'model', text: answer });
           bubble.innerHTML = render(answer);
-          bubble.insertAdjacentHTML('beforeend', traceRecord(answer));   // Bản ghi truy xuất 4 bước
+          if (DEMO) bubble.insertAdjacentHTML('beforeend', traceRecord(answer));   // Bản ghi truy xuất — chỉ ở chế độ demo
         } catch (err) {
           conversation.pop();   // bỏ lượt lỗi để em hỏi lại
           bubble.innerHTML = '😢 <b>Thỏ chưa trả lời được.</b><br>' + U.esc(err.message) +
