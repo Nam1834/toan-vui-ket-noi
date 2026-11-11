@@ -1655,14 +1655,10 @@
       try {
         var s = await TVKN.platformStats();
         if (s) {
-          // Số thật trên Supabase CỘNG nền cộng đồng, để con số luôn ở mức mong muốn
-          // mà vẫn tăng theo số thật. Đổi các hằng dưới nếu cần.
-          var STUDENTS_BASE = 450;    // "Học sinh đang học" luôn > 500 (vd 90 -> 540)
-          var LESSONS_BASE = 5000;    // "Bài đã hoàn thành" (lượt làm bài) luôn > 5000 (vd 361 -> 5361)
-          var studentsShown = (s.students == null) ? s.students : (Number(s.students) + STUDENTS_BASE);
-          var lessonsShown = (s.lessons_completed == null) ? s.lessons_completed : (Number(s.lessons_completed) + LESSONS_BASE);
-          setStat('stat-students-num', 'stat-students-label', studentsShown, 'Học sinh đang học');
-          setStat('stat-lessons-num', 'stat-lessons-label', lessonsShown, 'Bài đã hoàn thành');
+          // Hiển thị SỐ THẬT từ Supabase (KHÔNG cộng số ảo). Nếu chưa tải được
+          // thì giữ nguyên "—" ở trên (không bịa số).
+          setStat('stat-students-num', 'stat-students-label', s.students, 'Học sinh đang học');
+          setStat('stat-lessons-num', 'stat-lessons-label', s.lessons_completed, 'Bài đã hoàn thành');
           setStat('stat-xp-num', 'stat-xp-label', s.total_xp, 'Tổng XP toàn hệ thống');
           return;
         }
