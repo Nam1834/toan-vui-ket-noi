@@ -111,6 +111,16 @@ window.TVKN_UI = (function () {
 window.TVKN_MODULES = (function () {
   const U = window.TVKN_UI;
 
+  // Hiển thị phân số/hỗn số đẹp (1 1/4 -> hỗn số; 27/10 -> phân số kẻ ngang).
+  function fmtMath(s) {   // cho CHUỖI thường: escape rồi format
+    s = ('' + (s == null ? '' : s)).replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
+    return (window.TVKN_MATH ? TVKN_MATH.formatMath(s) : s);
+  }
+  function fmtHtml(s) {   // cho HTML sẵn (không escape)
+    s = ('' + (s == null ? '' : s));
+    return (window.TVKN_MATH ? TVKN_MATH.formatMath(s) : s);
+  }
+
   function wrap(block, inner, extraClass) {
     return `<div class="block ${extraClass || ''}">
       ${block.title ? `<h2 class="block-title">${block.title}</h2>` : ''}
@@ -245,10 +255,10 @@ window.TVKN_MODULES = (function () {
       const opts = q.options.map(o => {
         const val = (typeof o === 'object') ? o.val : o;
         const lbl = (typeof o === 'object' && o.label != null) ? o.label : val;
-        return `<button class="opt" data-val="${U.esc(val)}">${U.esc(lbl)}</button>`;
+        return `<button class="opt" data-val="${U.esc(val)}">${fmtMath(lbl)}</button>`;
       }).join('');
       return `
-        <p style="font-weight:700;margin:${qi ? '22px' : '0'} 0 8px">${q.q}</p>
+        <p style="font-weight:700;margin:${qi ? '22px' : '0'} 0 8px">${fmtHtml(q.q)}</p>
         ${q.img ? `<div class="objects"${q.imgStyle ? ` style="${q.imgStyle}"` : ''}>${q.img}</div>` : ''}
         <div class="options" data-qi="${qi}">${opts}</div>
         <div class="feedback" id="${uid}-fb${qi}"></div>`;
@@ -278,7 +288,7 @@ window.TVKN_MODULES = (function () {
                 if (('' + o.dataset.val) === ('' + q.correct)) { o.classList.add('correct'); correctLbl = o.textContent; }
               });
               fb.className = 'feedback no show';
-              fb.innerHTML = `💡 Chưa đúng. Đáp án đúng là <b>${U.esc(correctLbl)}</b>.` + (q.ok ? ` ${U.esc(q.ok)}` : '');
+              fb.innerHTML = `💡 Chưa đúng. Đáp án đúng là <b>${fmtMath(correctLbl)}</b>.` + (q.ok ? ` ${fmtHtml(q.ok)}` : '');
               U.chimeWrong();          // 🔊 âm thanh nhẹ báo chưa đúng
             }
           }));
@@ -335,7 +345,7 @@ window.TVKN_MODULES = (function () {
 
   // ---------- 6) INFO: khối nội dung tĩnh (giải thích, ví dụ) ----------
   function info(block, uid) {
-    return { html: wrap(block, block.html || ''), init() {} };
+    return { html: wrap(block, fmtHtml(block.html || '')), init() {} };
   }
 
   const REGISTRY = {
