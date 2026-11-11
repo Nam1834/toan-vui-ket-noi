@@ -203,7 +203,13 @@
 <script src="assets/js/lessons-lop3.js"></script>
 <script src="assets/js/lessons-lop4.js"></script>
 <script src="assets/js/lessons-lop5.js"></script>
+<script src="assets/js/math-format.js"></script>
 <script>
+  // Hiển thị phân số/hỗn số đẹp (kẻ ngang) — dùng chung bộ format.
+  function fmtM(s) {
+    var e = String(s == null ? '' : s).replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
+    return (window.TVKN_MATH ? TVKN_MATH.formatMath(e) : e);
+  }
   // Bộ câu hỏi mặc định (dùng khi bài không khai báo quiz riêng)
   const FALLBACK_QUESTIONS = [
     { type: 'multiple_choice', label: 'Trắc nghiệm', q: 'Có bao nhiêu quả cam trong hình?', img: '🍊🍊🍊🍊',
@@ -300,7 +306,7 @@
     if (Q.type === 'multiple_choice') {
       body = `<div class="answers">` + Q.options.map((o, i) =>
         `<button class="ans" data-idx="${i}" onclick="selectAnsIdx(this)">
-          <span class="ans-label">${o.l}</span><span class="ans-text">${o.label != null ? o.label : o.v}</span></button>`).join('') + `</div>`;
+          <span class="ans-label">${o.l}</span><span class="ans-text">${fmtM(o.label != null ? o.label : o.v)}</span></button>`).join('') + `</div>`;
     } else if (Q.type === 'fill_blank') {
       body = `<div class="fill-box"><input type="number" class="fill-input" id="fillInput" oninput="selectFill(this.value)" placeholder="?"></div>`;
     } else if (Q.type === 'true_false') {
@@ -332,7 +338,7 @@
     c.innerHTML = `
       <span class="qtype">${Q.label}</span>
       <div class="qno">Câu ${idx+1}/${questions.length}</div>
-      <div class="qtext">${Q.q}</div>
+      <div class="qtext">${fmtM(Q.q)}</div>
       ${Q.img ? `<div class="qimg">${Q.img}</div>` : ''}
       <button class="listen" onclick="speakQuestion()">🔊 Nghe câu hỏi</button>
       ${body}
@@ -490,7 +496,7 @@
       if (Q.type === 'fill_blank') { const fi = document.getElementById('fillInput'); if (fi) { fi.classList.remove('wrong'); fi.classList.add('correct'); fi.value = Q.correct; } }
       if (Q.type === 'drag_drop') { const slot = document.getElementById('ddSlot'); if (slot) { slot.classList.remove('wrong'); slot.classList.add('correct'); slot.textContent = Q.correct; } }
       fb.className = 'feedback no show';
-      fb.innerHTML = `<span class="feedback-em">💡</span> Chưa đúng. Đáp án đúng là <b>${ansText}</b>. Em xem lại rồi làm câu tiếp nhé!`;
+      fb.innerHTML = `<span class="feedback-em">💡</span> Chưa đúng. Đáp án đúng là <b>${fmtM(ansText)}</b>. Em xem lại rồi làm câu tiếp nhé!`;
       chimeWrong();        // 🔊 âm thanh nhẹ báo chưa đúng
       streak = 0;
       document.getElementById('checkBtn').style.display = 'none';

@@ -71,4 +71,20 @@
   }
 
   w.TVKN_MATH = { escapeHtml: escapeHtml, formatMath: formatMath, renderRich: renderRich };
+
+  // Tiêm CSS phân số/hỗn số MỘT LẦN -> MỌI trang nạp file này hiển thị GIỐNG NHAU
+  // (phần nguyên to, căn giữa cạnh phân số kẻ ngang — kiểu sách giáo khoa).
+  (function injectMathCss() {
+    try {
+      if (document.getElementById('tvkn-math-css')) return;
+      var st = document.createElement('style');
+      st.id = 'tvkn-math-css';
+      st.textContent =
+        '.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1;margin:0 .14em;font-size:.95em}' +
+        '.frac-n{display:block;padding:0 .35em}' +
+        '.frac-d{display:block;padding:2px .35em 0;border-top:2px solid currentColor}' +
+        '.mixed-whole{display:inline-block;vertical-align:middle;margin-right:.08em;font-weight:700;font-size:1.5em;line-height:1}';
+      (document.head || document.documentElement).appendChild(st);
+    } catch (e) {}
+  })();
 })(window);
