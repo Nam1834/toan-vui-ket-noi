@@ -1592,7 +1592,16 @@
 </script>
 <script>
   /* Bảng xếp hạng thật (top 5) — dùng được cả khi chưa đăng nhập (view cấp quyền cho anon). */
-  (async function initHomeLeaderboard() {
+  // Chỉ gọi fn khi phần tử sắp hiện ra màn hình (tiết kiệm truy vấn lúc vào trang).
+  function whenVisible(sel, fn) {
+    var el = document.querySelector(sel);
+    if (!el || !('IntersectionObserver' in window)) { fn(); return; }
+    var io = new IntersectionObserver(function (es) {
+      if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); fn(); }
+    }, { rootMargin: '250px' });
+    io.observe(el);
+  }
+  whenVisible('#ranking', function () { (async function initHomeLeaderboard() {
     var list = document.getElementById('home-rank-list');
     if (!list) return;
     function setEmpty() {
@@ -1635,7 +1644,7 @@
       console.warn('getLeaderboard không khả dụng:', e);
       setEmpty();
     }
-  })();
+  })(); });
 </script>
 <script>
   /* Hiển thị số liệu thật của nền tảng cho phần hero (nếu có Supabase) */
@@ -1671,7 +1680,7 @@
 </script>
 <script>
   /* Lượt chơi THẬT mỗi game (bảng game_plays, công khai) */
-  (async function () {
+  whenVisible('.games-grid', function () { (async function () {
     if (!(window.TVKN && TVKN.configured)) return;
     try {
       var plays = await TVKN.gamePlays();
@@ -1681,7 +1690,7 @@
         el.textContent = '🎮 ' + nf.format(n) + ' lượt chơi';
       });
     } catch (e) { console.warn('gamePlays không khả dụng:', e); }
-  })();
+  })(); });
 </script>
 
 <!-- ===== MODAL CHỌN LỚP ĐỂ HỌC THỬ ===== -->
